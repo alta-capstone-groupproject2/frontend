@@ -2,7 +2,7 @@
 
 import Lottie from 'lottie-react';
 
-import LoadingAnimation from '../assets/animations/petruk-wind-wheel.json';
+import LoadingAnimation from '../assets/animation/petruk-wind-wheel.json';
 
 export default function Loading() {
 	return (
