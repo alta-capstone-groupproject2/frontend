@@ -2,6 +2,7 @@
 
 import { Link } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
+import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
 	const menu = [
@@ -13,7 +14,7 @@ const Navbar = () => {
 	return (
 		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
 			<Link to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>LAMI APP</div>
+				<img src={logo} alt='Lami App' className='w-28 h-9' />
 			</Link>
 			<div className='flex'>
 				<div className='flex space-x-4 items-center mr-8'>
