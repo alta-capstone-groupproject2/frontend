@@ -7,6 +7,7 @@ import Custom404 from '../pages/404';
 import Login from '../pages/auth/Login';
 import Signup from '../pages/auth/Signup';
 import Myevent from '../pages/events/Myevent';
+import Applyevent from '../pages/events/Applyevent'
 
 import { TokenContext } from "../utils/Context";
 
@@ -27,6 +28,7 @@ const RoutesApp = () => {
 					<Route path='/login' element={<Login />} />
 					<Route path='/signup' element={<Signup />} />
 					<Route path='/myevent' element={<Myevent />} />
+					<Route path='/applyevent' element={<Applyevent />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>

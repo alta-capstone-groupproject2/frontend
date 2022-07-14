@@ -115,26 +115,26 @@ function Myevent() {
     } else {
         return (
             <Layout>
-                <Link to='/createevent'>
+                <Link to='/applyevent'>
                     <div className='bg-red-600 hover:bg-red-700 text-white shadow-md text-4xl p-3 fixed bottom-[9%] right-[3%] block whitespace-no-wrap cursor-pointer rounded-full'>
                         <TiPlus />
                     </div>
                 </Link>
                 <div className='min-h-[80vh] flex'>
                     <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                        <Link to="" className='flex items-center gap-2 pl-3 border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
+                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
+                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
                         <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
+                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
+                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
                     </div>
                     <div className='p-6 basis-5/6'>
                         <p className='font-bold text-lg'>My Event</p>
                         <div className='flex flex-col gap-4 p-4'>
                             {myEvents.map((event) => (
                                 <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
-                                    <img src={event.image} alt="" className='w-full basis-1/6 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
-                                    <div className='basis-4/6 pl-8 py-4 break-all cursor-pointer' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
+                                    <img src={event.image} alt="" className='w-48 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
+                                    <div className='pl-8 py-4 break-all cursor-pointer' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
                                         <p className='font-bold text-4xl flex justify-between items-center'>
                                             {event.eventName}
                                             {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
@@ -161,7 +161,7 @@ function Myevent() {
                                             {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
                                         </p>
                                     </div>
-                                    <div className='basis-1/6 text-center px-14'>
+                                    <div className='text-center px-14'>
                                         <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={()=>handleDelete(event.eventID)}>Delete</button>
                                     </div>
                                 </div>
