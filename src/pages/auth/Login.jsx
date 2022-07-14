@@ -28,16 +28,18 @@ const Login = () => {
       apiRequest("login", "post", body)
           .then((res) => {
               const { code,message,data } = res;
-              const { token,role } = data;
+            const { token, role } = data;
+            alert(code)
               
             switch (code) {
                 case 200:
-                  localStorage.setItem("token", token);
-                  setToken(token);
-                  role==='admin' ? navigate('/admin') : navigate('/')
+                  // localStorage.setItem("token", token);
+                  // setToken(token);
+                  // role==='admin' ? navigate('/admin') : navigate('/')
+                  Swal.fire(`Success`,message,'success');
                   break;
 
-                case "400":
+                case 400:
                   Swal.fire(`Failed`,message,'error');
                   break;
                 
@@ -47,6 +49,7 @@ const Login = () => {
               }
           })
         .catch((err) => {
+          console.log(err)
             const errorMsg = err.message
             const { message } = err.response.data  
             Swal.fire(errorMsg,message,'error'); 

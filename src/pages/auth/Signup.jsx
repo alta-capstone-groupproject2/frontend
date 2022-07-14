@@ -39,7 +39,7 @@ const Signup = () => {
                   role==='admin' ? navigate('/admin') : navigate('/')
                   break;
 
-                case "400": Swal.fire(`Failed`,message,'error'); break;
+                case 400: Swal.fire(`Failed`,message,'error'); break;
                 
                 default: Swal.fire(`Code ${code}`,message,'info'); break;
               }

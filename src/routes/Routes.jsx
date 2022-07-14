@@ -10,7 +10,6 @@ import Signup from '../pages/auth/Signup';
 import { TokenContext } from "../utils/Context";
 
 import axios from 'axios';
-axios.defaults.baseURL = "https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/";
 
 const RoutesApp = () => {
 	const [token, setToken] = useState(null);
