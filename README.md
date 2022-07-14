@@ -1,3 +1,6 @@
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2e791dc2-5b90-493c-af32-c4c61e4630a5/deploy-status)](https://app.netlify.com/sites/lamiapp/deploys)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
