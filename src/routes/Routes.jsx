@@ -6,11 +6,9 @@ import Homepage from '../pages/Homepage';
 import Custom404 from '../pages/404';
 import Login from '../pages/auth/Login';
 import Signup from '../pages/auth/Signup';
+import Myevent from '../pages/events/Myevent';
 
 import { TokenContext } from "../utils/Context";
-
-import axios from 'axios';
-axios.defaults.baseURL = "https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/";
 
 const RoutesApp = () => {
 	const [token, setToken] = useState(null);
@@ -28,6 +26,7 @@ const RoutesApp = () => {
 					<Route path='/' element={<Homepage />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/signup' element={<Signup />} />
+					<Route path='/myevent' element={<Myevent />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>

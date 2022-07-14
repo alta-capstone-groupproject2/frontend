@@ -11,15 +11,15 @@ const Navbar = () => {
 	];
 
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-10'>
 			<Link to='/'>
 				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>LAMI APP</div>
 			</Link>
 			<div className='flex'>
-				<div className='flex space-x-4 items-center mr-8'>
+				<div className='flex space-x-8 items-center mr-8 text-sm'>
 					{menu.map((item, index) => {
 						return (
-							<span key={index} className='py-1 text-pink-700 hover:text-pink-900 font-semibold'>
+							<span key={index} className='py-1 text-stone-700 hover:text-red-600 font-semibold'>
 								<Link to={item.link}>{item.name}</Link>
 							</span>
 						);
