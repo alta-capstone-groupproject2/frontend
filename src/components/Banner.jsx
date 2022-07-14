@@ -6,7 +6,7 @@ const Banner = () => {
 	const navigate = useNavigate();
 
 	return (
-		<div className='bg-red-800 text-white p-12 space-y-4'>
+		<div className='bg-red-700 text-white p-12 space-y-4 cursor-default'>
 			<div>
 				<h1 className='text-2xl max-w-md pb-4'>Yuk kenali budayamu di Lami App dan peroleh keuntungan di Lami App.</h1>
 				<q>Zaman boleh maju tapi budaya jangan ditinggalkan</q>
