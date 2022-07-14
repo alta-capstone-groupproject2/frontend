@@ -37,7 +37,7 @@ const Login = () => {
                   role==='admin' ? navigate('/admin') : navigate('/')
                   break;
 
-                case "400":
+                case 400:
                   Swal.fire(`Failed`,message,'error');
                   break;
                 
