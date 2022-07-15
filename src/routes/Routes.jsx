@@ -9,8 +9,6 @@ import Signup from '../pages/auth/Signup';
 
 import { TokenContext } from "../utils/Context";
 
-import axios from 'axios';
-
 const RoutesApp = () => {
 	const [token, setToken] = useState(null);
     const jwtToken = useMemo(() => ({ token, setToken }), [token]);
