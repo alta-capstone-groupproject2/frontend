@@ -6,8 +6,8 @@ import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
 	const menu = [
-		{ name: 'Cultures', link: '/culture' },
-		{ name: 'Event', link: '/event' },
+		{ name: 'Cultures', link: '/cultures' },
+		{ name: 'Event', link: '/events' },
 		{ name: 'Merchandise', link: '/merchandise' },
 	];
 

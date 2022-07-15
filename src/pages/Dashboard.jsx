@@ -1,9 +1,7 @@
 /** @format */
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { FaEdit, FaStoreAlt } from 'react-icons/fa';
 
-// import { TokenContext } from '../utils/Context';
 import { apiRequest } from '../utils/apiRequest';
 import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
@@ -12,7 +10,6 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-	// const { token } = useContext(TokenContext);
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [avatar, setAvatar] = useState('');
@@ -22,20 +19,12 @@ const Dashboard = () => {
 	const [objSubmit, setObjSubmit] = useState('');
 
 	const getProfile = () => {
-		axios({
-			method: 'GET',
-			url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/users',
-			headers: {
-				'Content-Type': 'application/json',
-				// Authorization: `Bearer ${token}`,
-			},
-		})
+		apiRequest('users', 'get', {})
 			.then((res) => {
-				const { name, email, image, role } = res.data.data;
-				setName(name);
-				setEmail(email);
-				setAvatar(image);
-				setRole(role);
+				setAvatar(res.data.avatar);
+				setName(res.data.name);
+				setEmail(res.data.email);
+				setRole(res.data.role);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -84,17 +73,10 @@ const Dashboard = () => {
 			confirmButtonText: 'Yes, delete it!',
 		}).then((res) => {
 			if (res.isConfirmed) {
-				axios({
-					method: 'DELETE',
-					url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/users',
-					headers: {
-						'Content-Type': 'application/json',
-						// Authorization: `Bearer ${token}`,
-					},
-				})
+				apiRequest('users', 'DELETE', {})
 					.then((res) => {
-						const { message, code } = res.data;
-						if (code == 200) {
+						const { code, message } = res;
+						if (code === 200) {
 							navigate('/login');
 							Swal.fire({
 								title: 'Deleted!',
@@ -102,7 +84,6 @@ const Dashboard = () => {
 								icon: 'success',
 							});
 						}
-						console.log(res);
 					})
 					.catch((err) => {
 						console.log(err);
