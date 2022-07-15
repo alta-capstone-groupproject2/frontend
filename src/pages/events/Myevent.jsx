@@ -149,7 +149,7 @@ function Myevent() {
                                             </span>
                                         </p>
                                         <p>
-                                            {moment("2014-02-27T10:00:00", 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
+                                            {moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
                                         </p>
                                         <p>
                                             {event.address}
