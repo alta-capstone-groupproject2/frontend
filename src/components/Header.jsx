@@ -22,15 +22,15 @@ const Navbar = () => {
 	
 	return (
 		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
-			<Link to='/'>
+			<Link id='link-to-index' to='/'>
 				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>LAMI APP</div>
 			</Link>
 			<div className='flex'>
 				<div className='flex space-x-8 items-center mr-10 text-sm'>
 					{menu.map((item, index) => {
 						return (
-							<span key={index} className='py-1 text-stone-800 hover:text-red-600 font-semibold'>
-								<Link to={item.link}>{item.name}</Link>
+							<span key={index}  className='py-1 text-stone-800 hover:text-red-600 font-semibold'>
+								<Link id={`link-to-${item.name}`} to={item.link}>{item.name}</Link>
 							</span>
 						);
 					})}
@@ -43,17 +43,17 @@ const Navbar = () => {
 							</button>
 							<ul className='absolute hidden text-gray-700 pt-1 group-hover:block -right-2/3 z-40'>
 								<li className='text-white'>
-									<Link to={'/profile'}>
+									<Link id="link-to-profile" to={'/profile'}>
 										<div className='bg-red-600 hover:bg-red-700 py-2 px-4 block whitespace-no-wrap cursor-pointer rounded-t'>Profile</div>
 									</Link>
 								</li>
 								<li className='text-white'>
-									<div className='bg-red-600 hover:bg-red-700 py-2 px-4 block whitespace-no-wrap cursor-pointer rounded-b' onClick={()=>handleLogout()}>LogOut</div>
+									<div id="button-logout" className='bg-red-600 hover:bg-red-700 py-2 px-4 block whitespace-no-wrap cursor-pointer rounded-b' onClick={()=>handleLogout()}>LogOut</div>
 								</li>
 							</ul>
 						</div>) : (
 						<div className='flex text-pink-700 font-bold'>
-							<Link to={'/login'}>
+							<Link id="l" to={'/login'}>
 								<div>Login</div>
 							</Link>
 							<span className='px-2 select-none'>/</span>

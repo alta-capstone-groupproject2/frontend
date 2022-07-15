@@ -89,7 +89,7 @@ const Signup = () => {
                     </div>
                     <div className='basis-full flex justify-center'>
                         <div className='flex-col gap-8 flex w-1/2'>
-                            <img src={logo} alt="" id="img-goto-home" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
+                            <img id="img-goto-home" src={logo} alt="" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
                             <div className='flex flex-col gap-3 '>
                                 <p className="font-bold text-3xl">Sign Up</p>
                                 <div className='flex flex-col gap-1'>
