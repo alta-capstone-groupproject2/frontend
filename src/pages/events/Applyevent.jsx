@@ -37,25 +37,55 @@ function Applyevent() {
         formData.append("price",price)
         formData.append("details",detail)
         formData.append("city",city)
-        formData.append("location",position)
+        formData.append("location",position.join())
 
-        apiRequest("events", "post",formData,)
-          .then((result) => {
-              const { currentTime, data, totalPage } = result
-          })
+        apiRequest("events", "post", formData, {
+            'Content-Type': 'multipart/form-data'
+        })
+        .then((result) => {
+              
+        })
         .catch((err) => {
             const errorMsg = err.message
             const { message } = err.response.data  
             Swal.fire(errorMsg,message,'error'); 
-          })
-          .finally(()=>setLoading(false))
+        })
+        .finally(()=>setLoading(false))
     }
 
     const handleChange = (e, type) => {
       const val = e.target
       const obj = {
-        'doc': (target)=>setDoc(target.files[0]),
-        'photo': (target)=>setPhoto(target.files[0]),
+        'doc': (target) => {
+            if (target.files[0]) {
+                const file = target.files[0]
+                let passed = 0
+                if (file.size > 5050000) {
+                    Swal.fire('File to large', 'file input must below 5.05 Mb', 'error')
+                    target.value=null
+                } else { passed++ }
+                if (file.type !== "application/pdf") {
+                    Swal.fire('Wrong input', 'format file must pdf', 'error')
+                    target.value=null
+                } else { passed++ }
+                passed === 2 && setDoc(file)
+            }
+        },
+        'photo': (target) => {
+            if (target.files[0]) {
+                const file = target.files[0]
+                let passed = 0
+                if (file.size > 1050000) {
+                    Swal.fire('File to large', 'file input must below 1.05 Mb', 'error')
+                    target.value=null
+                } else { passed++ }
+                if (!['image/jpg','image/jpeg','image/png'].includes(file.type)) {
+                    Swal.fire('Wrong input', 'format file must jpg,jpeg,png', 'error')
+                    target.value=null
+                } else { passed++ }
+                passed === 2 && setPhoto(file)
+            }  
+        },
         'name': (target)=>setName(target.value),
         'host': (target)=>setHost(target.value),
         'phone': (target) => {setPhone(target.value)},
@@ -65,6 +95,22 @@ function Applyevent() {
         'city': (target)=>setCity(target.value)
       }
       obj[type](val)
+    }
+
+    const handleSubmit = () => {
+        let passed = 0
+        doc !== "" && passed++
+        photo !== "" && passed++
+        name !== "" && passed++
+        host !== "" && passed++
+        phone !== "" && passed++
+        date !== "" && passed++
+        price !== "" && passed++
+        detail !== "" && passed++
+        city !== "" && passed++
+        position.join() !== ',' && passed++
+
+        passed === 10 ? alert('okay') : Swal.fire('Important', 'all field must be filled', 'error')
     }
     
     return (
@@ -86,7 +132,7 @@ function Applyevent() {
                             </label>
                             <div className="basis-5/6 ">
                                 <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
-                                    <input id="input-doc" type={"file"} onChange={(e) => handleChange(e, "doc")} ></input>
+                                    <input id="input-doc" type={"file"} accept="application/pdf" onChange={(e) => handleChange(e, "doc")} ></input>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +142,7 @@ function Applyevent() {
                             </label>
                             <div className="basis-5/6 ">
                                 <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
-                                    <input id='input-photo' type={"file"} onChange={(e) => handleChange(e, "photo")} ></input>
+                                    <input id='input-photo' type={"file"} accept="image/jpg,image/jpeg,image/png" onChange={(e) => handleChange(e, "photo")} ></input>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +211,7 @@ function Applyevent() {
                             <span><b>Lat</b>{position[0]} <b>Lng.</b> {position[1]}</span>
                         </div>
                         <div className="flex flex-row my-5 mb-10 items-center justify-end">
-                            <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded">Apply</button>
+                            <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded" onClick={()=>handleSubmit()}>Apply</button>
                         </div>
                     </div>
                 </div>  

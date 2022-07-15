@@ -23,21 +23,22 @@ const Login = () => {
     const postLogin = () => {
       setLoading(true)
       
-      const body = { email, pwd }  
+      const body = { 'email':email, 'password': pwd }  
       
       apiRequest("login", "post", body)
           .then((res) => {
-              const { code,message,data } = res;
-              const { token,role } = data;
+            const { code,message,data } = res;
+            const { token, role } = data;
               
             switch (code) {
-                case 200:
+                case '200':
                   localStorage.setItem("token", token);
                   setToken(token);
-                  role==='admin' ? navigate('/admin') : navigate('/')
+                  // role==='admin' ? navigate('/admin') : navigate('/')
+                  Swal.fire(`Success`,message,'success').then(()=>navigate('/'));
                   break;
 
-                case 400:
+                case '400':
                   Swal.fire(`Failed`,message,'error');
                   break;
                 
@@ -48,8 +49,9 @@ const Login = () => {
           })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg = ''
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
           })
           .finally(()=>setLoading(false))
     }

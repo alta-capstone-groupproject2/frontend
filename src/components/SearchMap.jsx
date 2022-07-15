@@ -5,7 +5,7 @@ import { GeoSearchControl,OpenStreetMapProvider } from "leaflet-geosearch";
 
 const SearchControl = props => {
     const map = useMap();
-    const {setPosition,setCity} = props
+    const {setPosition} = props
         
     const searchControl = new GeoSearchControl({
         provider: new OpenStreetMapProvider(),
@@ -15,10 +15,8 @@ const SearchControl = props => {
         searchLabel: 'Input address event here'
     });
 
-    
     useEffect(() => {
         map.on('geosearch/showlocation', (result) => {
-            setCity(result.location.label)
             setPosition([result.location.y, result.location.x])
         });
         map.addControl(searchControl);
