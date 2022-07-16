@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { TextField } from '@mui/material'
 import imgVector from '../../assets/images/HP-KK-01-BANNERP1-RUANG-KREATIF-1.jpg'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.webp'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { TokenContext } from "../../utils/Context";
@@ -67,11 +67,12 @@ const Signup = () => {
     
     const handleSubmit = () => {
         // eslint-disable-next-line no-useless-escape
-        const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        const regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        const regName = /[^a-z]/gi;
         let passed = 0
       
-        username !== '' ? passed+=1 : setIsPwdError(true)
-        re.test(email) ? passed+=1 : setIsEmailError(true)
+        username !== '' && regName.test(username) ? passed+=1 : setIsPwdError(true)
+        regEmail.test(email) ? passed+=1 : setIsEmailError(true)
         pwd !== '' ? passed+=1 : setIsPwdError(true)
         
         passed === 3 && postRegister()
@@ -82,28 +83,29 @@ const Signup = () => {
             return <Loading />
         } else {
             return (
-                <div className='flex min-h-screen items-center'>
-                    <div className='basis-full overflow-hidden relative' >
-                        <div className="h-screen w-full absolute bg-black opacity-20" />
-                        <img src={imgVector} alt="" className='h-screen w-auto object-cover' />
+                <div className='flex flex-col gap-6 justify-center md:gap-0 md:flex-row min-h-screen items-center'>
+                    <div className='basis-full overflow-hidden hidden md:block relative' >
+                        <div className="h-[20vh] md:h-screen w-full absolute bg-black opacity-20" />
+                        <img src={imgVector} alt="" className='h-[20vh] w-screen md:h-screen md:w-auto object-cover' />
                     </div>
                     <div className='basis-full flex justify-center'>
-                        <div className='flex-col gap-8 flex w-1/2'>
-                            <img id="img-goto-home" src={logo} alt="" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
+                        <div className='flex-col gap-8 flex px-8 md:p-0 text-sm md:w-1/2'>
+                            <img id="img-goto-home" src={logo} alt="" className="cursor-pointer w-1/2 md:w-2/3 self-center" onClick={()=>navigate('/')} />
                             <div className='flex flex-col gap-3 '>
-                                <p className="font-bold text-3xl">Sign Up</p>
+                                <p className="font-bold text-2xl md:text-3xl">Sign Up</p>
                                 <div className='flex flex-col gap-1'>
-                                    <TextField id="input-username" type="text" value={username} label="Username" variant="outlined" onChange={(e) => handleChange(e,'username')} error={isNameError}/>
+                                    <TextField id="input-username" type="text" value={username} label="Username" variant="outlined" onChange={(e) => handleChange(e,'username')} error={isNameError} required/>
                                     {isNameError && <span className='text-xs text-red-600'>Please check your username again</span>}
                                 </div>
                                 <div className='flex flex-col gap-1'>
-                                    <TextField id="input-email" type="email" value={email} label="Email" variant="outlined" onChange={(e) => handleChange(e,'email')} error={isEmailError}/>
+                                    <TextField id="input-email" type="email" value={email} label="Email" variant="outlined" onChange={(e) => handleChange(e,'email')} error={isEmailError} required/>
                                     {isEmailError && <span className='text-xs text-red-600'>Please check your email again</span>}
                                 </div>
                                 <div className='flex flex-col gap-1'>
-                                    <TextField id="input-password" type="password" value={pwd} label="Password" variant="outlined" onChange={(e) => handleChange(e,'password')} error={isPwdError}/>
+                                    <TextField id="input-password" type="password" value={pwd} label="Password" variant="outlined" onChange={(e) => handleChange(e,'password')} error={isPwdError} required/>
                                     {isPwdError && <span className='text-xs text-red-600'>Please check your password again</span>}
                                 </div>
+                                <span className="text-xs text-red-600 text-end">required*</span>
                             </div>
                             <div className='flex flex-col items-center font-bold'>
                                 <button id="button-submit" className="bg-red-600 hover:bg-red-800 py-2 px-16 rounded text-white" onClick={() => handleSubmit()}>Sign Up</button>

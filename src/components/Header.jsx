@@ -1,8 +1,11 @@
 /** @format */
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
+import { BiLogOut } from 'react-icons/bi'
 import { TokenContext } from '../utils/Context';
+import { Button, Menu, MenuItem } from '@mui/material';
+import logoSrc from '../assets/images/logo.webp'
 
 const Navbar = () => {
 	const navigate = useNavigate()
@@ -12,6 +15,15 @@ const Navbar = () => {
 		{ name: 'Event', link: '/event' },
 		{ name: 'Merchandise', link: '/merchandise' },
 	];
+
+	const [anchorEl, setAnchorEl] = useState(null);
+	const open = Boolean(anchorEl);
+	const clickDropdown = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const closeDropdown = () => {
+		setAnchorEl(null);
+	};
 
 	const handleLogout = () => {
         localStorage.removeItem("token");
@@ -23,7 +35,9 @@ const Navbar = () => {
 	return (
 		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
 			<Link id='link-to-index' to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>LAMI APP</div>
+				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
+					<img src={logoSrc} alt="" className='h-10' />
+				</div>
 			</Link>
 			<div className='flex'>
 				<div className='flex space-x-8 items-center mr-10 text-sm'>
@@ -37,21 +51,37 @@ const Navbar = () => {
 				</div>
 				<div className='flex items-center space-x-4'>
 					{token !== '0' ? (
-						<div className='group inline-block relative cursor-pointer text-center'>
-							<button className='pl-5'>
+						<div>
+							<Button
+								id="basic-button"
+								aria-controls={open ? 'basic-menu' : undefined}
+								aria-haspopup="true"
+								aria-expanded={open ? 'true' : undefined}
+								onClick={clickDropdown}
+							>
 								<CgProfile className='text-3xl text-red-600 cursor-pointer' />
-							</button>
-							<ul className='absolute hidden text-gray-700 pt-1 group-hover:block -right-2/3 z-40'>
-								<li className='text-white'>
-									<Link id="link-to-profile" to={'/profile'}>
-										<div className='bg-red-600 hover:bg-red-700 py-2 px-4 block whitespace-no-wrap cursor-pointer rounded-t'>Profile</div>
-									</Link>
-								</li>
-								<li className='text-white'>
-									<div id="button-logout" className='bg-red-600 hover:bg-red-700 py-2 px-4 block whitespace-no-wrap cursor-pointer rounded-b' onClick={()=>handleLogout()}>LogOut</div>
-								</li>
-							</ul>
-						</div>) : (
+							</Button>
+							<Menu
+								id="basic-menu"
+								anchorEl={anchorEl}
+								open={open}
+								onClose={closeDropdown}
+								transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        						anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+							>
+								<MenuItem onClick={closeDropdown}>
+									<div className='flex items-center'>
+										<CgProfile className='mr-2' /> <span>Profile</span>
+									</div>
+								</MenuItem>
+								<MenuItem onClick={()=>handleLogout()}>
+									<div className='flex items-center'>
+										<BiLogOut className='mr-2' /> <span>Log out</span>
+									</div>
+								</MenuItem>
+							</Menu>
+						</div>
+					) : (
 						<div className='flex text-pink-700 font-bold'>
 							<Link id="l" to={'/login'}>
 								<div>Login</div>
