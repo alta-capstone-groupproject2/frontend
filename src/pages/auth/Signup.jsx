@@ -68,10 +68,10 @@ const Signup = () => {
     const handleSubmit = () => {
         // eslint-disable-next-line no-useless-escape
         const regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-        const regName = /[^a-z]/gi;
+        const regName = /^[A-Za-z]+$/;
         let passed = 0
-      
-        username !== '' && regName.test(username) ? passed+=1 : setIsPwdError(true)
+        
+        username !== '' && regName.test(username) ? passed+=1 : setIsNameError(true)
         regEmail.test(email) ? passed+=1 : setIsEmailError(true)
         pwd !== '' ? passed+=1 : setIsPwdError(true)
         
@@ -95,7 +95,7 @@ const Signup = () => {
                                 <p className="font-bold text-2xl md:text-3xl">Sign Up</p>
                                 <div className='flex flex-col gap-1'>
                                     <TextField id="input-username" type="text" value={username} label="Username" variant="outlined" onChange={(e) => handleChange(e,'username')} error={isNameError} required/>
-                                    {isNameError && <span className='text-xs text-red-600'>Please check your username again</span>}
+                                    {isNameError && <span className='text-xs text-red-600'>Username must be filled and only alphabetic characters</span>}
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <TextField id="input-email" type="email" value={email} label="Email" variant="outlined" onChange={(e) => handleChange(e,'email')} error={isEmailError} required/>
