@@ -68,10 +68,16 @@ const Signup = () => {
     const handleSubmit = () => {
         // eslint-disable-next-line no-useless-escape
         const regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-        const regName = /^[A-Za-z]+$/;
+        const regName = /^[A-Za-z ]+$/;
         let passed = 0
         
-        username !== '' && regName.test(username) ? passed+=1 : setIsNameError(true)
+        if (username !== '' && regName.test(username)) {
+            passed += 1;
+            const tempName = username
+            setUsername(tempName.trim())
+        } else {
+            setIsNameError(true)
+        }
         regEmail.test(email) ? passed+=1 : setIsEmailError(true)
         pwd !== '' ? passed+=1 : setIsPwdError(true)
         
