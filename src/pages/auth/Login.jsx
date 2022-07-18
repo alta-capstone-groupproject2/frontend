@@ -82,7 +82,7 @@ const Login = () => {
         passed === 2 && postLogin()
     }
 
-    if (token === "0") {
+    if (token === "0" || token === null) {
         if (loading) {
             return <Loading />
         } else {
