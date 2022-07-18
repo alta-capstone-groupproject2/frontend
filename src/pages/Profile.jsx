@@ -1,17 +1,17 @@
 /** @format */
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FaEdit, FaStoreAlt } from 'react-icons/fa';
 
-// import { TokenContext } from '../utils/Context';
+import { apiRequest } from '../utils/apiRequest';
 import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
 import Loading from '../components/Loading';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { TokenContext } from '../utils/Context';
 
-const Dashboard = () => {
-	// const { token } = useContext(TokenContext);
+const Profile = () => {
+	const { token } = useContext(TokenContext);
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [avatar, setAvatar] = useState('');
@@ -20,32 +20,42 @@ const Dashboard = () => {
 	const [role, setRole] = useState('');
 	const [objSubmit, setObjSubmit] = useState('');
 
-	const handleChange = (value, key) => {
-		let temp = { ...objSubmit };
-		temp[key] = value;
-		setObjSubmit(temp);
-	};
-
 	const getProfile = () => {
-		axios({
-			method: 'GET',
-			url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/users',
-			headers: {
-				'Content-Type': 'application/json',
-				// Authorization: `Bearer ${token}`,
-			},
-		})
+		apiRequest('users', 'get', {}, { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
 			.then((res) => {
-				const { name, email, avatar, role } = res.data.data;
+				console.log(res);
+				const { image, name, email, role } = res.data;
+				setAvatar(image);
 				setName(name);
 				setEmail(email);
-				setAvatar(avatar);
 				setRole(role);
 			})
 			.catch((err) => {
 				console.log(err);
 			})
 			.finally(() => setLoading(false));
+	};
+
+	const handleUpdate = (e) => {
+		setLoading(true);
+		e.preventDefault();
+		const body = new FormData();
+		for (const key in objSubmit) {
+			body.append(key, objSubmit[key]);
+		}
+		apiRequest('users', 'PUT', body, { Authorization: `Bearer ${token}` })
+			.then((res) => {
+				const { message } = res;
+				Swal.fire({
+					title: 'Success',
+					text: message,
+					icon: 'success',
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			})
+			.finally(() => getProfile());
 	};
 
 	const handleDelete = () => {
@@ -59,31 +69,26 @@ const Dashboard = () => {
 			confirmButtonText: 'Yes, delete it!',
 		}).then((res) => {
 			if (res.isConfirmed) {
-				axios({
-					method: 'DELETE',
-					url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/users',
-					headers: {
-						'Content-Type': 'application/json',
-						// Authorization: `Bearer ${token}`,
-					},
-				})
+				apiRequest('users', 'DELETE', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
 					.then((res) => {
-						const { message, code } = res.data;
-						if (code == 200) {
-							Swal.fire({
-								title: 'Deleted!',
-								text: message,
-								icon: 'success',
-							});
-						}
-						console.log(res);
+						Swal.fire({
+							title: 'Deleted!',
+							text: res.message,
+							icon: 'success',
+						});
 					})
 					.catch((err) => {
 						console.log(err);
-					});
-				navigate('/login');
+					})
+					.finally(() => navigate('/login'));
 			}
 		});
+	};
+
+	const handleChange = (value, key) => {
+		let temp = { ...objSubmit };
+		temp[key] = value;
+		setObjSubmit(temp);
 	};
 
 	useEffect(() => {
@@ -104,7 +109,7 @@ const Dashboard = () => {
 								{role === 'user' ? (
 									<div>
 										<h1 className='font-bold'>UMKM</h1>
-										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center'>
+										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
 											<FaStoreAlt className='mr-2' />
 											<p className='font-bold'>Upgrade Account</p>
 										</button>
@@ -112,10 +117,10 @@ const Dashboard = () => {
 								) : null}
 							</div>
 						</div>
-						<form>
+						<form onSubmit={(e) => handleUpdate(e)}>
 							<div className='flex flex-col items-center space-y-8'>
 								<div className='flex'>
-									<img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKmpLneahEOcl3PdqZgajxsmLI9XNTgBGnepm2GAuyNxTWQwxFIBhn-mwiy-G-WDJTtXI&usqp=CAU' alt='avatar' width={100} height={100} className='rounded-full' />
+									<img src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
 									<div className='flex items-end ml-2'>
 										<input
 											type={'file'}
@@ -132,7 +137,7 @@ const Dashboard = () => {
 										</label>
 									</div>
 								</div>
-								<form className='flex flex-col space-y-4'>
+								<div className='flex flex-col space-y-4'>
 									<div className='grid grid-cols-4'>
 										<label htmlFor='name' className='sm:text-xl text-end'>
 											Name :
@@ -158,7 +163,7 @@ const Dashboard = () => {
 											onChange={(e) => handleChange(e.target.value, 'password')}
 										/>
 									</div>
-								</form>
+								</div>
 								<button className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800'>Save</button>
 							</div>
 						</form>
@@ -174,4 +179,4 @@ const Dashboard = () => {
 	}
 };
 
-export default Dashboard;
+export default Profile;

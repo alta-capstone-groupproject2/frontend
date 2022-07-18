@@ -1,15 +1,16 @@
 import axios from "axios";
+axios.defaults.baseURL = 'https://lamiapp.site/';
 
-export const apiRequest = async (url, method, body, content_type) => {
-  var config = {
-    method,
-    url,
-    headers: {
-      "Content-Type": content_type ? content_type : "application/json",
-    },
-    data: body,
-  };
+export const apiRequest = async (url, method, body, header) => {
+	var config = {
+		method,
+		url,
+		headers: {
+			...header,
+		},
+		data: body,
+	};
 
-  const response = await axios(config);
-  return response.data;
+	const response = await axios(config);
+	return response.data;
 };

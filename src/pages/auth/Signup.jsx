@@ -10,7 +10,7 @@ import Loading from "../../components/Loading"
 import Swal from "sweetalert2";
 
 const Signup = () => {
-    const { token, setToken } = useContext(TokenContext);
+    const { token } = useContext(TokenContext);
 
     const navigate = useNavigate()
 
@@ -25,29 +25,32 @@ const Signup = () => {
     const postRegister = () => {
       setLoading(true)
       
-      const body = { username, email, pwd }  
+    const body = {
+        'name': username,
+        'email': email,
+        'password': pwd
+    }  
       
       apiRequest("register", "post", body)
           .then((res) => {
-              const { code,message,data } = res;
-              const { token,role } = data;
+              const { code,message } = res;
               
             switch (code) {
-                case 200:
-                  localStorage.setItem("token", token);
-                  setToken(token);
-                  role==='admin' ? navigate('/admin') : navigate('/')
+                case '200':
+                    Swal.fire(`Success`, message, 'success')
+                    .then(() => navigate('/login'));
                   break;
 
-                case "400": Swal.fire(`Failed`,message,'error'); break;
+                case '400': Swal.fire(`Failed`,message,'error'); break;
                 
                 default: Swal.fire(`Code ${code}`,message,'info'); break;
               }
           })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg = ''
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
           })
           .finally(()=>setLoading(false))
     }
@@ -86,7 +89,7 @@ const Signup = () => {
                     </div>
                     <div className='basis-full flex justify-center'>
                         <div className='flex-col gap-8 flex w-1/2'>
-                            <img src={logo} alt="" id="img-goto-home" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
+                            <img id="img-goto-home" src={logo} alt="" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
                             <div className='flex flex-col gap-3 '>
                                 <p className="font-bold text-3xl">Sign Up</p>
                                 <div className='flex flex-col gap-1'>
