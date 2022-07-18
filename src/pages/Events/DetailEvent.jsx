@@ -69,11 +69,28 @@ const DetailEvent = () => {
 			comment: commentText,
 			eventID: +eventID,
 		};
-		apiRequest('events/comments', 'post', data)
+		apiRequest('events/comments', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				const { code } = res;
 				if (code === 200) {
 					getComment();
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const handleJoinEvent = () => {
+		const { eventID } = params;
+		const data = {
+			eventID: +eventID,
+		};
+		apiRequest('events/participations', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+			.then((res) => {
+				const { code } = res;
+				if (code === 200) {
+					getDataEvent();
 				}
 			})
 			.catch((err) => {
@@ -176,7 +193,10 @@ const DetailEvent = () => {
 								<h1>
 									<span className='text-slate-400'>City : </span> {city}
 								</h1>
-								<button disabled={isAfter ? false : true} className={`bg-sky-500 hover:bg-sky-600 text-white py-2 w-full rounded-md ${isAfter ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-400 hover:bg-slate-400 text-slate-200'}`}>
+								<button
+									disabled={isAfter ? false : true}
+									onClick={() => handleJoinEvent()}
+									className={`bg-sky-500 hover:bg-sky-600 text-white py-2 w-full rounded-md ${isAfter ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-400 hover:bg-slate-400 text-slate-200'}`}>
 									Join
 								</button>
 								<span className={`text-red-700 text-xs font-semibold ${isAfter ? 'hidden' : 'inline'}`}>*Can't cancel joining event no refund</span>

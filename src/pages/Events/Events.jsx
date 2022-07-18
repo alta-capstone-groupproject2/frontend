@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import CardEvent from '../../components/Card/CardEvent';
 
 import Layout from '../../components/Layout';
@@ -11,23 +11,14 @@ import { apiRequest } from '../../utils/apiRequest';
 
 const Events = () => {
 	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [loading, setLoading] = useState(true);
 	const [event, setEvent] = useState([]);
-	const [searchName, setSearchName] = useState('');
-	const [searchCity, setSearchCity] = useState('');
-
-	const handleSearch = (e, type) => {
-		e.preventDefault();
-		const value = e.target.value;
-		if (type === 'name') {
-			setSearchName(value);
-		} else if (type === 'city') {
-			setSearchCity(value);
-		}
-	};
+	const searchEventName = searchParams.get('name');
+	const searchEventCity = searchParams.get('city');
 
 	const getEvent = () => {
-		apiRequest('events', 'get')
+		apiRequest('events?page=1&limit=12', 'get')
 			.then((res) => {
 				setEvent(res.data);
 				console.log(res.data);
@@ -36,6 +27,16 @@ const Events = () => {
 				console.log(err);
 			})
 			.finally(() => setLoading(false));
+	};
+
+	const searchEvent = () => {
+		apiRequest(`events?page=1&limit=12&name=${searchEventName}&city=${searchEventCity}`, 'get')
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	useEffect(() => {
@@ -48,15 +49,15 @@ const Events = () => {
 		return (
 			<Layout>
 				<div className='p-12'>
-					<div className='flex justify-between'>
+					<div className='flex flex-wrap justify-between gap-4'>
 						<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Event</h1>
 						<div className='flex'>
-							<input type='text' id='search-event' placeholder='Name..' onChange={(e) => handleSearch(e, 'name')} className='px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
-							<input type='text' id='search-city' placeholder='City..' onChange={(e) => handleSearch(e, 'city')} className='px-4 border focus:outline-none' />
-							{/* <label htmlFor='search' className='flex items-center justify-center p-3 bg-red-700 text-white cursor-pointer'>
+							<input type='text' id='search-event-name' placeholder='Name..' onChange={(e) => setSearchParams({ name: e.target.value })} className='px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
+							<input type='text' id='search-event-city' placeholder='City..' onChange={(e) => setSearchParams({ city: e.target.value })} className='px-4 border focus:outline-none' />
+							<label htmlFor='search-event' className='flex items-center justify-center p-3 bg-red-700 text-white cursor-pointer'>
 								<FaSearch />
-							</label> */}
-							<input type='submit' id='search' className='bg-sky-500 py-1 px-2 text-white cursor-pointer rounded-r' onClick={() => navigate({ pathname: '/search', query: { name: searchName, city: searchCity } })} />
+							</label>
+							<input type='submit' id='search-event' className='hidden' onClick={() => searchEvent()} />
 						</div>
 					</div>
 				</div>

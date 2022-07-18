@@ -38,7 +38,7 @@ const DetailCulture = () => {
 		const body = {
 			message: reportMessage,
 		};
-		apiRequest(`cultures/reports/${cultureID}`, 'post', body)
+		apiRequest(`cultures/reports/${cultureID}`, 'post', body, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				Swal.fire({
 					title: 'Success',

@@ -1,5 +1,5 @@
 /** @format */
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { apiRequest } from '../utils/apiRequest';
 import Banner from '../components/Banner';
@@ -12,12 +12,14 @@ import { FaSearch } from 'react-icons/fa';
 
 const Homepage = () => {
 	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [loading, setLoading] = useState(true);
 	const [event, setEvent] = useState([]);
 	const [product, setProduct] = useState([]);
+	const searchCultureName = searchParams.get('name');
 
 	const getEvent = () => {
-		apiRequest('events', 'get')
+		apiRequest('events?page=1&limit=4', 'get')
 			.then((res) => {
 				setEvent(res.data);
 			})
@@ -27,7 +29,7 @@ const Homepage = () => {
 	};
 
 	const getProduct = () => {
-		apiRequest('products', 'get')
+		apiRequest('products?page=1&limit=4', 'get')
 			.then((res) => {
 				setProduct(res.data);
 			})
@@ -35,6 +37,16 @@ const Homepage = () => {
 				console.log(err);
 			})
 			.finally(() => setLoading(false));
+	};
+
+	const searchCulture = () => {
+		apiRequest(`cultures?page=1&limit=4&name=${searchCultureName}`, 'get')
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	useEffect(() => {
@@ -87,10 +99,11 @@ const Homepage = () => {
 							<h1 className='text-xl font-bold'>Culture</h1>
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl max-w-md text-red-700 font-bold'>Cari tahu lebih banyak mengenai budayamu disini</h1>
 							<div className='flex'>
-								<input type='text' id='search-culture' placeholder='Ngaben' className='w-3/4 py-2 px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
-								<div className='bg-red-700 p-4 text-white flex items-center justify-center'>
+								<input type='text' id='search-culture-name' placeholder='Ngaben' onChange={(e) => setSearchParams({ name: e.target.value })} className='w-3/4 py-2 px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
+								<label htmlFor='search-culture' className='bg-red-700 p-4 text-white flex items-center justify-center cursor-pointer'>
 									<FaSearch />
-								</div>
+								</label>
+								<input type='submit' value='submit' id='search-culture' onClick={() => searchCulture()} className='hidden' />
 							</div>
 						</div>
 					</div>

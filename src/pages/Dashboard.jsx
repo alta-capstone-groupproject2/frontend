@@ -19,7 +19,7 @@ const Dashboard = () => {
 	const [objSubmit, setObjSubmit] = useState('');
 
 	const getProfile = () => {
-		apiRequest('users', 'get', {})
+		apiRequest('users', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				setAvatar(res.data.avatar);
 				setName(res.data.name);
@@ -33,13 +33,12 @@ const Dashboard = () => {
 	};
 
 	const handleUpdate = (e) => {
-		setLoading(true);
 		e.preventDefault();
 		const body = new FormData();
 		for (const key in objSubmit) {
 			body.append(key, objSubmit[key]);
 		}
-		apiRequest('users', 'PUT', body)
+		apiRequest('users', 'PUT', body, { Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				const { code, message } = res;
 				if (code === 200) {
@@ -73,7 +72,7 @@ const Dashboard = () => {
 			confirmButtonText: 'Yes, delete it!',
 		}).then((res) => {
 			if (res.isConfirmed) {
-				apiRequest('users', 'DELETE', {})
+				apiRequest('users', 'DELETE', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 					.then((res) => {
 						const { code, message } = res;
 						if (code === 200) {
