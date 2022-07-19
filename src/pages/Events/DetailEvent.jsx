@@ -8,6 +8,7 @@ import Map from '../../components/Map';
 import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
+import Swal from 'sweetalert2';
 
 const DetailEvent = () => {
 	const params = useParams();
@@ -31,8 +32,7 @@ const DetailEvent = () => {
 		apiRequest(`events/${eventID}`, 'get')
 			.then((res) => {
 				const { currentTime } = res;
-				const { date, image, hostedBy, name, details, city } = res.data;
-				const { participants } = res.data;
+				const { date, image, hostedBy, name, details, city, participant } = res.data;
 
 				setCurrentTime(currentTime);
 				setNameEvent(name);
@@ -41,7 +41,7 @@ const DetailEvent = () => {
 				setImage(image);
 				setHostedBy(hostedBy);
 				setCity(city);
-				setParticipant(participants);
+				setParticipant(participant);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -51,7 +51,6 @@ const DetailEvent = () => {
 
 	const getComment = () => {
 		const { eventID } = params;
-		console.log(eventID);
 		apiRequest(`events/comments/${eventID}`, 'get')
 			.then((res) => {
 				const { data } = res;
@@ -88,8 +87,13 @@ const DetailEvent = () => {
 		};
 		apiRequest('events/participations', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				const { code } = res;
+				const { code, message } = res;
 				if (code === 200) {
+					Swal.fire({
+						title: 'Success',
+						text: message,
+						icon: 'success',
+					});
 					getDataEvent();
 				}
 			})
@@ -124,18 +128,18 @@ const DetailEvent = () => {
 								<div className='space-y-6'>
 									<div className='flex justify-between'>
 										<h1 className='text-xl font-bold'>Participant</h1>
-										<p className='text-slate-400'>{participant.length} Participant</p>
+										{/* <p className='text-slate-400'>{participant.length} Participant</p> */}
 									</div>
 									<div>
 										<div className='flex text-2xl space-x-6'>
-											{participant.map((item, index) => {
+											{/* {participant.map((item, index) => {
 												return (
 													<div key={index} className='flex flex-col items-center justify-center'>
 														<img src={item.image} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
 														<p className='text-base'>{item.name}</p>
 													</div>
 												);
-											})}
+											})} */}
 										</div>
 									</div>
 									<div className='bg-slate-100 px-4 py-8'>
