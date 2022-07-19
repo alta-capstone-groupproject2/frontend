@@ -1,6 +1,6 @@
-
 const initialState = {
   isLoggedIn: false,
+  role:'',
 };
 
 export const reducer = (state = initialState, action) => {
@@ -9,6 +9,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: action.payload,
+      };
+    case "ROLE":
+      return {
+        ...state,
+        role: action.payload,
       };
     default:
       return state;

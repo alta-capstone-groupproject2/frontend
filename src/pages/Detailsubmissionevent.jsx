@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { MdOutlineEventAvailable } from 'react-icons/md'
-import { IoStorefront,IoLibrary } from 'react-icons/io5'
+import { useNavigate, useParams } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
+import { SidebarAdmin } from '../components/Sidebar'
 import CurrencyFormat from 'react-currency-format'
 import moment from 'moment'
 import Swal from 'sweetalert2'
-import Layout from '../components/Layout'
+import {LayoutAdmin} from '../components/Layout'
 import Loading from '../components/Loading'
 import Map from '../components/Map'
 
@@ -17,6 +16,7 @@ function Detailsubmissionevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const [loading, setLoading] = useState(false)
     const [event,setEvent] = useState({})
+    const [currTime,setCurrTime] = useState({})
     const token = localStorage.getItem('token')
     const idParams = useParams().id
     const position = '-7.9797,112.6304'.split(',')
@@ -27,15 +27,15 @@ function Detailsubmissionevent() {
     
     const apiGetSubEvent = async () => {
         setLoading(true)
-        await apiRequest(`events/submission/${idParams}`, "get", false, {
+        await apiRequest(`events/${idParams}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
           .then((result) => {
-            const { code, message, data} = result
-            console.log(result)
+            const { code, message,currenttime, data} = result
               switch (code) {
                 case '200':
                 setEvent(data)
+                setCurrTime(currenttime)      
                 break
                 case '400':                      
                 Swal.fire('Failed',message,'error'); 
@@ -60,7 +60,6 @@ function Detailsubmissionevent() {
         })
           .then((result) => {
             const { code, message} = result
-            console.log(result)
               switch (code) {
                 case '200':
                 Swal.fire('Success',message,'error'); 
@@ -95,18 +94,14 @@ function Detailsubmissionevent() {
             return <Loading />
         } else {
             return (
-                <Layout>
+                <LayoutAdmin>
                     <div className='min-h-[80vh] flex'>
-                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoLibrary />Culture</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />Event Submission</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />UMKM Submission</Link>
-                        </div>
+                        <SidebarAdmin active={'eventSub'} />
                         <div className='p-6 basis-5/6 flex'>
                             <div className='basis-2/3 flex flex-col gap-2'>
                                 <p className='font-bold text-4xl flex justify-between items-center'>
                                     {event.userName}
-                                    <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>
+                                    {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                                 </p>
                                 <p className=' flex justify-between'>
                                     <span className='font-bold text-4xl'>
@@ -141,7 +136,7 @@ function Detailsubmissionevent() {
                             </div>
                         </div>
                     </div>
-                </Layout>
+                </LayoutAdmin>
             )
         }
     }
