@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
 import { TbTicket } from 'react-icons/tb'
-import { TiPlus } from 'react-icons/ti'
 import { IoStorefront } from 'react-icons/io5'
 import { Pagination } from '@mui/material'
 import moment from 'moment'
@@ -29,11 +28,12 @@ function Myevent() {
 
     const apiGetMyEvent = async () => {
         setLoading(true)
-        await apiRequest("users/events?limit=10&page=1", "get", false, {
+        await apiRequest("events/submission", "get", false, {
             'Authorization': `Bearer ${token}`,
         })
-            .then((result) => {
-                const { code, currentTime, message, data, totalPage } = result
+          .then((result) => {
+            const { code, currentTime, message, data, totalPage } = result
+            console.log(result)
               switch (code) {
                 case '200':                       
                 setCurrTime(currentTime)
@@ -58,12 +58,9 @@ function Myevent() {
 
     const apiDeleteMyEvent = (id) => {
         setLoading(true)
-        apiRequest(`events/${id}`, "delete", false, {
-            'Authorization': `Bearer ${token}`,
-        })
+        apiRequest(`events/${id}`, "delete")
           .then((result) => {
               const { code, message } = result
-              console.log(result)
               switch (code) {
                 case '204':                      
                 Swal.fire('Success',message,'success'); 
@@ -98,11 +95,6 @@ function Myevent() {
     } else {
         return (
             <Layout>
-                <Link to='/applyevent'>
-                    <div className='bg-red-600 hover:bg-red-700 text-white shadow-md text-4xl p-3 fixed bottom-[9%] right-[3%] block whitespace-no-wrap cursor-pointer rounded-full'>
-                        <TiPlus />
-                    </div>
-                </Link>
                 <div className='min-h-[80vh] flex'>
                     <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
                         <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
@@ -117,7 +109,7 @@ function Myevent() {
                             {myEvents.map((event) => (
                                 <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
                                     <img src={event.image} alt="" className='w-48 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
-                                    <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
+                                    <div className='pl-8 py-4 break-all cursor-pointer' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
                                         <p className='font-bold text-4xl flex justify-between items-center'>
                                             {event.eventName}
                                             {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
@@ -126,16 +118,13 @@ function Myevent() {
                                             <span>
                                                 <span className='text-slate-400'>Hosted by:</span>{event.hostedBy}
                                             </span>
-                                            <span className='flex flex-col gap-2'>
-                                                <span className='rounded text-xs py-[0.1rem] text-center font-bold px-2 bg-red-600 text-white'>Status : { event.Status }</span>
-                                            </span>
-                                        </p>
-                                        <p className=' flex justify-between'>
-                                            {moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
                                             <span className='flex gap-2 items-center'>
                                                 <TbTicket />
                                                 <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                             </span>
+                                        </p>
+                                        <p>
+                                            {moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
                                         </p>
                                         <p>
                                             {event.address}
@@ -148,7 +137,7 @@ function Myevent() {
                                         </p>
                                     </div>
                                     <div className='text-center px-14'>
-                                        <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={()=>handleDelete(event.eventID)}>Delete</button>
+                                        <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={()=>handleDelete(event.eventID)}>Detail</button>
                                     </div>
                                 </div>
                             ))}

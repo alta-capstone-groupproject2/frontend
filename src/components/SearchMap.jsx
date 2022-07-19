@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import '../../node_modules/leaflet-geosearch/dist/geosearch.css';
