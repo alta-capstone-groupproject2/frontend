@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import Layout from '../components/Layout'
 import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
 import { TbTicket } from 'react-icons/tb'
@@ -12,6 +13,7 @@ import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
 
 function Applyevent() {
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const navigate = useNavigate()
     const token = localStorage.getItem('token')
     const [doc, setDoc] = useState("")
@@ -154,124 +156,129 @@ function Applyevent() {
 
         passed === 10 ? apiPostEvent() : Swal.fire('Important', 'all field must be filled', 'error')
     }
-    if (loading) {
-        return <Loading />
+
+    if (!isLoggedIn) {
+        navigate('/login')
     } else {
-        return (
-            <Layout>
-                <div className='min-h-[80vh] flex'>
-                    <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                        <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
-                    </div>
-                    <div className="p-6 basis-5/6">
-                        <p className='font-bold text-lg'>Apply Event</p>
-                        <div className="pr-20">
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Document
-                                </label>
-                                <div className="basis-5/6 ">
-                                    <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
-                                        <input id="input-doc" type={"file"} accept="application/pdf" onChange={(e) => handleChange(e, "doc")} ></input>
+        if (loading) {
+            return <Loading />
+        } else {
+            return (
+                <Layout>
+                    <div className='min-h-[80vh] flex'>
+                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
+                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
+                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
+                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
+                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
+                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
+                        </div>
+                        <div className="p-6 basis-5/6">
+                            <p className='font-bold text-lg'>Apply Event</p>
+                            <div className="pr-20">
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Document
+                                    </label>
+                                    <div className="basis-5/6 ">
+                                        <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
+                                            <input id="input-doc" type={"file"} accept="application/pdf" onChange={(e) => handleChange(e, "doc")} ></input>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Photo Event
-                                </label>
-                                <div className="basis-5/6 ">
-                                    <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
-                                        <input id='input-photo' type={"file"} accept="image/jpg,image/jpeg,image/png" onChange={(e) => handleChange(e, "photo")} ></input>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Photo Event
+                                    </label>
+                                    <div className="basis-5/6 ">
+                                        <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
+                                            <input id='input-photo' type={"file"} accept="image/jpg,image/jpeg,image/png" onChange={(e) => handleChange(e, "photo")} ></input>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Name
-                                </label>
-                                <div className="basis-5/6">
-                                    <input id='input-name' type={"text"} value={name} onChange={(e) => handleChange(e, "name")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Name"></input>
-                                    {isNameError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
-                                </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Host
-                                </label>
-                                <div className="basis-5/6">
-                                    <input id='input-host' type={"text"} value={host} onChange={(e) => handleChange(e, "host")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Host"></input>
-                                    {isHostError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
-                                </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Phone
-                                </label>
-                                <div className="basis-5/6">
-                                    <div className="border-[0.1rem] flex rounded w-full">
-                                        <div className='bg-slate-200 p-2'>+62</div>
-                                        <CurrencyFormat id='input-phone' value={phone} onChange={(e) => handleChange(e, "phone")} className="p-2 w-full" maxLength={13} />
-                                    </div>
-                                    {isPhoneError && <span className='text-xs text-red-600'>Minimum phone number is 10</span>}
-                                </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Date
-                                </label>
-                                <div className="basis-5/6">
-                                    <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input>
-                                </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    Price
-                                </label>
-                                <div className="basis-5/6">
-                                    <div className="border-[0.1rem] flex rounded w-full">
-                                        <div className='bg-slate-200 p-2'>Rp.</div>
-                                        <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full" placeholder="Rp." />
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Name
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <input id='input-name' type={"text"} value={name} onChange={(e) => handleChange(e, "name")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Name"></input>
+                                        {isNameError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6 self-start">
-                                    Detail
-                                </label>
-                                <div className="basis-5/6">
-                                    <textarea id='input-detail' type={"text"} value={detail} onChange={(e) => handleChange(e, "detail")} className="border-[0.1rem] rounded p-2 w-full h-48" placeholder="Detail"></textarea>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Host
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <input id='input-host' type={"text"} value={host} onChange={(e) => handleChange(e, "host")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Host"></input>
+                                        {isHostError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <label className="basis-1/6">
-                                    City
-                                </label>
-                                <div className="basis-5/6">
-                                    <input id='input-city' type="text" value={city} onChange={(e) => handleChange(e, "city")} className="border-[0.1rem] rounded p-2 w-full" placeholder="City" />
-                                    {isCityError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Phone
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <div className="border-[0.1rem] flex rounded w-full">
+                                            <div className='bg-slate-200 p-2'>+62</div>
+                                            <CurrencyFormat id='input-phone' value={phone} onChange={(e) => handleChange(e, "phone")} className="p-2 w-full" maxLength={13} />
+                                        </div>
+                                        {isPhoneError && <span className='text-xs text-red-600'>Minimum phone number is 10</span>}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row my-2 items-center">
-                                <Map position={position}>
-                                    <SearchControl setPosition={setPosition} />
-                                </Map>
-                            </div>
-                            <div className="flex flex-row my-2 items-center justify-end text-sm gap-2">
-                                <span><b>Lat</b>{position[0]} <b>Lng.</b> {position[1]}</span>
-                            </div>
-                            <div className="flex flex-row my-5 mb-10 items-center justify-end">
-                                <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded" onClick={() => handleSubmit()}>Apply</button>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Date
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        Price
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <div className="border-[0.1rem] flex rounded w-full">
+                                            <div className='bg-slate-200 p-2'>Rp.</div>
+                                            <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full" placeholder="Rp." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6 self-start">
+                                        Detail
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <textarea id='input-detail' type={"text"} value={detail} onChange={(e) => handleChange(e, "detail")} className="border-[0.1rem] rounded p-2 w-full h-48" placeholder="Detail"></textarea>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row my-2 items-center">
+                                    <label className="basis-1/6">
+                                        City
+                                    </label>
+                                    <div className="basis-5/6">
+                                        <input id='input-city' type="text" value={city} onChange={(e) => handleChange(e, "city")} className="border-[0.1rem] rounded p-2 w-full" placeholder="City" />
+                                        {isCityError && <span className='text-xs text-red-600'>Field must be filled and only alphabetic characters</span>}
+                                    </div>
+                                </div>
+                                <div className="flex flex-row my-2 items-center">
+                                    <Map position={position}>
+                                        <SearchControl setPosition={setPosition} />
+                                    </Map>
+                                </div>
+                                <div className="flex flex-row my-2 items-center justify-end text-sm gap-2">
+                                    <span><b>Lat</b>{position[0]} <b>Lng.</b> {position[1]}</span>
+                                </div>
+                                <div className="flex flex-row my-5 mb-10 items-center justify-end">
+                                    <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded" onClick={() => handleSubmit()}>Apply</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </Layout>
-        )
+                </Layout>
+            )
+        }
     }
 }
 
