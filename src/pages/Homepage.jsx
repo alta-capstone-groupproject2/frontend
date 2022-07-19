@@ -16,7 +16,7 @@ const Homepage = () => {
 	const [loading, setLoading] = useState(true);
 	const [event, setEvent] = useState([]);
 	const [product, setProduct] = useState([]);
-	const cultureName = searchParams.get('name');
+	const searchCultureName = searchParams.get('name');
 
 	const getEvent = () => {
 		apiRequest('events?page=1&limit=4', 'get')
@@ -40,7 +40,7 @@ const Homepage = () => {
 	};
 
 	const searchCulture = () => {
-		apiRequest(`cultures?page=1&limit=1&name=${cultureName}`, 'get')
+		apiRequest(`cultures?page=1&limit=4&name=${searchCultureName}`, 'get')
 			.then((res) => {
 				console.log(res.data);
 			})
@@ -99,17 +99,11 @@ const Homepage = () => {
 							<h1 className='text-xl font-bold'>Culture</h1>
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl max-w-md text-red-700 font-bold'>Cari tahu lebih banyak mengenai budayamu disini</h1>
 							<div className='flex'>
-								<input
-									type='text'
-									id='search-culture-name'
-									placeholder='Ngaben'
-									onChange={(e) => (cultureName === '' ? setSearchParams({}) : setSearchParams({ cultures: e.target.value }))}
-									className='w-3/4 py-2 px-4 border focus:outline-none rounded-tl-md rounded-bl-md'
-								/>
-								<label htmlFor='search-culture' className='bg-red-700 p-4 text-white flex items-center justify-center'>
+								<input type='text' id='search-culture-name' placeholder='Ngaben' onChange={(e) => setSearchParams({ name: e.target.value })} className='w-3/4 py-2 px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
+								<label htmlFor='search-culture' className='bg-red-700 p-4 text-white flex items-center justify-center cursor-pointer'>
 									<FaSearch />
 								</label>
-								<input type='submit' value='submit' id='search-culture' className='hidden' onClick={() => searchCulture()} />
+								<input type='submit' value='submit' id='search-culture' onClick={() => searchCulture()} className='hidden' />
 							</div>
 						</div>
 					</div>

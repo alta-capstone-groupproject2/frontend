@@ -15,10 +15,8 @@ const Banner = () => {
 			{token ? null : (
 				<button className='px-8 py-1 border border-white rounded-md hover:bg-white hover:text-red-800 hover:border-red-800' onClick={() => navigate('/signup')}>
 					Sign Up
-				</button>
-			)}
+				</button>)}
 		</div>
 	);
-};
-
+}
 export default Banner;

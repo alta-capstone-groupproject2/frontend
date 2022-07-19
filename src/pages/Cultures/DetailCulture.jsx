@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Layout from '../../components/Layout';
 import Loading from '../../components/Loading';
@@ -10,15 +10,12 @@ import { apiRequest } from '../../utils/apiRequest';
 
 const DetailCulture = () => {
 	const params = useParams();
-	const [searchParams, setSearchParams] = useSearchParams();
 	const [loading, setLoading] = useState(true);
 	const [cultureName, setCultureName] = useState('');
 	const [city, setCity] = useState('');
 	const [image, setImage] = useState('');
 	const [description, setDescription] = useState('');
 	const [reportMessage, setReportMessage] = useState('');
-	const [searchCultureName, setSearchCultureName] = searchParams.get('name');
-	const [searchCultureCity, setSearchCultureCity] = searchParams.get('city');
 
 	const getDataCulture = () => {
 		const { cultureID } = params;
@@ -41,27 +38,13 @@ const DetailCulture = () => {
 		const body = {
 			message: reportMessage,
 		};
-		apiRequest(`cultures/reports/${cultureID}`, 'post', body)
+		apiRequest(`cultures/reports/${cultureID}`, 'post', body, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				Swal.fire({
 					title: 'Success',
 					text: 'Your report has been sent',
 					icon: 'success',
 				});
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-
-	const searchCulture = () => {
-		apiRequest(`cultures?page=1&limit=12&name=${searchCultureName}&city=${searchCultureCity}`, 'get')
-			.then((res) => {
-				const { cultureName, city, image, details } = res.data;
-				setCultureName(cultureName);
-				setCity(city);
-				setImage(image);
-				setDescription(details);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -81,12 +64,11 @@ const DetailCulture = () => {
 					<div className='flex justify-between'>
 						<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Culture</h1>
 						<div className='flex'>
-							<input type='text' id='search-culture-name' placeholder='Name..' onChange={(e) => setSearchParams({ name: e.target.value })} className='px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
-							<input type='text' id='search-culture-city' placeholder='City..' onChange={(e) => setSearchParams({ city: e.target.value })} className='px-4 border focus:outline-none' />
-							<label htmlFor='search-culture' className='flex items-center justify-center p-3 bg-red-700 text-white cursor-pointer'>
+							<input type='text' id='search-culture' placeholder='Name..' className='px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
+							<input type='text' id='search-city' placeholder='City..' className='px-4 border focus:outline-none' />
+							<div className='flex items-center justify-center p-3 bg-red-700 text-white cursor-pointer'>
 								<FaSearch />
-							</label>
-							<input type='submit' value='submit' id='search-culture' className='hidden' onClick={() => searchCulture()} />
+							</div>
 						</div>
 					</div>
 				</div>
