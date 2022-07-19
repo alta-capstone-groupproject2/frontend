@@ -29,12 +29,14 @@ const RoutesApp = () => {
     
 	useEffect(() => {
 		const getToken = localStorage.getItem("token");
-		if (getToken) {
+		const getRole = localStorage.getItem("role");
+		if (getToken && getRole) {
 			dispatch(reduxAction("IS_LOGGED_IN", true));
+			dispatch(reduxAction("ROLE", getRole));
 		} else {
 			dispatch(reduxAction("IS_LOGGED_IN", false));
+			dispatch(reduxAction("ROLE", ''));
 		}
-		dispatch(reduxAction("SET_TOKEN", getToken));
 	}, [isLoggedIn]);
 	
 	return (

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @format */
 import { useContext, useEffect, useState } from 'react';
 import { FaEdit, FaStoreAlt } from 'react-icons/fa';

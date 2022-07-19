@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 /** @format */
 import { useEffect, useState } from 'react';
 import { RiSendPlaneFill } from 'react-icons/ri';
@@ -13,7 +15,7 @@ import Swal from 'sweetalert2';
 const DetailEvent = () => {
 	const params = useParams();
 	const [loading, setLoading] = useState(true);
-	const [position, setPosition] = useState([-7.96662, 112.632629]);
+	const [position] = useState([-7.96662, 112.632629]);
 	const [nameEvent, setNameEvent] = useState('');
 	const [detail, setDetail] = useState('');
 	const [city, setCity] = useState('');
