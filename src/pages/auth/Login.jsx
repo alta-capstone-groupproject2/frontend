@@ -1,18 +1,20 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { TextField } from '@mui/material'
+import { useDispatch,useSelector } from "react-redux";
+import { reduxAction } from "../../utils/redux/actions/action";
 import imgVector from '../../assets/images/HP-KK-01-BANNERP1-RUANG-KREATIF-1.jpg'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.webp'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { TokenContext } from "../../utils/Context";
 import { apiRequest } from "../../utils/apiRequest";
 import Loading from "../../components/Loading"
 import Swal from "sweetalert2";
 
 const Login = () => {
-    const { token, setToken } = useContext(TokenContext);
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
 
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
     const [email,setEmail] = useState('')
     const [pwd, setPwd] = useState('')
@@ -23,21 +25,21 @@ const Login = () => {
     const postLogin = () => {
       setLoading(true)
       
-      const body = { email, pwd }  
+      const body = { 'email':email, 'password': pwd }  
       
       apiRequest("login", "post", body)
           .then((res) => {
-              const { code,message,data } = res;
-              const { token,role } = data;
+            const { code,message,data } = res;
+            const { token } = data;
               
             switch (code) {
-                case 200:
+                case '200':
                   localStorage.setItem("token", token);
-                  setToken(token);
-                  role==='admin' ? navigate('/admin') : navigate('/')
+                  dispatch(reduxAction("IS_LOGGED_IN", true));
+                  Swal.fire(`Success`,message,'success').then(()=>navigate('/'));
                   break;
 
-                case "400":
+                case '400':
                   Swal.fire(`Failed`,message,'error');
                   break;
                 
@@ -48,8 +50,9 @@ const Login = () => {
           })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg = ''
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
           })
           .finally(()=>setLoading(false))
     }
@@ -79,22 +82,22 @@ const Login = () => {
         
         passed === 2 && postLogin()
     }
-
-    if (token === "0") {
+    
+    if (!isLoggedIn) {
         if (loading) {
             return <Loading />
         } else {
             return (
-                <div className='flex min-h-screen items-center'>
-                    <div className='basis-full overflow-hidden relative' >
-                        <div className="h-screen w-full absolute bg-black opacity-20"></div>
-                        <img src={imgVector} alt="" className='h-screen w-auto object-cover' />
+                <div className='flex flex-col gap-6 justify-center md:gap-0 md:flex-row min-h-screen items-center'>
+                    <div className='basis-full overflow-hidden hidden md:block relative' >
+                        <div className="h-[20vh] md:h-screen w-full absolute bg-black opacity-20" />
+                        <img src={imgVector} alt="" className='h-[20vh] w-screen md:h-screen md:w-auto object-cover' />
                     </div>
                     <div className='basis-full flex justify-center'>
-                        <div className='flex-col gap-8 flex w-1/2'>
-                            <img src={logo} alt="" id="img-goto-home" className="cursor-pointer w-2/3 self-center" onClick={()=>navigate('/')} />
+                        <div className='flex-col gap-8 flex px-8 md:p-0 text-sm md:w-1/2'>
+                            <img id="img-goto-home" src={logo} alt="" className="cursor-pointer w-1/2 md:w-2/3 self-center" onClick={()=>navigate('/')} />
                             <div className='flex flex-col gap-3 '>
-                                <p className="font-bold text-3xl">Login</p>
+                                <p className="font-bold text-2xl md:text-3xl">Login</p>
                                 <div className='flex flex-col gap-1'>
                                     <TextField id="input-email" type="email" value={email} label="Email" variant="outlined" onChange={(e) => handleChange(e,'email')} error={isEmailError}/>
                                     {isEmailError && <span className='text-xs text-red-600'>Please check your email again</span>}
