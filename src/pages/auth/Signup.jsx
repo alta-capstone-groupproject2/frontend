@@ -1,16 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { TextField } from '@mui/material'
+import { useSelector } from "react-redux";
 import imgVector from '../../assets/images/HP-KK-01-BANNERP1-RUANG-KREATIF-1.jpg'
 import logo from '../../assets/images/logo.webp'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { TokenContext } from "../../utils/Context";
 import { apiRequest } from "../../utils/apiRequest";
 import Loading from "../../components/Loading"
 import Swal from "sweetalert2";
 
 const Signup = () => {
-    const { token } = useContext(TokenContext);
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
 
     const navigate = useNavigate()
 
@@ -84,7 +84,7 @@ const Signup = () => {
         passed === 3 && postRegister()
     }
 
-    if (token === "0" || token === null) {
+    if (!isLoggedIn) {
         if (loading) {
             return <Loading />
         } else {

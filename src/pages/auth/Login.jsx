@@ -1,18 +1,20 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { TextField } from '@mui/material'
+import { useDispatch,useSelector } from "react-redux";
+import { reduxAction } from "../../utils/redux/actions/action";
 import imgVector from '../../assets/images/HP-KK-01-BANNERP1-RUANG-KREATIF-1.jpg'
 import logo from '../../assets/images/logo.webp'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { TokenContext } from "../../utils/Context";
 import { apiRequest } from "../../utils/apiRequest";
 import Loading from "../../components/Loading"
 import Swal from "sweetalert2";
 
 const Login = () => {
-    const { token, setToken } = useContext(TokenContext);
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
 
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
     const [email,setEmail] = useState('')
     const [pwd, setPwd] = useState('')
@@ -33,8 +35,7 @@ const Login = () => {
             switch (code) {
                 case '200':
                   localStorage.setItem("token", token);
-                  setToken(token);
-                  // role==='admin' ? navigate('/admin') : navigate('/')
+                  dispatch(reduxAction("IS_LOGGED_IN", true));
                   Swal.fire(`Success`,message,'success').then(()=>navigate('/'));
                   break;
 
@@ -81,8 +82,8 @@ const Login = () => {
         
         passed === 2 && postLogin()
     }
-
-    if (token === "0" || token === null) {
+    
+    if (!isLoggedIn) {
         if (loading) {
             return <Loading />
         } else {

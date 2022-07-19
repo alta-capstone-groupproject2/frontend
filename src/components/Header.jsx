@@ -1,15 +1,17 @@
 /** @format */
-import { useContext,useState } from 'react';
+import { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
 import { BiLogOut } from 'react-icons/bi'
-import { TokenContext } from '../utils/Context';
 import { Button, Menu, MenuItem } from '@mui/material';
+import { useDispatch, useSelector } from "react-redux";
+import { reduxAction } from '../utils/redux/actions/action';
 import logoSrc from '../assets/images/logo.webp'
 
 const Navbar = () => {
 	const navigate = useNavigate()
-	const { token, setToken } = useContext(TokenContext);
+	const dispatch = useDispatch()
+	const isLoggedIn = useSelector((state) => state.isLoggedIn);
 	const menu = [
 		{ name: 'Cultures', link: '/culture' },
 		{ name: 'Event', link: '/event' },
@@ -26,11 +28,10 @@ const Navbar = () => {
 	};
 
 	const handleLogout = () => {
-        localStorage.removeItem("token");
-        setToken("0");
-        localStorage.removeItem("idUser");
-        navigate('/login')
-	}
+		localStorage.removeItem("token");
+		dispatch(reduxAction("IS_LOGGED_IN", false));
+		navigate("/login");
+	};
 	
 	return (
 		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
@@ -50,7 +51,7 @@ const Navbar = () => {
 					})}
 				</div>
 				<div className='flex items-center space-x-4'>
-					{token !== '0' ? (
+					{isLoggedIn ? (
 						<div>
 							<Button
 								id="basic-button"
