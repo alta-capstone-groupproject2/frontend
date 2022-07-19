@@ -13,8 +13,8 @@ const Navbar = () => {
 	const dispatch = useDispatch()
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
 	const menu = [
-		{ name: 'Cultures', link: '/culture' },
-		{ name: 'Event', link: '/event' },
+		{ name: 'Cultures', link: '/cultures' },
+		{ name: 'Event', link: '/events' },
 		{ name: 'Merchandise', link: '/merchandise' },
 	];
 
