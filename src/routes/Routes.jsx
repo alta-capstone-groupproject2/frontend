@@ -20,23 +20,26 @@ import Myevent from '../pages/Myevent';
 import Applyevent from '../pages/Applyevent'
 import Listsubmissionev from '../pages/Listsubmissionev';
 import Detailsubmissionevent from '../pages/Detailsubmissionevent';
+import Merchandise from '../pages/Merchandise/Merchandise';
+import DetailMerchandise from '../pages/Merchandise/DetailMerchandise';
+import Cart from '../pages/Cart';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
-  	const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [token, setToken] = useState(null);
-    const jwtToken = useMemo(() => ({ token, setToken }), [token]);
-    
+	const jwtToken = useMemo(() => ({ token, setToken }), [token]);
+
 	useEffect(() => {
-		const getToken = localStorage.getItem("token");
+		const getToken = localStorage.getItem('token');
 		if (getToken) {
-			dispatch(reduxAction("IS_LOGGED_IN", true));
+			dispatch(reduxAction('IS_LOGGED_IN', true));
 		} else {
-			dispatch(reduxAction("IS_LOGGED_IN", false));
+			dispatch(reduxAction('IS_LOGGED_IN', false));
 		}
-		dispatch(reduxAction("SET_TOKEN", getToken));
+		dispatch(reduxAction('SET_TOKEN', getToken));
 	}, [isLoggedIn]);
-	
+
 	return (
 		<TokenContext.Provider value={jwtToken}>
 			<BrowserRouter>
@@ -54,6 +57,9 @@ const RoutesApp = () => {
 					<Route path='/apply-event' element={<Applyevent />} />
 					<Route path='/list-submission-event' element={<Listsubmissionev />} />
 					<Route path='/submission-event/:id' element={<Detailsubmissionevent />} />
+					<Route path='/merchandise' element={<Merchandise />} />
+					<Route path='/merchandise/:productsID' element={<DetailMerchandise />} />
+					<Route path='/cart' element={<Cart />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>
