@@ -35,11 +35,9 @@ const Login = () => {
             switch (code) {
                 case '200':
                   localStorage.setItem("token", token);
-                  localStorage.setItem("role", role);
                   dispatch(reduxAction("IS_LOGGED_IN", true));
-                  dispatch(reduxAction("ROLE", role));
                   Swal.fire(`Success`, message, 'success').then(() =>
-                    role === 'admin' ? navigate('/list-submission-event') : navigate('/profile')
+                    role === 'admin' ? navigate('/list-submission-event') : navigate('/dashboard')
                   );
                   break;
 

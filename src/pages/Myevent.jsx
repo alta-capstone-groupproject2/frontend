@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
-import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
+import Sidebar from '../components/Sidebar'
 import { TbTicket } from 'react-icons/tb'
 import { TiPlus } from 'react-icons/ti'
-import { IoStorefront } from 'react-icons/io5'
 import { Pagination } from '@mui/material'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
@@ -107,21 +106,15 @@ function Myevent() {
                             <TiPlus />
                         </div>
                     </Link>
-                    <div className='min-h-[80vh] flex'>
-                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
-                        </div>
+                    <div className='min-h-[80vh] pt-5 flex'>
+                        <Sidebar active="my-event"/>
                         <div className='p-6 basis-5/6'>
                             <p className='font-bold text-lg'>My Event</p>
                             <div className='flex flex-col gap-4 p-4'>
                                 {myEvents.map((event) => (
                                     <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
                                         <img src={event.image} alt="" className='w-48 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
-                                        <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
+                                        <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`/event/${event.eventID}`)}>
                                             <p className='font-bold text-4xl flex justify-between items-center'>
                                                 {event.eventName}
                                                 {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}

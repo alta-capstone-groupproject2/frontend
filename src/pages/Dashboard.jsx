@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
 import Loading from '../components/Loading';
 import Swal from 'sweetalert2';
+import { BiStore } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -16,6 +17,13 @@ const Dashboard = () => {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [role, setRole] = useState('');
+	const [store,setStore] = useState("")
+    const [owner,setOwner] = useState("")
+    const [phone,setPhone] = useState("")
+    const [city,setCity] = useState("")
+    const [doc,setDoc] = useState("")
+    const [address,setAddress] = useState("")
+    const [status,setStatus] = useState("")
 	const [objSubmit, setObjSubmit] = useState('');
 
 	const getProfile = () => {
@@ -24,7 +32,14 @@ const Dashboard = () => {
 				setAvatar(res.data.image);
 				setName(res.data.name);
 				setEmail(res.data.email);
-				setRole(res.data.role);
+				setRole(res.data.role)
+				setStore(res.data.storeName)
+				setOwner(res.data.owner)
+				setPhone(res.data.phone)
+				setCity(res.data.city)
+				setStatus(res.data.status)
+				setDoc(res.data.document)
+				setAddress(res.data.address)
 			})
 			.catch((err) => {
 				console.log(err);
@@ -106,25 +121,12 @@ const Dashboard = () => {
 	} else {
 		return (
 			<Layout>
-				<div className='w-full flex flex-col sm:flex-row mt-12'>
+				<div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
 					<Sidebar active='dashboard' />
-					<div className='w-full flex flex-col p-8 space-y-16 lg:space-y-0'>
-						<div className='flex flex-wrap justify-between'>
-							<h1 className='font-bold text-2xl text-center sm:text-start pb-4'>Profile</h1>
-							<div className='flex flex-col space-y-4'>
-								{role === 'user' ? (
-									<div>
-										<h1 className='font-bold'>UMKM</h1>
-										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
-											<FaStoreAlt className='mr-2' />
-											<p className='font-bold'>Upgrade Account</p>
-										</button>
-									</div>
-								) : null}
-							</div>
-						</div>
-						<form onSubmit={(e) => handleUpdate(e)}>
-							<div className='flex flex-col items-center space-y-8'>
+					<div className='w-full flex flex-col space-y-16 lg:space-y-0'>
+						<form onSubmit={(e) => handleUpdate(e)} className="flex justify-between">
+							<div className='flex flex-col items-center space-y-8 basis-1/2'>
+								<h1 className='font-bold text-2xl self-start sm:text-start pb-4'>Profile</h1>
 								<div className='flex'>
 									<img src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
 									<div className='flex items-end ml-2'>
@@ -143,7 +145,7 @@ const Dashboard = () => {
 										</label>
 									</div>
 								</div>
-								<form className='flex flex-col space-y-4'>
+								<div className='flex flex-col space-y-4'>
 									<div className='grid grid-cols-4'>
 										<label htmlFor='name' className='sm:text-xl text-end'>
 											Name :
@@ -169,8 +171,43 @@ const Dashboard = () => {
 											onChange={(e) => handleChange(e.target.value, 'password')}
 										/>
 									</div>
-								</form>
+								</div>
 								<button className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800'>Save</button>
+							</div>
+							<div className='flex flex-col space-y-4 basis-1/2'>
+								{role === 'user' && status ==='' ? (
+									<div>
+										<p className='font-bold text-xl'>UMKM</p>
+										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
+											<FaStoreAlt className='mr-2' />
+											<p className='font-bold'>Upgrade Account</p>
+										</button>
+									</div>
+								) : (
+									<div className='pr-8'>
+										<p className='font-bold text-xl'>UMKM</p>
+										<div className='flex gap-4 items-center mt-4'>
+											<BiStore className='text-9xl' />
+											<div>
+												<p className='font-bold text-4xl'>{store}</p>
+												<p >{owner}</p>	
+												<p >
+													<a href={`https://api.WhatsApp.com/send?phone=${phone}`} className="underline text-red-600" target='_blank' rel="noreferrer">{phone}</a>
+												</p>	
+												<p >{city}</p>	
+												<p >{address}</p>	
+												<p >
+													Doc : <a href={`${doc}`} target='_blank' className="break-all underline text-red-600" rel="noreferrer">{doc}</a>
+												</p>	
+												<p className='flex mt-4'>
+													<span className='text-xs rounded border-2 border-red-600 text-red-600 px-2 text-center'>
+														Submission Status : {status}
+													</span>
+												</p>	
+											</div>	
+										</div>	
+									</div>
+								)}
 							</div>
 						</form>
 						<div className='pt-8'>

@@ -1,16 +1,14 @@
 import React,{useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Layout from '../components/Layout'
-import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
-import { TbTicket } from 'react-icons/tb'
 import CurrencyFormat from 'react-currency-format'
-import { IoStorefront } from 'react-icons/io5'
 import Map from '../components/Map'
 import Loading from '../components/Loading'
 import SearchControl from '../components/SearchMap'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
+import Sidebar from '../components/Sidebar'
 
 function Applyevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -54,13 +52,12 @@ function Applyevent() {
             const { code,message } = res;
             
         switch (code) {
-            case '200':
+            case '201':
                 Swal.fire(`Success`, message, 'success')
                 .then(() => navigate('/myevent'));
                 break;
 
             case '400': Swal.fire(`Failed`,message,'error'); break;
-            
             default: Swal.fire(`Code ${code}`,message,'info'); break;
             }
         })
@@ -165,14 +162,8 @@ function Applyevent() {
         } else {
             return (
                 <Layout>
-                    <div className='min-h-[80vh] flex'>
-                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
-                        </div>
+                    <div className='min-h-[80vh] pt-5 flex'>
+                        <Sidebar active={"my-event"}/>
                         <div className="p-6 basis-5/6">
                             <p className='font-bold text-lg'>Apply Event</p>
                             <div className="pr-20">

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { LayoutAdmin } from '../components/Layout'
 import { SidebarAdmin } from '../components/Sidebar'
-import { Pagination } from '@mui/material'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
@@ -16,7 +15,6 @@ function Myevent() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [currTime,setCurrTime] = useState('')
-    const [totalPg,setTotalPg] = useState('')
     const [myEvents,setMyEvents] = useState('')
 
     useEffect(() => {
@@ -29,12 +27,11 @@ function Myevent() {
             'Authorization': `Bearer ${token}`,
         })
           .then((result) => {
-            const { code, currentTime, message, data, totalPage } = result
+            const { code, currentTime, message, data } = result
             console.log(result)
               switch (code) {
                 case '200':                       
                 setCurrTime(currentTime)
-                setTotalPg(totalPage)
                 setMyEvents(data);
                 break
                 case '400':                      
@@ -96,9 +93,6 @@ function Myevent() {
                     </div>
                   </div>
                 ))}
-              </div>
-              <div className='flex justify-center'>
-                <Pagination count={totalPg} onChange={(e, pg) => alert(pg)} shape="rounded" />
               </div>
             </div>
           </div>

@@ -13,6 +13,7 @@ import Dashboard from '../pages/Dashboard';
 import Events from '../pages/Events/Events';
 import DetailEvent from '../pages/Events/DetailEvent';
 import Cultures from '../pages/Cultures/Cultures';
+import ListSubUmkm from '../pages/ListSubUmkm';
 import DetailCulture from '../pages/Cultures/DetailCulture';
 
 import { TokenContext } from '../utils/Context';
@@ -20,6 +21,7 @@ import Myevent from '../pages/Myevent';
 import Applyevent from '../pages/Applyevent'
 import Listsubmissionev from '../pages/Listsubmissionev';
 import Detailsubmissionevent from '../pages/Detailsubmissionevent';
+import UpgradeAccount from '../pages/UpgradeAccount';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -29,13 +31,10 @@ const RoutesApp = () => {
     
 	useEffect(() => {
 		const getToken = localStorage.getItem("token");
-		const getRole = localStorage.getItem("role");
-		if (getToken && getRole) {
+		if (getToken) {
 			dispatch(reduxAction("IS_LOGGED_IN", true));
-			dispatch(reduxAction("ROLE", getRole));
 		} else {
 			dispatch(reduxAction("IS_LOGGED_IN", false));
-			dispatch(reduxAction("ROLE", ''));
 		}
 	}, [isLoggedIn]);
 	
@@ -50,10 +49,11 @@ const RoutesApp = () => {
 					<Route path='/culture/:cultureID' element={<DetailCulture />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/signup' element={<Signup />} />
-					<Route path='/profile' element={<Dashboard />} />
+					<Route path='/upgrade-account' element={<UpgradeAccount />} />
 					<Route path='/dashboard' element={<Dashboard />} />
-					<Route path='/myevent' element={<Myevent />} />
+					<Route path='/my-event' element={<Myevent />} />
 					<Route path='/apply-event' element={<Applyevent />} />
+					<Route path='/list-submission-umkm' element={<ListSubUmkm />} />
 					<Route path='/list-submission-event' element={<Listsubmissionev />} />
 					<Route path='/submission-event/:id' element={<Detailsubmissionevent />} />
 					<Route path='*' element={<Custom404 />} />

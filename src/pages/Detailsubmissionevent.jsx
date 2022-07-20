@@ -27,7 +27,7 @@ function Detailsubmissionevent() {
     
     const apiGetSubEvent = async () => {
         setLoading(true)
-        await apiRequest(`events/${idParams}`, "get", false, {
+        await apiRequest(`events/submissions/${idParams}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
           .then((result) => {
@@ -55,14 +55,14 @@ function Detailsubmissionevent() {
 
     const apiPutSubEvent = async (status) => {
         setLoading(true)
-        await apiRequest(`events/submission/${idParams}`, `put`, {'status':status}, {
+        await apiRequest(`events/submissions/${idParams}`, `put`, {'status':status}, {
             'Authorization': `Bearer ${token}`,
         })
           .then((result) => {
             const { code, message} = result
               switch (code) {
                 case '200':
-                Swal.fire('Success',message,'error'); 
+                Swal.fire('Success',message,'success'); 
                 break
                 case '400':                      
                 Swal.fire('Failed',message,'error'); 
@@ -100,7 +100,7 @@ function Detailsubmissionevent() {
                         <div className='p-6 basis-5/6 flex'>
                             <div className='basis-2/3 flex flex-col gap-2'>
                                 <p className='font-bold text-4xl flex justify-between items-center'>
-                                    {event.userName}
+                                    {event.eventName}
                                     {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                                 </p>
                                 <p className=' flex justify-between'>
@@ -108,11 +108,6 @@ function Detailsubmissionevent() {
                                         <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                     </span>
                                     <span>Verify : <a href={event.document} className='text-red-600 cursor-pointer font-bold underline' target='_blank' rel="noreferrer">Document1.pdf</a></span>
-                                </p>
-                                <p>contact :
-                                    <a href={`https://api.whatsapp.com/send?phone=${event.phone}`} className="underline text-red-600" target="_blank" rel="noreferrer">
-                                        {event.phone}
-                                    </a>
                                 </p>
                                 <p className='font-bold text-2xl'>About this Event</p>
                                 <p>{event.details}</p>
