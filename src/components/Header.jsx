@@ -28,12 +28,10 @@ export const NavbarAdmin = () => {
 		navigate("/login");
 	};
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
-			<Link id='link-to-index' to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
-					<img src={logoSrc} alt="" className='h-10' />
-				</div>
-			</Link>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
+			<div className='text-red-700 flex items-end gap-4 text-lg sm:text-2xl font-bold sm:flex'>
+				<img src={logoSrc} alt="" className='h-10' /> admin
+			</div>
 			<div className='flex'>
 				<div className='flex space-x-8 items-center mr-10 text-sm'>
 					<div>
@@ -133,7 +131,7 @@ const Navbar = () => {
         						anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 							>
 								<MenuItem onClick={closeDropdown}>
-									<div className='flex items-center' onClick={()=>navigate('/profile')}>
+									<div className='flex items-center' onClick={()=>navigate('/dashboard')}>
 										<CgProfile className='mr-2' /> <span>Profile</span>
 									</div>
 								</MenuItem>
