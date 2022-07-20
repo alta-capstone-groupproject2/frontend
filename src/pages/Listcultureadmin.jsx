@@ -57,7 +57,6 @@ function Listcultureadmin() {
         })
             .then((result) => {
                 const { code, message, data } = result
-                console.log(result)
                 switch (code) {
                     case '200':
                         return data.length
