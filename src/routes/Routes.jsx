@@ -22,6 +22,9 @@ import Applyevent from '../pages/Applyevent'
 import Listsubmissionev from '../pages/Listsubmissionev';
 import Detailsubmissionevent from '../pages/Detailsubmissionevent';
 import UpgradeAccount from '../pages/UpgradeAccount';
+import Listcultureadmin from '../pages/Listcultureadmin';
+import Addcultures from '../pages/Addcultures';
+import Editcultures from '../pages/Editcultures';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -54,6 +57,9 @@ const RoutesApp = () => {
 					<Route path='/my-event' element={<Myevent />} />
 					<Route path='/apply-event' element={<Applyevent />} />
 					<Route path='/list-submission-umkm' element={<ListSubUmkm />} />
+					<Route path='/list-culture-admin' element={<Listcultureadmin />} />
+					<Route path='/add-culture' element={<Addcultures />} />
+					<Route path='/edit-culture/:id' element={<Editcultures />} />
 					<Route path='/list-submission-event' element={<Listsubmissionev />} />
 					<Route path='/submission-event/:id' element={<Detailsubmissionevent />} />
 					<Route path='*' element={<Custom404 />} />

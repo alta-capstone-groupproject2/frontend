@@ -63,8 +63,9 @@ function Applyevent() {
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -78,7 +79,7 @@ function Applyevent() {
                 target.value=null
             } else { passed++ }
             if (!reqTypes.includes(file.type)) {
-                Swal.fire('Wrong input', message.Format , 'error')
+                Swal.fire('Wrong input', message.format , 'error')
                 target.value=null
             } else { passed++ }
             passed === 2 && callback(file)  
@@ -93,8 +94,8 @@ function Applyevent() {
               5050000,
               ["application/pdf"],
               {
-                  msgSize: 'file input must below 5.05 Mb',
-                  msgFormat: 'format file must pdf'
+                  size: 'file input must below 5.05 Mb',
+                  format: 'format file must pdf'
               },
               setDoc
           ),
@@ -103,8 +104,8 @@ function Applyevent() {
               1050000,
               ['image/jpg','image/jpeg','image/png'],
               {
-                  msgSize: 'file input must below 1.05 Mb',
-                  msgFormat: 'format file must jpg,jpeg,png'
+                  size: 'file input must below 1.05 Mb',
+                  format: 'format file must jpg,jpeg,png'
               },
               setPhoto
         ),

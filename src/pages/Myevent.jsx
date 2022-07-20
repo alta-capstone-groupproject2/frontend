@@ -50,8 +50,9 @@ function Myevent() {
           })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -78,8 +79,9 @@ function Myevent() {
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
