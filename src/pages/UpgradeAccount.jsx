@@ -45,7 +45,7 @@ function UpgradeAccount() {
             case '200':
                 Swal.fire(`Success`, message, 'success')
                 .then(() => {
-                    navigate('/profile')
+                    navigate('/dashboard')
                 });
                 break;
 
@@ -56,8 +56,9 @@ function UpgradeAccount() {
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -71,7 +72,7 @@ function UpgradeAccount() {
                 target.value=null
             } else { passed++ }
             if (!reqTypes.includes(file.type)) {
-                Swal.fire('Wrong input', message.Format , 'error')
+                Swal.fire('Wrong input', message.format , 'error')
                 target.value=null
             } else { passed++ }
             passed === 2 && callback(file)  
@@ -86,8 +87,8 @@ function UpgradeAccount() {
             5050000,
             ["application/pdf"],
             {
-                msgSize: 'file input must below 5.05 Mb',
-                msgFormat: 'format file must pdf'
+                size: 'file input must below 5.05 Mb',
+                format: 'format file must pdf'
             },
             setDoc
         ),

@@ -9,6 +9,11 @@ import SearchControl from '../components/SearchMap'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
 import Sidebar from '../components/Sidebar'
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import moment from 'moment'
 
 function Applyevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -19,7 +24,8 @@ function Applyevent() {
     const [name,setName] = useState("")
     const [host,setHost] = useState("")
     const [phone,setPhone] = useState("")
-    const [date,setDate] = useState("")
+    const [startDate,setStartDate] = useState("")
+    const [endDate,setEndDate] = useState("")
     const [price,setPrice] = useState("")
     const [detail,setDetail] = useState("")
     const [city,setCity] = useState("")
@@ -38,7 +44,8 @@ function Applyevent() {
         formData.append("name",name)
         formData.append("hostedBy",host)
         formData.append("phone",`62${phone}`)
-        formData.append("date",date)
+        formData.append("startDate",startDate)
+        formData.append("endDate",endDate)
         formData.append("price",price)
         formData.append("details",detail)
         formData.append("city",city)
@@ -63,8 +70,9 @@ function Applyevent() {
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -78,7 +86,7 @@ function Applyevent() {
                 target.value=null
             } else { passed++ }
             if (!reqTypes.includes(file.type)) {
-                Swal.fire('Wrong input', message.Format , 'error')
+                Swal.fire('Wrong input', message.format , 'error')
                 target.value=null
             } else { passed++ }
             passed === 2 && callback(file)  
@@ -93,8 +101,8 @@ function Applyevent() {
               5050000,
               ["application/pdf"],
               {
-                  msgSize: 'file input must below 5.05 Mb',
-                  msgFormat: 'format file must pdf'
+                  size: 'file input must below 5.05 Mb',
+                  format: 'format file must pdf'
               },
               setDoc
           ),
@@ -103,20 +111,21 @@ function Applyevent() {
               1050000,
               ['image/jpg','image/jpeg','image/png'],
               {
-                  msgSize: 'file input must below 1.05 Mb',
-                  msgFormat: 'format file must jpg,jpeg,png'
+                  size: 'file input must below 1.05 Mb',
+                  format: 'format file must jpg,jpeg,png'
               },
               setPhoto
         ),
         'name': (target) => { setName(target.value); setIsNameError(false)},
         'host': (target) => { setHost(target.value);  setIsHostError(false)},
         'phone': (target) => { setPhone(target.value); setIsPhoneError(false)},
-        'date': (target)=>setDate(target.value),
+        'startDate': (value)=>setStartDate(value),
+        'endDate': (value)=>setEndDate(value),
         'price': (target)=>setPrice(target.value.split('.').join("")),
         'detail': (target)=>setDetail(target.value),
         'city': (target) => { setCity(target.value); setIsCityError(false)}
       }
-      obj[type](val)
+      type === 'startDate' || type === 'endDate' ? obj[type](e) : obj[type](val)
     }
 
     const handleSubmit = () => {
@@ -139,7 +148,8 @@ function Applyevent() {
             setIsHostError(true)
         }
         phone !== "" && phone.length >= 10 ? passed++ : setIsPhoneError(true)
-        date !== "" && passed++
+        startDate !== "" && passed++
+        endDate !== "" && passed++
         price !== "" && passed++
         detail !== "" && passed++
         if (city !== "" && regText.test(city)) {
@@ -221,8 +231,27 @@ function Applyevent() {
                                     <label className="basis-1/6">
                                         Date
                                     </label>
-                                    <div className="basis-5/6">
-                                        <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input>
+                                    <div className="basis-5/6 flex justify-between w-full">
+                                        {/* <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input> */}
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <MobileDateTimePicker
+                                                id='input-start-date'
+                                                renderInput={(props) => <TextField {...props} />}
+                                                label="Start Date"
+                                                minDate={moment().toDate()}
+                                                value={startDate}
+                                                onChange={(e) => handleChange(e, "startDate")}
+                                            />
+                                        </LocalizationProvider>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <MobileDateTimePicker
+                                                renderInput={(props) => <TextField {...props} />}
+                                                label="End Date"
+                                                minDate={startDate}
+                                                value={endDate}
+                                                onChange={(e) => handleChange(e, "endDate")}
+                                            />
+                                        </LocalizationProvider>
                                     </div>
                                 </div>
                                 <div className="flex flex-row my-2 items-center">
