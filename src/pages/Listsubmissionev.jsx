@@ -69,7 +69,7 @@ function Myevent() {
                     <div className='pl-8 py-4 break-all flex-1' id={`div-goto-detail-${event.eventID}`}>
                       <p className='font-bold text-4xl flex justify-between items-center'>
                         {event.nameEvent}
-                        {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
+                        {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                       </p>
                       <p className='flex justify-between'>
                         <span>
@@ -80,10 +80,15 @@ function Myevent() {
                         </span>
                       </p>
                       <p>
-                        {event.city}
+                       <span className='text-slate-400'>City : </span> {event.city}
                       </p>
                       <p>
-                        {moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
+                        <div className='flex flex-col'>
+                            <b>From</b>
+                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
+                            <b>To</b>     
+                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                        </div>
                       </p>
                       <p>
                         {event.address}

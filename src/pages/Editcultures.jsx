@@ -27,10 +27,10 @@ function Editcultures() {
         apiGetReport()
     },[])
 
-    const apiGetReport = async (id) => {
+    const apiGetReport = async () => {
         setLoading(true)
         const token = localStorage.getItem('token')
-        await apiRequest(`cultures/reports/${id}`, "get", false, {
+        await apiRequest(`cultures/reports/${params.id}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
@@ -208,7 +208,10 @@ function Editcultures() {
                                 </label>
                                 <div className="basis-5/6 ">
                                     <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
-                                        {srcPhoto !== '' && (<img src={srcPhoto} alt='pict' className='w-48' />)}
+                                        {srcPhoto !== '' && (
+                                            <a href={srcPhoto} target='_blank' rel="noreferrer">
+                                                <img src={srcPhoto} alt='pict' className='w-48' />
+                                            </a>)}
                                         <input id='input-photo' type={"file"} accept="image/jpg,image/jpeg,image/png" onChange={(e) => handleChange(e, "photo")} ></input>
                                     </div>
                                 </div>
@@ -237,8 +240,8 @@ function Editcultures() {
                         <div className='p-6 basis-2/6'>
                             <p className='font-bold'>Reports</p>
                             <div className='p-2 space-y-2 '>
-                                {reports.map((report) => (
-                                    <p>{`- ${report.message}`}</p>
+                                {reports.map((report,idx) => (
+                                    <p key={idx}>{`- ${report.message}`}</p>
                                 ))}
                             </div>
                         </div>
