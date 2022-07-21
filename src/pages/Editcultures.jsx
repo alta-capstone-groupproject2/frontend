@@ -14,7 +14,8 @@ function Editcultures() {
     const navigate = useNavigate()
     const params = useParams()
     const [title,setTitle] = useState('')
-    const [photo,setPhoto] = useState('')
+    const [photo, setPhoto] = useState('')
+    const [reports,setReports] = useState([])
     const [srcPhoto,setSrcPhoto] = useState('')
     const [city,setCity] = useState('')
     const [detail,setDetail] = useState('')
@@ -23,8 +24,36 @@ function Editcultures() {
     const [loading,setLoading] = useState(false)
     
     useEffect(() => {
-        apiGetCulture()
+        apiGetReport()
     },[])
+
+    const apiGetReport = async (id) => {
+        setLoading(true)
+        const token = localStorage.getItem('token')
+        await apiRequest(`cultures/reports/${id}`, "get", false, {
+            'Authorization': `Bearer ${token}`,
+        })
+            .then((result) => {
+                const { code, message, data } = result
+                switch (code) {
+                    case '200':
+                        setReports(data)
+                        break
+                    case '400':
+                        Swal.fire('Failed', message, 'error');
+                        break
+                    default:
+                        Swal.fire('Something Wrong', message, 'info');
+                        break
+                }
+            })
+            .catch((err) => {
+                const errorMsg = err.message
+                let msg
+                if (err.response.data) msg = err.response.data.message 
+                Swal.fire(errorMsg,msg,'error'); 
+            }).finally(()=>apiGetCulture())
+    }
 
     const apiPutCulture = () => {
         setLoading(true)
@@ -71,8 +100,8 @@ function Editcultures() {
             const { code, message, data } = result
             switch (code) {
                 case '200':
-                    setSrcPhoto(data.image)
-                    setTitle(data.cultureName)                        
+                    setSrcPhoto(data.Image)
+                    setTitle(data.name)                        
                     setCity(data.city)                        
                     setDetail(data.details)                        
                     break
@@ -162,7 +191,7 @@ function Editcultures() {
                 <LayoutAdmin>
                     <div className='min-h-[80vh] flex'>
                         <SidebarAdmin active={"culture"} />
-                        <div className="p-6 basis-5/6">
+                        <div className="p-6 basis-4/6">
                             <p className='font-bold text-lg'>Edit Culture</p>
                             <div className="flex flex-row my-2 items-center">
                                 <label className="basis-1/6">
@@ -202,7 +231,15 @@ function Editcultures() {
                                 </div>
                             </div>
                             <div className="flex flex-row my-5 mb-10 items-center justify-end">
-                                <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded" onClick={() => handleSubmit()}>Add</button>
+                                <button id='button-submit' className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded" onClick={() => handleSubmit()}>Save</button>
+                            </div>
+                        </div>
+                        <div className='p-6 basis-2/6'>
+                            <p className='font-bold'>Reports</p>
+                            <div className='p-2 space-y-2 '>
+                                {reports.map((report) => (
+                                    <p>{`- ${report.message}`}</p>
+                                ))}
                             </div>
                         </div>
                     </div>
