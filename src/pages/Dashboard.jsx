@@ -52,26 +52,27 @@ const Dashboard = () => {
 		const body = new FormData();
 		for (const key in objSubmit) {
 			body.append(key, objSubmit[key]);
+			console.log(key,objSubmit[key])
 		}
-		apiRequest('users', 'PUT', body, { Authorization: `Bearer ${localStorage.getItem('token')}` })
+		apiRequest('users', 'put', body, {
+			'Content-Type': 'multipart/form-data',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
+		})
 			.then((res) => {
 				const { code, message } = res;
-				if (code === 200) {
-					Swal.fire({
-						title: 'Success',
-						text: message,
-						icon: 'success',
-					});
-				} else {
-					Swal.fire({
-						title: 'Error',
-						text: message,
-						icon: 'error',
-					});
+				switch (code) {
+					case '200':
+						Swal.fire(`Success`, message, 'success')
+						break;
+					case '400': Swal.fire(`Failed`,message,'error'); break;
+					default: Swal.fire(`Code ${code}`,message,'info'); break;
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				const errorMsg = err.message
+				let msg
+				if (err.response.data) msg = err.response.data.message 
+				Swal.fire(errorMsg,msg,'error'); 
 			})
 			.finally(() => getProfile());
 	};
@@ -126,7 +127,7 @@ const Dashboard = () => {
 					<div className='w-full flex flex-col space-y-16 lg:space-y-0'>
 						<form onSubmit={(e) => handleUpdate(e)} className="flex justify-between">
 							<div className='flex flex-col items-center space-y-8 basis-1/2'>
-								<h1 className='font-bold text-2xl self-start sm:text-start pb-4'>Profile</h1>
+								<p className='font-bold text-lg self-start'>Profile</p>
 								<div className='flex'>
 									<img src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
 									<div className='flex items-end ml-2'>
@@ -137,7 +138,7 @@ const Dashboard = () => {
 											className='hidden'
 											onChange={(e) => {
 												setAvatar(URL.createObjectURL(e.target.files[0]));
-												handleChange(e.target.files[0], 'file');
+												handleChange(e.target.files[0], 'image');
 											}}
 										/>
 										<label htmlFor={'upload_avatar'} className='text-center cursor-pointer'>
@@ -172,12 +173,12 @@ const Dashboard = () => {
 										/>
 									</div>
 								</div>
-								<button className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800'>Save</button>
+								<button className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800' type='submit'>Save</button>
 							</div>
 							<div className='flex flex-col space-y-4 basis-1/2'>
 								{role === 'user' && status ==='' ? (
-									<div>
-										<p className='font-bold text-xl'>UMKM</p>
+									<div className='pr-8'>
+										<p className='font-bold text-lg'>UMKM</p>
 										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
 											<FaStoreAlt className='mr-2' />
 											<p className='font-bold'>Upgrade Account</p>
@@ -185,7 +186,7 @@ const Dashboard = () => {
 									</div>
 								) : (
 									<div className='pr-8'>
-										<p className='font-bold text-xl'>UMKM</p>
+										<p className='font-bold text-lg'>UMKM</p>
 										<div className='flex gap-4 items-center mt-4'>
 											<BiStore className='text-9xl' />
 											<div>

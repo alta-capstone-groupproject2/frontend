@@ -18,7 +18,7 @@ export const LayoutAdmin = ({ children }) => {
 	return (
 		<div className='w-full h-screen flex flex-col'>
 			<NavbarAdmin />
-			<div className='w-full h-full overflow-auto'>
+			<div className='w-full h-full overflow-auto pt-8'>
 				<div>{children}</div>
 				<Footer />
 			</div>

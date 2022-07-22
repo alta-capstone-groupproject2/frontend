@@ -7,6 +7,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { reduxAction } from '../utils/redux/actions/action';
 import logoSrc from '../assets/images/logo.webp'
+import { BsFillCartFill } from 'react-icons/bs'
 
 export const NavbarAdmin = () => { 
 	const navigate = useNavigate()
@@ -112,7 +113,10 @@ const Navbar = () => {
 				</div>
 				<div className='flex items-center space-x-4'>
 					{isLoggedIn ? (
-						<div>
+						<div className='flex items-center'>
+							<Link to="cart" className='text-3xl text-red-600 mr-5'>
+								<BsFillCartFill />
+							</Link>
 							<Button
 								id="basic-button"
 								aria-controls={open ? 'basic-menu' : undefined}
@@ -120,7 +124,7 @@ const Navbar = () => {
 								aria-expanded={open ? 'true' : undefined}
 								onClick={clickDropdown}
 							>
-								<CgProfile className='text-3xl text-red-600 cursor-pointer' />
+								<CgProfile className='text-3xl text-red-600' />
 							</Button>
 							<Menu
 								id="basic-menu"

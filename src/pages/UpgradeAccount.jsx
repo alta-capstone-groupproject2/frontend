@@ -140,9 +140,9 @@ function UpgradeAccount() {
         } else {
             return (
                 <Layout>
-                    <div className='min-h-[80vh] pt-5 flex'>
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
                         <Sidebar active={"umkm"}/>
-                        <div className="p-6 basis-5/6">
+                        <div className="basis-5/6">
                             <p className='font-bold text-lg'>Upgrade Account</p>
                             <div className="pr-20">
                                 <div className="flex flex-row my-2 items-center">

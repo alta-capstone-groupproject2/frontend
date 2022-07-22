@@ -64,7 +64,13 @@ function Myevent() {
             <div className='p-6 basis-5/6'>
               <p className='font-bold text-lg'>Submission Event</p>
               <div className='flex flex-col gap-4 p-4'>
-                {myEvents.map((event) => (
+                {
+                  myEvents.length < 1 ? (
+                      <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>
+                          No Result
+                      </div>
+                  ) : (
+                  myEvents.map((event) => (
                   <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
                     <div className='pl-8 py-4 break-all flex-1' id={`div-goto-detail-${event.eventID}`}>
                       <p className='font-bold text-4xl flex justify-between items-center'>
@@ -97,7 +103,8 @@ function Myevent() {
                     <div className='text-center px-14'>
                       <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={() => navigate(`/submission-event/${event.eventID}`)}>Detail</button>
                     </div>
-                  </div>
+                    </div>
+                  )
                 ))}
               </div>
             </div>

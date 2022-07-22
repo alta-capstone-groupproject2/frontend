@@ -25,6 +25,11 @@ import UpgradeAccount from '../pages/UpgradeAccount';
 import Listcultureadmin from '../pages/Listcultureadmin';
 import Addcultures from '../pages/Addcultures';
 import Editcultures from '../pages/Editcultures';
+import Myproduct from '../pages/Myproduct';
+import Addproduct from '../pages/Addproduct';
+import Editproduct from '../pages/Editproduct';
+import Joinedevent from '../pages/Joinedevent';
+import Historyorder from '../pages/Historyorder';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -62,6 +67,11 @@ const RoutesApp = () => {
 					<Route path='/edit-culture/:id' element={<Editcultures />} />
 					<Route path='/list-submission-event' element={<Listsubmissionev />} />
 					<Route path='/submission-event/:id' element={<Detailsubmissionevent />} />
+					<Route path='/my-product' element={<Myproduct />} />
+					<Route path='/add-product' element={<Addproduct />} />
+					<Route path='/edit-product/:id' element={<Editproduct />} />
+					<Route path='/joined-event' element={<Joinedevent />} />
+					<Route path='/history-order' element={<Historyorder />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>

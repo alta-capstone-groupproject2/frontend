@@ -108,54 +108,62 @@ function Myevent() {
                             <TiPlus />
                         </div>
                     </Link>
-                    <div className='min-h-[80vh] pt-5 flex'>
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
                         <Sidebar active="my-event"/>
-                        <div className='p-6 basis-5/6'>
+                        <div className='basis-5/6'>
                             <p className='font-bold text-lg'>My Event</p>
                             <div className='flex flex-col gap-4 p-4'>
-                                {myEvents.map((event) => (
-                                    <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
-                                        <img src={event.image} alt="" className='w-48 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
-                                        <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`/event/${event.eventID}`)}>
-                                            <p className='font-bold text-4xl flex justify-between items-center'>
-                                                {event.eventName}
-                                                {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
-                                            </p>
-                                            <p className='flex justify-between'>
-                                                <span>
-                                                    <span className='text-slate-400'>Hosted by:</span>{event.hostedBy}
-                                                </span>
-                                                <span className='flex flex-col gap-2'>
-                                                    <span className='rounded text-xs py-[0.1rem] text-center font-bold px-2 bg-red-600 text-white'>Status : {event.Status}</span>
-                                                </span>
-                                            </p>
-                                            <p className=' flex justify-between'>
-                                                <div className='flex flex-col'>
-                                                    <b>From</b>
-                                                    <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
-                                                    <b>To</b>     
-                                                    <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                                {
+                                    myEvents.length < 1 ? (
+                                        <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>
+                                            No Result
+                                        </div>
+                                    ) : (
+                                    myEvents.map((event) => (
+                                        <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
+                                            <img src={event.image} alt="" className='w-48'/>
+                                            <div className='pl-8 py-4 break-all flex-1'>
+                                                <p className='font-bold text-4xl flex justify-between items-center'>
+                                                    {event.eventName}
+                                                    {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
+                                                </p>
+                                                <p className='flex justify-between'>
+                                                    <span>
+                                                        <span className='text-slate-400'>Hosted by:</span>{event.hostedBy}
+                                                    </span>
+                                                    <span className='flex flex-col gap-2'>
+                                                        <span className='rounded text-xs py-[0.1rem] text-center font-bold px-2 bg-red-600 text-white'>Status : {event.status}</span>
+                                                    </span>
+                                                </p>
+                                                <div className=' flex justify-between'>
+                                                    <div className='flex flex-col'>
+                                                        <b>From</b>
+                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
+                                                        <b>To</b>     
+                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                                                    </div>
+                                                    <span className='flex gap-2 items-center'>
+                                                        <TbTicket />
+                                                        <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+                                                    </span>
                                                 </div>
-                                                <span className='flex gap-2 items-center'>
-                                                    <TbTicket />
-                                                    <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
-                                                </span>
-                                            </p>
-                                            <p>
-                                                {event.address}
-                                            </p>
-                                            <p className='text-slate-400 mt-4'>
-                                                About this event
-                                            </p>
-                                            <p className=''>
-                                                {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
-                                            </p>
+                                                <p>
+                                                    {event.address}
+                                                </p>
+                                                <p className='text-slate-400 mt-4'>
+                                                    About this event
+                                                </p>
+                                                <p className=''>
+                                                    {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
+                                                </p>
+                                            </div>
+                                            <div className='text-center px-14'>
+                                                <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={() => handleDelete(event.eventID)}>Delete</button>
+                                            </div>
                                         </div>
-                                        <div className='text-center px-14'>
-                                            <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={() => handleDelete(event.eventID)}>Delete</button>
-                                        </div>
-                                    </div>
-                                ))}
+                                        )
+                                    )
+                                )}
                             </div>
                             <div className='flex justify-center'>
                                 <Pagination count={totalPg} onChange={(e, pg) => alert(pg)} shape="rounded" />

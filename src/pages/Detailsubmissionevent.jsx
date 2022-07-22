@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
 import { SidebarAdmin } from '../components/Sidebar'
+import { TbTicket } from 'react-icons/tb'
 import CurrencyFormat from 'react-currency-format'
 import moment from 'moment'
 import Swal from 'sweetalert2'
@@ -106,12 +107,15 @@ function Detailsubmissionevent() {
                                     {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                                 </p>
                                 <p className=' flex justify-between'>
-                                    <span className='font-bold text-4xl'>
-                                        <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+                                    <span className='font-bold text-4xl flex items-center gap-4'>
+                                        <TbTicket /><CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                     </span>
                                     <span>Verify : <a href={event.document} className='text-red-600 cursor-pointer font-bold underline' target='_blank' rel="noreferrer">Document1.pdf</a></span>
                                 </p>
-                                <p className='font-bold text-2xl'>About this Event</p>
+                                <p className='font-bold text-2xl flex justify-between items-center'>
+                                    About this Event
+                                    <span className='text-red-600 text-sm rounded border-2 border-red-600 px-2'>Status : { event.status}</span>
+                                </p>
                                 <p>{event.details}</p>
                                 <Map position={position} />
                                 <p className='text-right'><b>Lat</b>{event.location} <b>Lng.</b> {event.location}</p>
