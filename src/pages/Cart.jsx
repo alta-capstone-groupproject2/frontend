@@ -13,7 +13,6 @@ import axios from 'axios'
 import CurrencyFormat from 'react-currency-format'
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
-
 function Cart() {
     
     const provider = new OpenStreetMapProvider();
