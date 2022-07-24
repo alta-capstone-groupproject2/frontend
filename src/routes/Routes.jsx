@@ -18,7 +18,7 @@ import DetailCulture from '../pages/Cultures/DetailCulture';
 
 import { TokenContext } from '../utils/Context';
 import Myevent from '../pages/Myevent';
-import Applyevent from '../pages/Applyevent'
+import Applyevent from '../pages/Applyevent';
 import Listsubmissionev from '../pages/Listsubmissionev';
 import Detailsubmissionevent from '../pages/Detailsubmissionevent';
 import UpgradeAccount from '../pages/UpgradeAccount';
@@ -32,22 +32,25 @@ import Joinedevent from '../pages/Joinedevent';
 import Historyorder from '../pages/Historyorder';
 import Cart from '../pages/Cart';
 import Verification from '../pages/Verification';
+import Merchandise from '../pages/Merchandise/Merchandise';
+import DetailMerchandise from '../pages/Merchandise/DetailMerchandise';
+import BCA from '../pages/Payment/BCA';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
-  	const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [token, setToken] = useState(null);
-    const jwtToken = useMemo(() => ({ token, setToken }), [token]);
-    
+	const jwtToken = useMemo(() => ({ token, setToken }), [token]);
+
 	useEffect(() => {
-		const getToken = localStorage.getItem("token");
+		const getToken = localStorage.getItem('token');
 		if (getToken) {
-			dispatch(reduxAction("IS_LOGGED_IN", true));
+			dispatch(reduxAction('IS_LOGGED_IN', true));
 		} else {
-			dispatch(reduxAction("IS_LOGGED_IN", false));
+			dispatch(reduxAction('IS_LOGGED_IN', false));
 		}
 	}, [isLoggedIn]);
-	
+
 	return (
 		<TokenContext.Provider value={jwtToken}>
 			<BrowserRouter>
@@ -76,6 +79,10 @@ const RoutesApp = () => {
 					<Route path='/history-order' element={<Historyorder />} />
 					<Route path='/cart' element={<Cart />} />
 					<Route path='/verification/:id' element={<Verification />} />
+					<Route path='/merchandise' element={<Merchandise />} />
+					<Route path='/merchandise/:productsID' element={<DetailMerchandise />} />
+					<Route path='/cart' element={<Cart />} />
+					<Route path='/payment/bca' element={<BCA />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>

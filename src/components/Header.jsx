@@ -97,7 +97,7 @@ const Navbar = () => {
 	return (
 		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
 			<Link id='link-to-index' to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
+				<div className='text-red-600 text-lg sm:text-2xl font-bold sm:flex'>
 					<img src={logoSrc} alt="" className='h-10' />
 				</div>
 			</Link>
@@ -147,7 +147,7 @@ const Navbar = () => {
 							</Menu>
 						</div>
 					) : (
-						<div className='flex text-pink-700 font-bold'>
+						<div className='flex text-red-600 font-bold'>
 							<Link id="l" to={'/login'}>
 								<div>Login</div>
 							</Link>

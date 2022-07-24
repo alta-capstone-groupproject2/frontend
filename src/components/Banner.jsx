@@ -15,7 +15,7 @@ const Banner = () => {
 					<q className='font-thin text-lg'>Zaman boleh maju tapi budaya jangan ditinggalkan</q>
 				</div>
 				{token ? null : (
-					<button className='self-start px-8 py-1 border border-white rounded hover:bg-white hover:text-red-800 hover:border-red-800' onClick={() => navigate('/signup')}>
+					<button id='btn-signup' className='self-start px-8 py-1 border border-white rounded hover:bg-white hover:text-red-800 hover:border-red-800' onClick={() => navigate('/signup')}>
 						Sign Up
 					</button>)}
 			</div>

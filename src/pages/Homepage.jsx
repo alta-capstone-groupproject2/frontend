@@ -65,7 +65,7 @@ const Homepage = () => {
 					<div className='space-y-6'>
 						<div className='flex justify-between p-3'>
 							<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Event</h1>
-							<Link to='/events'>
+							<Link id='link-to-events' to='/events'>
 								<p className='hover:text-red-700'>See All</p>
 							</Link>
 						</div>
@@ -92,7 +92,7 @@ const Homepage = () => {
 					<div className='space-y-6'>
 						<div className='flex justify-between p-3'>
 							<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Merchandise</h1>
-							<Link to='/merchandise'>
+							<Link id='link-to-merchandise' to='/merchandise'>
 								<p className='hover:text-red-700'>See All</p>
 							</Link>
 						</div>

@@ -129,19 +129,19 @@ const Dashboard = () => {
 							<div className='flex flex-col items-center space-y-8 basis-1/2'>
 								<p className='font-bold text-lg self-start'>Profile</p>
 								<div className='flex'>
-									<img src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
+									<img id='user-avatar' src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
 									<div className='flex items-end ml-2'>
 										<input
-											type={'file'}
-											accept={'image/*'}
-											id={'upload_avatar'}
+											type='file'
+											accept='image/*'
+											id='upload_avatar'
 											className='hidden'
 											onChange={(e) => {
 												setAvatar(URL.createObjectURL(e.target.files[0]));
 												handleChange(e.target.files[0], 'image');
 											}}
 										/>
-										<label htmlFor={'upload_avatar'} className='text-center cursor-pointer'>
+										<label htmlFor='upload_avatar' className='text-center cursor-pointer'>
 											<FaEdit />
 										</label>
 									</div>
@@ -157,7 +157,7 @@ const Dashboard = () => {
 										<label htmlFor='email' className='sm:text-xl text-end'>
 											Email :
 										</label>
-										<input type='email' name='name' id='email' placeholder={email} className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400' onChange={(e) => handleChange(e.target.value, 'email')} />
+										<input type='email' name='email' id='email' placeholder={email} className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400' onChange={(e) => handleChange(e.target.value, 'email')} />
 									</div>
 									<div className='grid grid-cols-4'>
 										<label htmlFor='password' className='sm:text-xl text-end'>
@@ -165,7 +165,7 @@ const Dashboard = () => {
 										</label>
 										<input
 											type='password'
-											name='name'
+											name='password'
 											id='password'
 											placeholder={'*****'}
 											className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400'
@@ -212,7 +212,7 @@ const Dashboard = () => {
 							</div>
 						</form>
 						<div className='pt-8'>
-							<button className='text-red-700 font-bold bg-white hover:bg-red-700 hover:text-white py-2 px-5 rounded-md shadow-lg border max-w-fit' onClick={() => handleDelete()}>
+							<button id='btn-delete-account' className='text-red-700 font-bold bg-white hover:bg-slate-100 active:bg-slate-200 py-2 px-5 rounded-md shadow-lg border max-w-fit' onClick={() => handleDelete()}>
 								Delete Account
 							</button>
 						</div>
