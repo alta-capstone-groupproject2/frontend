@@ -1,5 +1,5 @@
 /** @format */
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaEdit, FaStoreAlt } from 'react-icons/fa';
 
 import { apiRequest } from '../utils/apiRequest';
@@ -8,10 +8,8 @@ import Sidebar from '../components/Sidebar';
 import Loading from '../components/Loading';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import { TokenContext } from '../utils/Context';
 
 const Profile = () => {
-	const { token } = useContext(TokenContext);
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [avatar, setAvatar] = useState('');
@@ -21,14 +19,12 @@ const Profile = () => {
 	const [objSubmit, setObjSubmit] = useState('');
 
 	const getProfile = () => {
-		apiRequest('users', 'get', {}, { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
+		apiRequest('users', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				console.log(res);
-				const { image, name, email, role } = res.data;
-				setAvatar(image);
-				setName(name);
-				setEmail(email);
-				setRole(role);
+				setAvatar(res.data.image);
+				setName(res.data.name);
+				setEmail(res.data.email);
+				setRole(res.data.role);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -37,20 +33,27 @@ const Profile = () => {
 	};
 
 	const handleUpdate = (e) => {
-		setLoading(true);
 		e.preventDefault();
 		const body = new FormData();
 		for (const key in objSubmit) {
 			body.append(key, objSubmit[key]);
 		}
-		apiRequest('users', 'PUT', body, { Authorization: `Bearer ${token}` })
+		apiRequest('users', 'PUT', body, { Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				const { message } = res;
-				Swal.fire({
-					title: 'Success',
-					text: message,
-					icon: 'success',
-				});
+				const { code, message } = res;
+				if (code === 200) {
+					Swal.fire({
+						title: 'Success',
+						text: message,
+						icon: 'success',
+					});
+				} else {
+					Swal.fire({
+						title: 'Error',
+						text: message,
+						icon: 'error',
+					});
+				}
 			})
 			.catch((err) => {
 				console.log(err);
@@ -69,18 +72,21 @@ const Profile = () => {
 			confirmButtonText: 'Yes, delete it!',
 		}).then((res) => {
 			if (res.isConfirmed) {
-				apiRequest('users', 'DELETE', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
+				apiRequest('users', 'DELETE', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 					.then((res) => {
-						Swal.fire({
-							title: 'Deleted!',
-							text: res.message,
-							icon: 'success',
-						});
+						const { code, message } = res;
+						if (code === 200) {
+							navigate('/login');
+							Swal.fire({
+								title: 'Deleted!',
+								text: message,
+								icon: 'success',
+							});
+						}
 					})
 					.catch((err) => {
 						console.log(err);
-					})
-					.finally(() => navigate('/login'));
+					});
 			}
 		});
 	};
@@ -109,7 +115,7 @@ const Profile = () => {
 								{role === 'user' ? (
 									<div>
 										<h1 className='font-bold'>UMKM</h1>
-										<button className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
+										<button id='btn-upgrade-account' className='bg-red-700 px-6 py-2 rounded-sm hover:bg-red-800 text-white flex items-center' onClick={() => navigate(`/upgrade-account`)}>
 											<FaStoreAlt className='mr-2' />
 											<p className='font-bold'>Upgrade Account</p>
 										</button>
@@ -120,24 +126,24 @@ const Profile = () => {
 						<form onSubmit={(e) => handleUpdate(e)}>
 							<div className='flex flex-col items-center space-y-8'>
 								<div className='flex'>
-									<img src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
+									<img id='user-avatar' src={avatar} alt='avatar' width={100} height={100} className='rounded-full' />
 									<div className='flex items-end ml-2'>
 										<input
-											type={'file'}
-											accept={'image/*'}
-											id={'upload_avatar'}
+											type='file'
+											accept='image/*'
+											id='upload_avatar'
 											className='hidden'
 											onChange={(e) => {
 												setAvatar(URL.createObjectURL(e.target.files[0]));
 												handleChange(e.target.files[0], 'file');
 											}}
 										/>
-										<label htmlFor={'upload_avatar'} className='text-center cursor-pointer'>
+										<label htmlFor='upload_avatar' className='text-center cursor-pointer'>
 											<FaEdit />
 										</label>
 									</div>
 								</div>
-								<div className='flex flex-col space-y-4'>
+								<form className='flex flex-col space-y-4'>
 									<div className='grid grid-cols-4'>
 										<label htmlFor='name' className='sm:text-xl text-end'>
 											Name :
@@ -148,7 +154,7 @@ const Profile = () => {
 										<label htmlFor='email' className='sm:text-xl text-end'>
 											Email :
 										</label>
-										<input type='email' name='name' id='email' placeholder={email} className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400' onChange={(e) => handleChange(e.target.value, 'email')} />
+										<input type='email' name='email' id='email' placeholder={email} className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400' onChange={(e) => handleChange(e.target.value, 'email')} />
 									</div>
 									<div className='grid grid-cols-4'>
 										<label htmlFor='password' className='sm:text-xl text-end'>
@@ -156,19 +162,21 @@ const Profile = () => {
 										</label>
 										<input
 											type='password'
-											name='name'
+											name='password'
 											id='password'
 											placeholder={'*****'}
 											className='col-span-3 ml-4 pl-2 border focus:outline-none focus:ring-2 focus:ring-sky-400'
 											onChange={(e) => handleChange(e.target.value, 'password')}
 										/>
 									</div>
-								</div>
-								<button className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800'>Save</button>
+								</form>
+								<button id='btn-update-profile' className='py-2 px-16 rounded-md bg-red-700 text-white hover:bg-red-800'>
+									Save
+								</button>
 							</div>
 						</form>
 						<div className='pt-8'>
-							<button className='text-red-700 font-bold bg-white hover:bg-red-700 hover:text-white py-2 px-5 rounded-md shadow-lg border max-w-fit' onClick={() => handleDelete()}>
+							<button id='btn-delete-account' className='text-red-700 font-bold bg-white hover:bg-slate-100 active:bg-slate-200 py-2 px-5 rounded-md shadow-lg border max-w-fit' onClick={() => handleDelete()}>
 								Delete Account
 							</button>
 						</div>

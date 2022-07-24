@@ -64,7 +64,7 @@ const Homepage = () => {
 					<div className='space-y-6'>
 						<div className='flex justify-between p-3'>
 							<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Event</h1>
-							<Link to='/events'>
+							<Link id='link-to-events' to='/events'>
 								<p className='hover:text-red-700'>See All</p>
 							</Link>
 						</div>
@@ -79,13 +79,13 @@ const Homepage = () => {
 					<div className='space-y-6'>
 						<div className='flex justify-between p-3'>
 							<h1 className='font-bold border-b-2 border-red-700 pr-4 text-lg cursor-default'>Merchandise</h1>
-							<Link to='/merchandise'>
+							<Link id='link-to-merchandise' to='/merchandise'>
 								<p className='hover:text-red-700'>See All</p>
 							</Link>
 						</div>
 						<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
-							{product.map((item) => {
-								return <CardProduct key={item.id} name={item.productName} price={item.price} image={item.image} onClickProduct={() => navigate(`/product/${item.productID}`)} />;
+							{product.map((item, index) => {
+								return <CardProduct key={index} name={item.productName} price={item.price} image={item.image} onClickProduct={() => navigate(`/product/${item.productID}`)} />;
 							})}
 						</div>
 					</div>
