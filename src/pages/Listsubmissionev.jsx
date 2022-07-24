@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
 import Loading from '../components/Loading'
+import { Pagination } from '@mui/material'
 
 function Myevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -15,23 +16,32 @@ function Myevent() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [currTime,setCurrTime] = useState('')
-    const [myEvents,setMyEvents] = useState('')
+    const [myEvents, setMyEvents] = useState('')
+    const [totalPg, setTotalPg] = useState(false)
+    const [nowPage, setNowPage] = useState()
 
     useEffect(() => {
-        apiGetMyEvent()
-    },[])
-
-    const apiGetMyEvent = async () => {
+        loadPage(1)
+    }, [])
+  
+    const loadPage = (pg) => {
+        setNowPage(pg)
+        apiGetMySubEvent(pg)
+    }
+  
+    const apiGetMySubEvent = async (page) => {
         setLoading(true)
-        await apiRequest("events/submissions?limit=10&page=1", "get", false, {
+        await apiRequest(`events/submissions?limit=5&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
           .then((result) => {
-            const { code, currentTime, message, data } = result
+            console.log(result)
+            const { code, currentTime, message, data,totalpage } = result
             console.log(result)
               switch (code) {
-                case '200':                       
-                setCurrTime(currentTime)
+                case '200':
+                  !totalPg && setTotalPg(totalpage)
+                  setCurrTime(currentTime)
                 setMyEvents(data);
                 break
                 case '400':                      
@@ -64,6 +74,10 @@ function Myevent() {
             <div className='p-6 basis-5/6'>
               <p className='font-bold text-lg'>Submission Event</p>
               <div className='flex flex-col gap-4 p-4'>
+                <div className='flex justify-between'>
+                    <p>Page : {nowPage} of { totalPg }</p>
+                    <Pagination count={totalPg} page={nowPage} onChange={(e, pg) => loadPage(pg)} shape="rounded" />
+                </div>
                 {
                   myEvents.length < 1 ? (
                       <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>
@@ -89,11 +103,11 @@ function Myevent() {
                        <span className='text-slate-400'>City : </span> {event.city}
                       </p>
                       <p>
-                        <div className='flex flex-col'>
+                        <div className='flex flex-col text-xs'>
                             <b>From</b>
-                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
+                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, h:mm a')}</span>
                             <b>To</b>     
-                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, h:mm a')}</span>
                         </div>
                       </p>
                       <p>

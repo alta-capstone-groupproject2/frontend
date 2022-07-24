@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { LayoutAdmin } from '../components/Layout'
+import { Pagination } from '@mui/material'
 import { SidebarAdmin } from '../components/Sidebar'
 import { useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
@@ -9,7 +10,6 @@ import Swal from 'sweetalert2'
 import Loading from '../components/Loading'
 import { TiPlus } from 'react-icons/ti'
 import { Link } from 'react-router-dom'
-import { DataArrayRounded } from '@mui/icons-material'
 
 function Listcultureadmin() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -17,20 +17,29 @@ function Listcultureadmin() {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [cultures, setCultures] = useState([])
+    const [totalPg, setTotalPg] = useState(false)
+    const [nowPage, setNowPage] = useState()
 
     useEffect(() => {
-        apiGetCultures()
+        loadPage(1)
     }, [])
 
-    const apiGetCultures = async () => {
+    const loadPage = (pg) => {
+        setNowPage(pg)
+        apiGetCultures(pg)
+    }
+
+    const apiGetCultures = async (page) => {
         setLoading(true)
-        await apiRequest("cultures?limit=1000&page=1", "get", false, {
+        await apiRequest(`cultures?limit=5&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
-                const { code, message, data } = result
+                const { code, message, data, totalpage } = result
+                console.log(result)
                 switch (code) {
                     case '200':
+                        !totalPg && setTotalPg(totalpage)
                         setCultures(data);
                         break
                     case '400':
@@ -91,7 +100,6 @@ function Listcultureadmin() {
     if (!isLoggedIn) {
         navigate('/login')
     } else {
-        console.log()
         if (loading) {
             return <Loading />
         } else {
@@ -107,6 +115,10 @@ function Listcultureadmin() {
                         <div className='p-6 basis-5/6'>
                             <p className='font-bold text-lg'>Culture</p>
                             <div className='flex flex-col gap-4 p-4'>
+                                <div className='flex justify-between'>
+                                    <p>Page : {nowPage} of { totalPg }</p>
+                                    <Pagination count={totalPg} page={nowPage} onChange={(e, pg) => loadPage(pg)} shape="rounded" />
+                                </div>
                                 {
                                     cultures.length < 1 ? (
                                         <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>

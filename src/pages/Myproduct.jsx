@@ -120,12 +120,9 @@ function Editproduct() {
                                                     <p className='font-bold text-4xl flex justify-between items-center'>
                                                         {product.productName}
                                                     </p>
-                                                    <p className='font-bold text-2xl flex justify-between items-center'>
+                                                    <p className='font-bold text-2xl flex gap-2 items-center'>
                                                         <CurrencyFormat className='font-bold' value={product.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
-                                                         | Stock : 200
-                                                    </p>
-                                                    <p className='text-slate-400 mt-4'>
-                                                        Detail
+                                                        <span>| Stock : {product.stock}</span>
                                                     </p>
                                                     <p className='break-all'>
                                                         {product.details}

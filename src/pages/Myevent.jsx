@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import Sidebar from '../components/Sidebar'
 import { TbTicket } from 'react-icons/tb'
 import { TiPlus } from 'react-icons/ti'
+import { BiDownload } from 'react-icons/bi'
 import { Pagination } from '@mui/material'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
@@ -20,24 +21,32 @@ function Myevent() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [currTime,setCurrTime] = useState('')
-    const [totalPg,setTotalPg] = useState('')
     const [myEvents,setMyEvents] = useState('')
 
-    useEffect(() => {
-        apiGetMyEvent()
-    },[])
+    const [totalPg, setTotalPg] = useState(false)
+    const [nowPage, setNowPage] = useState()
 
-    const apiGetMyEvent = async () => {
+    useEffect(() => {
+        loadPage(1)
+    }, [])
+  
+    const loadPage = (pg) => {
+        setNowPage(pg)
+        apiGetMyEvent(pg)
+    }
+
+    const apiGetMyEvent = async (page) => {
         setLoading(true)
-        await apiRequest("users/events?limit=10&page=1", "get", false, {
+        await apiRequest(`users/events?limit=10&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
-                const { code, currentTime, message, data, totalPage } = result
+                const { code, currentTime, message, data, totalpage } = result
+                console.log(data)
               switch (code) {
                 case '200':                       
+                !totalPg && setTotalPg(totalpage)
                 setCurrTime(currentTime)
-                setTotalPg(totalPage)
                 setMyEvents(data);
                 break
                 case '400':                      
@@ -113,6 +122,10 @@ function Myevent() {
                         <div className='basis-5/6'>
                             <p className='font-bold text-lg'>My Event</p>
                             <div className='flex flex-col gap-4 p-4'>
+                                <div className='flex justify-between'>
+                                    <p>Page : {nowPage} of { totalPg }</p>
+                                    <Pagination count={totalPg} page={nowPage} onChange={(e, pg) => loadPage(pg)} shape="rounded" />
+                                </div>
                                 {
                                     myEvents.length < 1 ? (
                                         <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>
@@ -136,16 +149,19 @@ function Myevent() {
                                                     </span>
                                                 </p>
                                                 <div className=' flex justify-between'>
-                                                    <div className='flex flex-col'>
+                                                    <div className='flex flex-col text-xs'>
                                                         <b>From</b>
-                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
+                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                         <b>To</b>     
-                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                     </div>
-                                                    <span className='flex gap-2 items-center'>
-                                                        <TbTicket />
-                                                        <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
-                                                    </span>
+                                                    <div className='mt-2 flex flex-col items-end'>
+                                                        <div className='flex items-center gap-2'>
+                                                            <TbTicket />
+                                                            <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+                                                        </div>
+                                                        <a href='' className='flex mt-4 items-center gap-2 text-red-600'><BiDownload/> List Attendees.pdf </a>
+                                                    </div>
                                                 </div>
                                                 <p>
                                                     {event.address}

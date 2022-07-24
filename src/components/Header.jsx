@@ -114,7 +114,7 @@ const Navbar = () => {
 				<div className='flex items-center space-x-4'>
 					{isLoggedIn ? (
 						<div className='flex items-center'>
-							<Link to="cart" className='text-3xl text-red-600 mr-5'>
+							<Link to="/cart" className='text-3xl text-red-600 mr-5'>
 								<BsFillCartFill />
 							</Link>
 							<Button

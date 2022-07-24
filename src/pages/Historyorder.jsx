@@ -4,7 +4,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Modal } from '@mui/material';
 import { Rating } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -12,27 +12,96 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
 import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
-import HorizontalLinearStepper from '../components/Stepper';
 import { BsStar } from 'react-icons/bs'
+import { apiRequest } from '../utils/apiRequest';
+import Swal from 'sweetalert2';
+
 
 export default function Historyorder() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
+    const [historys,setHistorys] = useState([])
     const [openData, setOpenData] = useState([]);
+    const [selectProduct,setSelectProduct] = useState('')
     const [modal, setModal] = useState(false)
     const [product, setProduct] = useState('')
     const [rating, setRating] = useState('')
     const [review, setReview] = useState('')
     const [loading,setLoading] = useState(false)
-    const [stepper, setStepper] = useState(false)
+    
+    useEffect(() => {
+       apiGetHistory()
+    }, [])
+    
+    const apiGetHistory = async () => {
+        setLoading(true)
+        await apiRequest("orders", "get", false, {
+            'Authorization': `Bearer ${token}`,
+        })
+            .then((result) => {
+              const { code, message, data } = result
+              switch (code) {
+                case '200':                
+                    setHistorys(data);
+                break
+                case '400':                      
+                    Swal.fire('Failed',message,'error'); 
+                break
+                default:
+                    Swal.fire(`Something Wrong${code}`,message,'info'); 
+                break  
+            }
+          })
+        .catch((err) => {
+            const errorMsg = err.message
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
+        })
+        .finally(()=>setLoading(false))
+    }
 
-    const showStepper = () => setStepper(true)
-    const closeStepper = () => setStepper(false)
+    const apiPostRating = () => {
+        setLoading(true)
+      
+        const body = {
+            'review': review,
+            'ratings': rating,
+        }  
+        
+        apiRequest(`register/${selectProduct}`, "post", body)
+        .then((res) => {
+            const { code,message } = res;
+            
+            switch (code) {
+                case '200':
+                    Swal.fire(`Success`, message, 'success')
+                break;
+
+                case '400': Swal.fire(`Failed`,message,'error'); break;
+                
+                default: Swal.fire(`Code ${code}`,message,'info'); break;
+            }
+        })
+        .catch((err) => {
+            const errorMsg = err.message
+            let msg = ''
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
+        })
+        .finally(() => {
+            apiGetHistory()
+            closeModal()
+        })
+    }
+    
     const showModal = (val) => {
+        setSelectProduct(val.productID)
         setProduct(val)
         setModal(true);
     };
+
     const closeModal = () => {
         setProduct('')
         setReview('')
@@ -51,6 +120,10 @@ export default function Historyorder() {
             'review':(value)=>setReview(value),
         }
         obj[type](val)
+    }
+
+    const handleSubmit = () => {
+        if(rating !=='' && review !=='' && selectProduct !=='') apiPostRating()
     }
 
     const data = [
@@ -330,20 +403,20 @@ export default function Historyorder() {
                                         <div className='w-full h-full flex p-2 font-bold'>
                                             <div className='basis-1/5'>Transaction Date</div>
                                             <div className='basis-1/5'>Receiver</div>
-                                            <div className='basis-1/5'>City</div>
+                                            <div className='basis-1/5'>Address</div>
                                             <div className='basis-1/5'>Total</div>
                                             <div className='basis-1/5'>Status</div>
                                         </div>
                                     </ListItemButton>
                                     <div className='h-[60vh] overflow-y-scroll border-t-2 border-slate-100'>
                                         {
-                                            data.map((item, idx) => (
+                                            historys.map((item, idx) => (
                                                 < div key={idx}>
                                                     <ListItemButton onClick={() => handleClick(idx)}>
                                                         <div className='w-full h-full flex p-2'>
                                                             <div className='basis-1/5'>{item.date}</div>
                                                             <div className='basis-1/5'>{item.receiver}</div>
-                                                            <div className='basis-1/5'>{item.city}</div>
+                                                            <div className='basis-1/5'>{item.address}</div>
                                                             <div className='basis-1/5'>{item.price}</div>
                                                             <div className='basis-1/5 flex justify-between'>{item.status}
                                                                 <span>{openData[idx] ? <ExpandLess /> : <ExpandMore />}</span>
@@ -352,11 +425,11 @@ export default function Historyorder() {
                                                     </ListItemButton>
                                                     <Collapse in={openData[idx]} timeout="auto" unmountOnExit>
                                                         <List component="div" disablePadding>
-                                                            {item.cart.map((subitem, idx) => (
-                                                                <div className='w-full h-full justify-between flex p-6 bg-gray-100' key={idx}>
+                                                            {item.product.map((subitem, idx) => (
+                                                                <div className='w-full h-full justify-between flex p-6 bg-gray-100' key={subitem.productID}>
                                                                     <div className='basis-3/5'>{subitem.name}</div>
                                                                     <div className='flex-1'>
-                                                                        Rp.15.000
+                                                                        {subitem.qty}
                                                                     </div>
                                                                     <div className='basis-1/5'>
                                                                         <button className='rounded p-2 bg-red-600 text-white text-sm flex items-center gap-2' onClick={() => showModal(subitem)}> <BsStar/> Give Ratings </button>
@@ -382,18 +455,7 @@ export default function Historyorder() {
                                         <Rating name="size-large" value={rating} onChange={(e) => handleChange(e,'rating')} size="large" />
                                         <p className=''>Review</p>
                                         <textarea id='input-detail' value={review} className="border-[0.1rem] rounded p-2 w-full h-48" onChange={(e)=> handleChange(e,'review')} placeholder="Detail"></textarea>
-                                        <button className='rounded p-2 bg-red-600 text-white my-4 flex gap-2 items-center justify-center' onClick={()=>closeModal()}> <BsStar/> Give Ratings </button>
-                                    </div>
-                                </Modal>
-                                <button className='rounded p-2 bg-red-600 text-white my-4' onClick={()=>showStepper()}> tes stepper </button>
-                                <Modal
-                                    open={stepper}
-                                    onClose={closeStepper}
-                                    aria-labelledby="modal-modal-title"
-                                    aria-describedby="modal-modal-description"
-                                >
-                                    <div className='absolute rounded p-6 pt-8 bg-white w-1/2 top-[20%] left-1/4'>
-                                        <HorizontalLinearStepper />
+                                        <button className='rounded p-2 bg-red-600 text-white my-4 flex gap-2 items-center justify-center' onClick={()=>handleSubmit()}> <BsStar/> Give Ratings </button>
                                     </div>
                                 </Modal>
                             </div>

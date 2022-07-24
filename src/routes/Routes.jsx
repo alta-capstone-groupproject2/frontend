@@ -30,6 +30,7 @@ import Addproduct from '../pages/Addproduct';
 import Editproduct from '../pages/Editproduct';
 import Joinedevent from '../pages/Joinedevent';
 import Historyorder from '../pages/Historyorder';
+import Cart from '../pages/Cart';
 
 const RoutesApp = () => {
 	const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -72,6 +73,7 @@ const RoutesApp = () => {
 					<Route path='/edit-product/:id' element={<Editproduct />} />
 					<Route path='/joined-event' element={<Joinedevent />} />
 					<Route path='/history-order' element={<Historyorder />} />
+					<Route path='/cart' element={<Cart />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>
