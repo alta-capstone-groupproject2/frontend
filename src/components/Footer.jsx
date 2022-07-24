@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
 	return (
-		<footer className='text-slate-400 border-t-2 border-slate-400 mx-8 mt-8'>
+		<footer className='text-slate-400 border-t-[0.1rem] pt-4 pb-8 border-slate-200 mx-8 mt-8'>
 			<div className='flex justify-between items-center py-2'>
 				<Link to='/'>
 					<h1 className='font-bold text-base sm:text-md hover:text-slate-600'>&copy; LAMI APP</h1>

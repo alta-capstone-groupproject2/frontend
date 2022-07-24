@@ -7,7 +7,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { reduxAction } from '../utils/redux/actions/action';
 import logoSrc from '../assets/images/logo.webp'
-import { BsFillCartFill } from 'react-icons/bs'
+import { BsFillCartPlusFill } from 'react-icons/bs'
 
 export const NavbarAdmin = () => { 
 	const navigate = useNavigate()
@@ -29,7 +29,7 @@ export const NavbarAdmin = () => {
 		navigate("/login");
 	};
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-50'>
 			<div className='text-red-700 flex items-end gap-4 text-lg sm:text-2xl font-bold sm:flex'>
 				<img src={logoSrc} alt="" className='h-10' /> admin
 			</div>
@@ -95,7 +95,7 @@ const Navbar = () => {
 	};
 	
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
 			<Link id='link-to-index' to='/'>
 				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
 					<img src={logoSrc} alt="" className='h-10' />
@@ -115,7 +115,7 @@ const Navbar = () => {
 					{isLoggedIn ? (
 						<div className='flex items-center'>
 							<Link to="/cart" className='text-3xl text-red-600 mr-5'>
-								<BsFillCartFill />
+								<BsFillCartPlusFill />
 							</Link>
 							<Button
 								id="basic-button"

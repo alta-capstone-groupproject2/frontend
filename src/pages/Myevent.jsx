@@ -160,7 +160,7 @@ function Myevent() {
                                                             <TbTicket />
                                                             <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                                         </div>
-                                                        <a href='' className='flex mt-4 items-center gap-2 text-red-600'><BiDownload/> List Attendees.pdf </a>
+                                                        <div className='flex mt-4 items-center gap-2 text-red-600'><BiDownload/> List Attendees.pdf </div>
                                                     </div>
                                                 </div>
                                                 <p>
@@ -180,9 +180,6 @@ function Myevent() {
                                         )
                                     )
                                 )}
-                            </div>
-                            <div className='flex justify-center'>
-                                <Pagination count={totalPg} onChange={(e, pg) => alert(pg)} shape="rounded" />
                             </div>
                         </div>
                     </div>

@@ -10,12 +10,11 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { CircularProgress } from '@mui/material';
 import { Autocomplete } from '@mui/material';
-import {TextField} from '@mui/material';
-
+import moment from 'moment';
 
 const steps = ['Payment Details', 'Finish Payment'];
 
-export default function HorizontalLinearStepper( { searchMap,totalPrice,inputAddress,cart,apiPost,loadApi,handleSubmitPayment,handleChangePayment,bank,address,receiver,phone,error,setError,handleReset } ) {
+export default function HorizontalLinearStepper( { paymentCode,searchMap,totalPrice,inputAddress,cart,apiPost,loadApi,handleSubmitPayment,handleChangePayment,bank,address,receiver,phone,error,setError,handleReset } ) {
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
@@ -134,11 +133,11 @@ const Page = [
                     <IoMdCheckmarkCircleOutline className='text-4xl font-bold text-green-600'/>
                 </div>
                 <div className="flex justify-center gap-2 items-center">
-                    <span className='text-4xl font-bold'> E7jK6 077s </span> 
+                    <span className='text-4xl font-bold'> {paymentCode} </span> 
                 </div>
                 <div className="flex justify-center">
                   <div className='p-1 rounded space-x-1 text-xs items-center bg-orange-100 text-orange-800'>
-                    payment due date : <span className='font-bold'> 12, January, 2022 </span> 
+                    payment due date : <span className='font-bold'>{ moment().add(1,'days').format('DD MMMM YYYY, h:mm a')}</span> 
                   </div>        
                 </div>
                 <div className='border-dashed border-b-2 border-slate-200 pb-2'>
@@ -161,8 +160,8 @@ const Page = [
                     <p className='basis-1/3 text-right'> <u> Price </u></p>
                   </div>
             {
-              cart.map((item) => (
-                <div className="flex justify-between items-center">
+              cart.map((item,idx) => (
+                <div className="flex justify-between items-center" key={idx}>
                   <p className='basis-1/3'>{item.name}</p>
                   <p className='basis-1/3 text-center'>{item.qty}</p>
                   <CurrencyFormat className='basis-1/3 text-right' value={item.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />

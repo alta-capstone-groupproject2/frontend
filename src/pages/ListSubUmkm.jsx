@@ -116,7 +116,9 @@ function ListSubUmkm() {
             headerName: 'Document',
             width: 150,
             renderCell: (params) => {
-                return (<a href={`${params.value}`} target='_blank' className="break-all underline text-red-600" rel="noreferrer">{params.value}</a>);
+                const docUrl = params.value.split('/')
+                const name = decodeURIComponent(docUrl[docUrl.length-1])
+                return (<a href={`${params.value}`} target='_blank' className="break-all underline text-red-600" rel="noreferrer">{name}</a>);
             }
         },
         {

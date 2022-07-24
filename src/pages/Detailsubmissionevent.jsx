@@ -15,12 +15,12 @@ import Map from '../components/Map'
 function Detailsubmissionevent() {
     const navigate = useNavigate()
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
-    const [loading, setLoading] = useState(false)
-    const [event,setEvent] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [event, setEvent] = useState({})
+    const [position,setPosition] = useState([])
     const [currTime,setCurrTime] = useState({})
     const token = localStorage.getItem('token')
     const idParams = useParams().id
-    const position = '-7.9797,112.6304'.split(',')
 
     useEffect(() => {
         apiGetSubEvent()
@@ -36,6 +36,7 @@ function Detailsubmissionevent() {
               switch (code) {
                 case '200':
                 setEvent(data)
+                setPosition(data.location.split(','))      
                 setCurrTime(currenttime)      
                 break
                 case '400':                      
@@ -118,7 +119,7 @@ function Detailsubmissionevent() {
                                 </p>
                                 <p>{event.details}</p>
                                 <Map position={position} />
-                                <p className='text-right'><b>Lat</b>{event.location} <b>Lng.</b> {event.location}</p>
+                                <p className='text-right'><b>Lat</b>{position[0]} <b>Lng.</b> {position[1]}</p>
                                 <div className='flex gap-4'>
                                     <button className='shadow-md rounded py-2 px-10 font-bold bg-red-600 text-white' onClick={() => handleStatus('approve')}> Accept </button>
                                     <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' onClick={() => handleStatus('decline')}> Decline </button>

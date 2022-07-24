@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState,useEffect } from 'react'
 import { Modal } from '@mui/material'
 import HorizontalLinearStepper from '../components/Stepper'
@@ -5,7 +6,7 @@ import { FaTimes } from 'react-icons/fa'
 import srcLogo from '../assets/images/logo.webp'
 import { apiRequest } from '../utils/apiRequest'
 import { FaSearch, FaTrash } from 'react-icons/fa';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Layout from '../components/Layout';
 import Loading from '../components/Loading';
@@ -24,14 +25,12 @@ function Cart() {
     const [inputAddress, setInputAddress] = useState('')
 
     const navigate = useNavigate();
-	const [searchParams, setSearchParams] = useSearchParams();
 	const [loading, setLoading] = useState(true);
 	const [cart, setCart] = useState([]);
-	const [cartQty, setCartQty] = useState(1);
 	const [totalPrice, setTotalPrice] = useState();
 	const [cartsID, setCartID] = useState([]);
 	const [name, setName] = useState('');
-	const [city, setCity] = useState('');
+    const [city, setCity] = useState('');
     
     const [stepper, setStepper] = useState(false)
     const [address, setAddress] = useState('')
@@ -39,7 +38,8 @@ function Cart() {
     const [receiver, setReceiver] = useState('')
     const [phone, setPhone] = useState('')
     const [error, setError] = useState(true)
-    const [loadApi,setLoadApi] = useState(false)
+    const [loadApi, setLoadApi] = useState(false)
+    const [paymentCode,setPaymentCode] = useState('')
     
     const showStepper = () => setStepper(true)
 
@@ -53,13 +53,28 @@ function Cart() {
 
     const apiPost = () => {
         setLoadApi(true)
-		apiRequest('users', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
-			.then((res) => {
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-			.finally(() => setLoadApi(false));
+        const body = {
+            'cart_id': cartsID,
+            'address': address,
+            'phone': phone,
+            'receiver':receiver
+        }
+        apiRequest(`orders/${bank}`, 'post', JSON.stringify(body), {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        })
+        .then((res) => {
+            const { OrderID } = res
+            setPaymentCode(OrderID)
+        })
+        .catch((err) => {
+            const errorMsg = err.message
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            alert(`${errorMsg} : ${msg}`);
+            
+        })
+        .finally(() => setLoadApi(false));
     };
 
     const getCart = () => {
@@ -71,9 +86,11 @@ function Cart() {
 			},
 		})
 			.then((res) => {
-				const { data } = res.data;
+                const { data } = res.data;
+                const cartIdList = getAllCartID(data)
                 const total = getTotalPrice(data)
                 setTotalPrice(total)
+                setCartID(cartIdList)
                 setCart(data);
 			})
 			.catch((err) => {
@@ -107,10 +124,10 @@ function Cart() {
 			.finally(() => getCart());
     };
 
-    const getAllCartID = () => {
+    const getAllCartID = (datas) => {
 		let temp = [];
-		cart.forEach((item) => item.cartID && temp.push(item.cartID));
-		setCartID(temp);
+		datas.map((item) => item.cartID && temp.push(item.cartID));
+		return temp
 	};
 
 	const getTotalPrice = (carts) => {
@@ -122,40 +139,17 @@ function Cart() {
 	};
 
     const handleChange = (e, type) => {
-        const val = e.target.value;
-        const params = {};
-        searchParams.forEach((value, key) => {
-            params[key] = value;
-        });
-        let newSearch = { ...params };
-        if (type === 'name') {
-            if (val !== '') {
-                newSearch = { ...newSearch, name: val };
-                setSearchParams(newSearch);
-            } else {
-                searchParams.delete('name');
-                setSearchParams(searchParams);
-            }
-        } else {
-            if (val !== '') {
-                newSearch = { ...newSearch, city: val };
-                setSearchParams(newSearch);
-            } else {
-                searchParams.delete('city');
-                setSearchParams(searchParams);
-            }
+        const val = e.target.value
+        const obj = {
+            'name':(val)=>setName(val),
+            'city':(val)=>setCity(val),
         }
+        obj[type](val)
     };
 
     useEffect(() => {
 		getCart();
-		getAllCartID();
 	}, []);
-
-	useEffect(() => {
-		searchParams.get('name') ? setName(searchParams.get('name')) : setName('');
-		searchParams.get('city') ? setCity(searchParams.get('city')) : setCity('');
-	}, [searchParams]);
     
     const handleChangePayment = (e, type) => {
         const val = e
@@ -204,32 +198,32 @@ function Cart() {
 						</div>
 					</div>
 				</div>
-				<div className='p-12 space-y-4'>
+				<div className=''>
 					{cart.map((item) => {
 						return (
-							<div className='grid grid-cols-1 gap-y-4 sm:gap-y-0 border sm:border-0 sm:grid-cols-12 hover:bg-slate-100 hover:rounded-md hover:shadow-sm p-6 cursor-default'>
+							<div className='grid grid-cols-1 gap-y-4 sm:gap-y-0 border sm:border-0 sm:grid-cols-12 hover:bg-slate-100 hover:rounded-md hover:shadow-sm p-6 cursor-default' key={item.cartID}>
 								<div className='col-span-2 flex items-center justify-center'>
 									<img id='product-image' src={item.image} alt={item.name} />
 								</div>
-								<div className='col-span-3'>
-									<div className='space-y-2 text-center'>
-										<p id='product-name'>{item.name}</p>
+								<div className='col-span-3 flex justify-center'>
+									<div className='space-y-2'>
+										<p id='product-name' className='text-lg font-bold'>{item.name}</p>
                                         <CurrencyFormat value={item.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp. '} />
 									</div>
 								</div>
-								<div className='col-span-3'>
-									<div className='space-y-2 text-center'>
-										<p>Qty</p>
+								<div className='col-span-3 flex justify-center'>
+									<div className='text-center'>
+										<p className='text-lg font-bold'>Qty</p>
 										<p id='product-qty'>{item.qty}</p>
 									</div>
 								</div>
 								<div className='col-span-3'>
 									<div className='space-y-2 text-center'>
-										<p>Sub Total</p>
+										<p className='text-lg font-bold'>Subtotal</p>
                                         <CurrencyFormat value={item.price*item.qty} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp. '} />
 									</div>
 								</div>
-								<button id='delete-cart' className='flex justify-center items-center' onClick={() => deleteCart(item.cartID)}>
+								<button id='delete-cart' className='flex justify-center self-center' onClick={() => deleteCart(item.cartID)}>
 									<FaTrash className='font-bold text-xl text-red-600 hover:text-red-700 active:text-red-800' />
 								</button>
 							</div>
@@ -275,6 +269,7 @@ function Cart() {
                                     totalPrice={totalPrice}
                                     searchMap={searchMap}
                                     inputAddress={inputAddress}
+                                    paymentCode={paymentCode}
                                 />
                             </div>
                         </Modal>

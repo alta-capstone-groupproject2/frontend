@@ -102,14 +102,14 @@ function Myevent() {
                       <p>
                        <span className='text-slate-400'>City : </span> {event.city}
                       </p>
-                      <p>
+                      <div>
                         <div className='flex flex-col text-xs'>
                             <b>From</b>
                             <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, h:mm a')}</span>
                             <b>To</b>     
                             <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, h:mm a')}</span>
                         </div>
-                      </p>
+                      </div>
                       <p>
                         {event.address}
                       </p>
