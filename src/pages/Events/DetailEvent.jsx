@@ -34,6 +34,7 @@ const DetailEvent = () => {
 	const [name, setName] = useState('');
 	const [city, setCity] = useState('');
 	const [avatar, setAvatar] = useState('');
+	const [page, setPage] = useState(1);
 	const endEventDate = moment(endDate).format('YYYY-MM-DD');
 	const currentTimeNow = moment(currentTime).format('YYYY-MM-DD');
 	const isAfter = moment(currentTimeNow).isAfter(endEventDate);
@@ -62,10 +63,26 @@ const DetailEvent = () => {
 
 	const getComment = () => {
 		const { eventID } = params;
-		apiRequest(`events/comments/${eventID}?page=1`, 'get', false, { 'Content-Type': 'application/json' })
+		apiRequest(`events/comments/${eventID}?page=${page}`, 'get', false, { 'Content-Type': 'application/json' })
 			.then((res) => {
 				const { data } = res;
 				setComment(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const loadComment = () => {
+		const newPage = page + 1;
+		const { eventID } = params;
+		apiRequest(`events/comments/${eventID}?page=${page + 1}`, 'get', false, { 'Content-Type': 'application/json' })
+			.then((res) => {
+				const { data } = res;
+				const commentClone = comment.slice();
+				commentClone.push(...data);
+				setComment(commentClone);
+				setPage(newPage);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -83,6 +100,7 @@ const DetailEvent = () => {
 				.then((res) => {
 					const { code } = res;
 					if (code === 200) {
+						setCommentText('');
 						getComment();
 					}
 				})
@@ -276,9 +294,9 @@ const DetailEvent = () => {
 													})
 												)}
 											</div>
-											{comment && comment.length <= 5 ? null : (
+											{comment.length < 5 ? null : (
 												<div className='flex justify-center items-end pb-4'>
-													<button onClick={() => getComment()} className='bg-slate-200 text-red-600 py-2 px-5 rounded-sm hover:bg-slate-300 active:bg-slate-400'>
+													<button onClick={() => loadComment()} className='text-red-600'>
 														Load more
 													</button>
 												</div>
