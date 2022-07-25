@@ -10,7 +10,6 @@ import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Layout from '../components/Layout';
 import Loading from '../components/Loading';
-import axios from 'axios'
 import CurrencyFormat from 'react-currency-format'
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
@@ -75,21 +74,18 @@ function Cart() {
             if (err.response.data) msg = err.response.data.message 
             alert(`${errorMsg} : ${msg}`);
             setIsSuccess(false)
-            
         })
         .finally(() => setLoadApi(false));
     };
 
     const getCart = () => {
-		axios({
-			method: 'get',
-			url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/carts',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+        setLoading(true)
+		apiRequest('carts','get',false,{
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
 		})
-			.then((res) => {
-                const { data } = res.data;
+            .then((res) => {
+                const { data } = res;
                 const cartIdList = getAllCartID(data)
                 const total = getTotalPrice(data)
                 setTotalPrice(total)
@@ -104,16 +100,13 @@ function Cart() {
 	};
 
     const deleteCart = (cartID) => {
-		axios({
-			method: 'delete',
-			url: `https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/carts/${cartID}`,
-			headers: {
-				'Content-Type': 'application/json',
-			},
+		apiRequest(`carts/${cartID}`,'delete',false,{
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
 		})
 			.then((res) => {
 				const { code, message } = res.data;
-				if (code === 200) {
+				if (code === '200') {
 					Swal.fire({
 						title: 'Success',
 						text: message,
