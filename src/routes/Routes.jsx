@@ -82,7 +82,7 @@ const RoutesApp = () => {
 					<Route path='/merchandise' element={<Merchandise />} />
 					<Route path='/merchandise/:productsID' element={<DetailMerchandise />} />
 					<Route path='/cart' element={<Cart />} />
-					<Route path='/payment/bca' element={<BCA />} />
+					<Route path='/payment/bca/:eventID' element={<BCA />} />
 					<Route path='*' element={<Custom404 />} />
 				</Routes>
 			</BrowserRouter>

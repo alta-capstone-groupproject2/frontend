@@ -85,7 +85,7 @@ function Listcultureadmin() {
             if (err.response.data) msg = err.response.data.message 
             Swal.fire(errorMsg,msg,'error'); 
         })
-        .finally(()=>apiGetCultures())
+        .finally(()=>loadPage(1))
     }
 
     const handleDelete = (id) => {

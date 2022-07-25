@@ -22,7 +22,7 @@ const Merchandise = () => {
 	const productCity = searchParams.get('city');
 
 	const getMerchandise = () => {
-		apiRequest('products?page=1&limit=12', 'get')
+		apiRequest('products?page=1&limit=30', 'get')
 			.then((res) => {
 				const { data } = res;
 				setMerchandise(data);
@@ -35,7 +35,7 @@ const Merchandise = () => {
 
 	const searchProduct = () => {
 		if (name !== '' && city !== '') {
-			apiRequest(`products?page=1&limit=12&name=${name}&city=${city}`, 'get')
+			apiRequest(`products?page=1&limit=30&name=${name}&city=${city}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
@@ -44,7 +44,7 @@ const Merchandise = () => {
 					console.log(err);
 				});
 		} else if (name !== '') {
-			apiRequest(`products?page=1&limit=12&name=${name}`, 'get')
+			apiRequest(`products?page=1&limit=30&name=${name}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
@@ -53,7 +53,7 @@ const Merchandise = () => {
 					console.log(err);
 				});
 		} else if (city !== '') {
-			apiRequest(`products?page=1&limit=12&city=${city}`, 'get')
+			apiRequest(`products?page=1&limit=30&city=${city}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
@@ -98,7 +98,7 @@ const Merchandise = () => {
 
 	useEffect(() => {
 		if (productName && productCity) {
-			apiRequest(`products?page=1&limit=12&name=${productName}&city=${productCity}`, 'get')
+			apiRequest(`products?page=1&limit=30&name=${productName}&city=${productCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
@@ -108,7 +108,7 @@ const Merchandise = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (productName) {
-			apiRequest(`products?page=1&limit=12&name=${productName}`, 'get')
+			apiRequest(`products?page=1&limit=30&name=${productName}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
@@ -118,7 +118,7 @@ const Merchandise = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (productCity) {
-			apiRequest(`products?page=1&limit=12&city=${productCity}`, 'get')
+			apiRequest(`products?page=1&limit=30&city=${productCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setMerchandise(data);
