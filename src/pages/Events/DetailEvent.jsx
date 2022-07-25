@@ -75,7 +75,7 @@ const DetailEvent = () => {
 	const postComment = () => {
 		const { eventID } = params;
 		const data = {
-			eventID: +eventID,
+			id_event: +eventID,
 			comment: commentText,
 		};
 		if (commentText !== '') {
@@ -88,7 +88,8 @@ const DetailEvent = () => {
 				})
 				.catch((err) => {
 					console.log(err);
-				});
+				})
+				.finally(() => getComment());
 		} else {
 			Swal.fire({
 				title: 'Error',
@@ -260,7 +261,7 @@ const DetailEvent = () => {
 														return (
 															<div className='bg-slate-200 hover:bg-slate-300 p-4 space-y-4 rounded-md flex items-center space-x-4' key={item.commentID}>
 																<div className='flex items-center justify-center'>
-																	<img id='user-comment-avatar' src={item.image} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
+																	<img id='user-comment-avatar' src={item.avatar} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
 																</div>
 																<div>
 																	<p id='user-comment' className='font-bold text-xs sm:text-base'>
