@@ -7,16 +7,19 @@ import { MdOutlineEventAvailable, MdSpaceDashboard } from 'react-icons/md';
 import { IoLibrary,IoStorefront } from 'react-icons/io5';
 import { RiListOrdered } from 'react-icons/ri';
 import { apiRequest } from '../utils/apiRequest';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 export const SidebarAdmin = ({ active }) => {
-	const classActive = 'flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'
-	const classSide = 'flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'
+	const classActive = 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+	const classSide = 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 	return (
-		<div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm -z-0'>
-			<Link to="/list-culture-admin" className={active === 'culture' ? classActive:classSide}><IoLibrary />Culture</Link>
-			<Link to="/list-submission-event" className={active === 'eventSub' ? classActive:classSide}><MdOutlineEventAvailable />Event Submission</Link>
-			<Link to="/list-submission-umkm" className={active === 'umkmSub' ? classActive:classSide}><IoStorefront />UMKM Submission</Link>
+		<div className='sm:w-1/4 mb-8 mt-4'>
+			<div className='grid grid-cols-2 sm:grid-cols-1 px-8 sm:px-6 '>
+				<Link to="/list-culture-admin" className={active === 'culture' ? classActive:classSide}><IoLibrary /> <span>Culture</span></Link>
+				<Link to="/list-submission-event" className={active === 'eventSub' ? classActive:classSide}><MdOutlineEventAvailable /> <span>Event Submission</span></Link>
+				<Link to="/list-submission-umkm" className={active === 'umkmSub' ? classActive:classSide}><IoStorefront /> <span>UMKM Submission</span></Link>
+			</div>
 		</div>
 	)
 }
@@ -35,19 +38,22 @@ const Sidebar = ({ active }) => {
 				setStatus(res.data.status);
 			})
 			.catch((err) => {
-				console.log(err);
+				const errorMsg = err.message
+				let msg
+				if (err.response.data) msg = err.response.data.message 
+				Swal.fire(`Failed Get Role User ${errorMsg}`,msg,'error'); 
 			})
 			.finally(() => setLoading(false));
 	};
 	return (
-		<div className='sm:w-1/4 mb-8'>
-			<div className='grid grid-cols-2 sm:grid-cols-1 gap-2 sm:gap-4 px-8 sm:px-6'>
+		<div className='sm:w-1/4 mb-8 '>
+			<div className='grid grid-cols-2 sm:grid-cols-1 px-8 sm:px-6 '>
 				<Link to='/dashboard'>
 					<span
 						className={
 							active === 'dashboard'
-								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-								: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+								: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 						}>
 						<MdSpaceDashboard />
 						<p>Dashboard</p>
@@ -57,8 +63,8 @@ const Sidebar = ({ active }) => {
 					<span
 						className={
 							active === 'joined-event'
-								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-								: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+								: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 						}>
 						<TbTicket />
 						<p>Joined Event</p>
@@ -68,8 +74,8 @@ const Sidebar = ({ active }) => {
 					<span
 						className={
 							active === 'my-event'
-								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-								: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+								: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 						}>
 						<MdOutlineEventAvailable />
 						<p>My Event</p>
@@ -82,8 +88,8 @@ const Sidebar = ({ active }) => {
 								<span
 									className={
 										active === 'umkm'
-											? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-											: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+											? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+											: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 									}>
 									<FaStoreAlt />
 									<p>Upgrade Account</p>
@@ -94,8 +100,8 @@ const Sidebar = ({ active }) => {
 								<span
 									className={
 										active === 'umkm'
-											? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-											: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+											? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+											: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 									}>
 									<FaStoreAlt />
 									<p>My Product</p>
@@ -109,8 +115,8 @@ const Sidebar = ({ active }) => {
 					<span
 						className={
 							active === 'history-order'
-								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 -ml-4 pl-4 border-l-4'
-								: 'flex items-center space-x-2 hover:font-bold text-slate-700 hover:border-red-700 hover:-ml-4 hover:pl-4 hover:border-l-4'
+								? 'flex items-center space-x-2 font-bold border-red-700 text-red-700 p-4 border-l-4'
+								: 'flex items-center space-x-2 hover:bg-slate-100 text-slate-700 hover:border-red-700 border-l-white p-4 border-l-4'
 						}>
 						<RiListOrdered />
 						<p>History Order</p>

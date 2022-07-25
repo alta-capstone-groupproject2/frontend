@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
 import { SidebarAdmin } from '../components/Sidebar'
+import { TbTicket } from 'react-icons/tb'
 import CurrencyFormat from 'react-currency-format'
 import moment from 'moment'
 import Swal from 'sweetalert2'
@@ -14,12 +15,12 @@ import Map from '../components/Map'
 function Detailsubmissionevent() {
     const navigate = useNavigate()
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
-    const [loading, setLoading] = useState(false)
-    const [event,setEvent] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [event, setEvent] = useState({})
+    const [position,setPosition] = useState([])
     const [currTime,setCurrTime] = useState({})
     const token = localStorage.getItem('token')
     const idParams = useParams().id
-    const position = '-7.9797,112.6304'.split(',')
 
     useEffect(() => {
         apiGetSubEvent()
@@ -35,6 +36,7 @@ function Detailsubmissionevent() {
               switch (code) {
                 case '200':
                 setEvent(data)
+                setPosition(data.location.split(','))      
                 setCurrTime(currenttime)      
                 break
                 case '400':                      
@@ -106,15 +108,18 @@ function Detailsubmissionevent() {
                                     {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                                 </p>
                                 <p className=' flex justify-between'>
-                                    <span className='font-bold text-4xl'>
-                                        <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+                                    <span className='font-bold text-4xl flex items-center gap-4'>
+                                        <TbTicket /><CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                     </span>
                                     <span>Verify : <a href={event.document} className='text-red-600 cursor-pointer font-bold underline' target='_blank' rel="noreferrer">Document1.pdf</a></span>
                                 </p>
-                                <p className='font-bold text-2xl'>About this Event</p>
+                                <p className='font-bold text-2xl flex justify-between items-center'>
+                                    About this Event
+                                    <span className='text-red-600 text-sm rounded border-2 border-red-600 px-2'>Status : { event.status}</span>
+                                </p>
                                 <p>{event.details}</p>
                                 <Map position={position} />
-                                <p className='text-right'><b>Lat</b>{event.location} <b>Lng.</b> {event.location}</p>
+                                <p className='text-right'><b>Lat</b>{position[0]} <b>Lng.</b> {position[1]}</p>
                                 <div className='flex gap-4'>
                                     <button className='shadow-md rounded py-2 px-10 font-bold bg-red-600 text-white' onClick={() => handleStatus('approve')}> Accept </button>
                                     <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' onClick={() => handleStatus('decline')}> Decline </button>
@@ -126,9 +131,9 @@ function Detailsubmissionevent() {
                                     <span className='font-medium text-sm'>
                                         <div className='flex flex-col'>
                                             <b>From</b>
-                                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY')}</span>
+                                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, h:mm a')}</span>
                                             <b>To</b>     
-                                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY')}</span>
+                                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, h:mm a')}</span>
                                         </div>
                                     </span>
                                 </p>

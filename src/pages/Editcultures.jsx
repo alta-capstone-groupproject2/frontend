@@ -87,7 +87,7 @@ function Editcultures() {
             if (err.response.data) msg = err.response.data.message 
             Swal.fire(errorMsg,msg,'error'); 
         })
-        .finally(()=>setLoading(false))
+        .finally(()=>apiGetCulture())
     }
 
     const apiGetCulture = async () => {
@@ -100,7 +100,8 @@ function Editcultures() {
             const { code, message, data } = result
             switch (code) {
                 case '200':
-                    setSrcPhoto(data.Image)
+                    setSrcPhoto(data.image)
+                    setPhoto(data.image)
                     setTitle(data.name)                        
                     setCity(data.city)                        
                     setDetail(data.details)                        

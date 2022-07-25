@@ -7,6 +7,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { reduxAction } from '../utils/redux/actions/action';
 import logoSrc from '../assets/images/logo.webp'
+import { BsFillCartPlusFill } from 'react-icons/bs'
 
 export const NavbarAdmin = () => { 
 	const navigate = useNavigate()
@@ -28,7 +29,7 @@ export const NavbarAdmin = () => {
 		navigate("/login");
 	};
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-50'>
 			<div className='text-red-700 flex items-end gap-4 text-lg sm:text-2xl font-bold sm:flex'>
 				<img src={logoSrc} alt="" className='h-10' /> admin
 			</div>
@@ -94,9 +95,9 @@ const Navbar = () => {
 	};
 	
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
 			<Link id='link-to-index' to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
+				<div className='text-red-600 text-lg sm:text-2xl font-bold sm:flex'>
 					<img src={logoSrc} alt="" className='h-10' />
 				</div>
 			</Link>
@@ -112,7 +113,10 @@ const Navbar = () => {
 				</div>
 				<div className='flex items-center space-x-4'>
 					{isLoggedIn ? (
-						<div>
+						<div className='flex items-center'>
+							<Link to="/cart" className='text-3xl text-red-600 mr-5'>
+								<BsFillCartPlusFill />
+							</Link>
 							<Button
 								id="basic-button"
 								aria-controls={open ? 'basic-menu' : undefined}
@@ -120,7 +124,7 @@ const Navbar = () => {
 								aria-expanded={open ? 'true' : undefined}
 								onClick={clickDropdown}
 							>
-								<CgProfile className='text-3xl text-red-600 cursor-pointer' />
+								<CgProfile className='text-3xl text-red-600' />
 							</Button>
 							<Menu
 								id="basic-menu"
@@ -143,7 +147,7 @@ const Navbar = () => {
 							</Menu>
 						</div>
 					) : (
-						<div className='flex text-pink-700 font-bold'>
+						<div className='flex text-red-600 font-bold'>
 							<Link id="l" to={'/login'}>
 								<div>Login</div>
 							</Link>

@@ -7,6 +7,8 @@ import Loading from '../components/Loading'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
 import Sidebar from '../components/Sidebar'
+import { OpenStreetMapProvider } from 'leaflet-geosearch'
+import { Autocomplete } from '@mui/material' 
 
 function UpgradeAccount() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -24,6 +26,14 @@ function UpgradeAccount() {
     const [isPhoneError, setIsPhoneError] = useState(false)
     const [loading, setLoading] = useState(false)
     
+    const provider = new OpenStreetMapProvider();
+    const callSearch = async (input) => {
+        const results = await provider.search({ query: input });
+        return results
+    }
+    const [searchMap,setSearchMap]=useState([])
+    const [inputAddress, setInputAddress] = useState('')
+
     const apiPostStore = () => {
         setLoading(true)
         const formData = new FormData();
@@ -80,10 +90,10 @@ function UpgradeAccount() {
     }
 
     const handleChange = (e, type) => {
-      const val = e.target
+      const val = e
       const obj = {
-        'doc': (target) => checkFile(
-            target,
+        'doc': (e) => checkFile(
+            e.target,
             5050000,
             ["application/pdf"],
             {
@@ -92,11 +102,15 @@ function UpgradeAccount() {
             },
             setDoc
         ),
-        'store': (target) => setStore(target.value),
-        'city': (target) => setCity(target.value),
-        'owner': (target) => setOwner(target.value),
-        'phone': (target) => setPhone(target.value),
-        'address': (target)=>setAddress(target.value),
+        'store': (e) => setStore(e.target.value),
+        'city': (e) => setCity(e.target.value),
+        'owner': (e) => setOwner(e.target.value),
+        'phone': (e) => setPhone(e.target.value),
+        'address': (value) => setAddress(value),
+        'inputAddress': (value) => {
+                setInputAddress(value);
+                callSearch(value).then((e) => setSearchMap(e))
+            },
       }
       obj[type](val)
     }
@@ -140,9 +154,9 @@ function UpgradeAccount() {
         } else {
             return (
                 <Layout>
-                    <div className='min-h-[80vh] pt-5 flex'>
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
                         <Sidebar active={"umkm"}/>
-                        <div className="p-6 basis-5/6">
+                        <div className="basis-5/6">
                             <p className='font-bold text-lg'>Upgrade Account</p>
                             <div className="pr-20">
                                 <div className="flex flex-row my-2 items-center">
@@ -198,8 +212,20 @@ function UpgradeAccount() {
                                     <label className="basis-1/6 self-start">
                                         Address
                                     </label>
-                                    <div className="basis-5/6">
-                                        <input id='input-detail' type={"text"} value={address} onChange={(e) => handleChange(e, "address")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Detail" />
+                                    <div className="basis-5/6">                    
+                                        <Autocomplete
+                                            value={address}
+                                            onChange={(event, newValue) => handleChange(newValue,'address')}
+                                            inputValue={inputAddress}
+                                            onInputChange={(event, newInputValue) => handleChange(newInputValue,'inputAddress')}
+                                            isOptionEqualToValue={(option, value) => option.value === value.value}
+                                            noOptionsText={'Address Not Found...'}
+                                            options={searchMap.map((item) => item.label)}
+                                            renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                    <input type="text" {...params.inputProps} className='border-[0.1rem] rounded p-2 w-full'/>
+                                                </div>)}
+                                        />
                                     </div>
                                 </div>
                                 <div className="flex flex-row my-5 mb-10 items-center justify-end">

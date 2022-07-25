@@ -9,11 +9,6 @@ import SearchControl from '../components/SearchMap'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
 import Sidebar from '../components/Sidebar'
-import TextField from '@mui/material/TextField';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
-import moment from 'moment'
 
 function Applyevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -24,7 +19,7 @@ function Applyevent() {
     const [name,setName] = useState("")
     const [host,setHost] = useState("")
     const [phone,setPhone] = useState("")
-    const [startDate,setStartDate] = useState("")
+    const [startDate,setStartDate] = useState(new Date().toISOString().slice(0, -8))
     const [endDate,setEndDate] = useState("")
     const [price,setPrice] = useState("")
     const [detail,setDetail] = useState("")
@@ -61,7 +56,7 @@ function Applyevent() {
         switch (code) {
             case '201':
                 Swal.fire(`Success`, message, 'success')
-                .then(() => navigate('/myevent'));
+                .then(() => navigate('/my-event'));
                 break;
 
             case '400': Swal.fire(`Failed`,message,'error'); break;
@@ -119,13 +114,13 @@ function Applyevent() {
         'name': (target) => { setName(target.value); setIsNameError(false)},
         'host': (target) => { setHost(target.value);  setIsHostError(false)},
         'phone': (target) => { setPhone(target.value); setIsPhoneError(false)},
-        'startDate': (value)=>setStartDate(value),
-        'endDate': (value)=>setEndDate(value),
+        'startDate': (target)=>setStartDate(target.value),
+        'endDate': (target)=>setEndDate(target.value),
         'price': (target)=>setPrice(target.value.split('.').join("")),
         'detail': (target)=>setDetail(target.value),
         'city': (target) => { setCity(target.value); setIsCityError(false)}
       }
-      type === 'startDate' || type === 'endDate' ? obj[type](e) : obj[type](val)
+      obj[type](val)
     }
 
     const handleSubmit = () => {
@@ -148,7 +143,7 @@ function Applyevent() {
             setIsHostError(true)
         }
         phone !== "" && phone.length >= 10 ? passed++ : setIsPhoneError(true)
-        startDate !== "" && passed++
+        startDate !== "" && passed++ 
         endDate !== "" && passed++
         price !== "" && passed++
         detail !== "" && passed++
@@ -160,8 +155,8 @@ function Applyevent() {
             setIsCityError(true)
         }
         position.join() !== ',' && passed++
-
-        passed === 10 ? apiPostEvent() : Swal.fire('Important', 'all field must be filled', 'error')
+        console.log('startDate',startDate,'endDate',endDate)
+        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled startDate: ${startDate} startEnd: ${endDate}`, 'error')
     }
 
     if (!isLoggedIn) {
@@ -172,9 +167,9 @@ function Applyevent() {
         } else {
             return (
                 <Layout>
-                    <div className='min-h-[80vh] pt-5 flex'>
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
                         <Sidebar active={"my-event"}/>
-                        <div className="p-6 basis-5/6">
+                        <div className="basis-5/6">
                             <p className='font-bold text-lg'>Apply Event</p>
                             <div className="pr-20">
                                 <div className="flex flex-row my-2 items-center">
@@ -231,27 +226,10 @@ function Applyevent() {
                                     <label className="basis-1/6">
                                         Date
                                     </label>
-                                    <div className="basis-5/6 flex justify-between w-full">
-                                        {/* <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input> */}
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <MobileDateTimePicker
-                                                id='input-start-date'
-                                                renderInput={(props) => <TextField {...props} />}
-                                                label="Start Date"
-                                                minDate={moment().toDate()}
-                                                value={startDate}
-                                                onChange={(e) => handleChange(e, "startDate")}
-                                            />
-                                        </LocalizationProvider>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <MobileDateTimePicker
-                                                renderInput={(props) => <TextField {...props} />}
-                                                label="End Date"
-                                                minDate={startDate}
-                                                value={endDate}
-                                                onChange={(e) => handleChange(e, "endDate")}
-                                            />
-                                        </LocalizationProvider>
+                                    <div className="basis-5/6 flex justify-between items-center gap-2 w-full">
+                                        <input id='input-start-date' type="datetime-local" value={startDate} min={new Date().toISOString().slice(0, -8)} onChange={(e) => handleChange(e, "startDate")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Start Date" /> 
+                                        <span>to</span>
+                                        <input id='input-end-date' type="datetime-local" value={endDate} min={startDate} onChange={(e) => handleChange(e, "endDate")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Start Date" /> 
                                     </div>
                                 </div>
                                 <div className="flex flex-row my-2 items-center">
@@ -261,7 +239,7 @@ function Applyevent() {
                                     <div className="basis-5/6">
                                         <div className="border-[0.1rem] flex rounded w-full">
                                             <div className='bg-slate-200 p-2'>Rp.</div>
-                                            <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full" placeholder="Rp." />
+                                            <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full"  />
                                         </div>
                                     </div>
                                 </div>
