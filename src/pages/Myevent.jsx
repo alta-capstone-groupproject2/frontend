@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
-import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
+import Sidebar from '../components/Sidebar'
 import { TbTicket } from 'react-icons/tb'
 import { TiPlus } from 'react-icons/ti'
-import { IoStorefront } from 'react-icons/io5'
+import { BiDownload } from 'react-icons/bi'
 import { Pagination } from '@mui/material'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
@@ -21,24 +21,33 @@ function Myevent() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [currTime,setCurrTime] = useState('')
-    const [totalPg,setTotalPg] = useState('')
-    const [myEvents,setMyEvents] = useState('')
+    const [myEvents, setMyEvents] = useState('')
+    const [pdfFile, setPdfFile] = useState([])
+
+    const [totalPg, setTotalPg] = useState(false)
+    const [nowPage, setNowPage] = useState()
 
     useEffect(() => {
-        apiGetMyEvent()
-    },[])
+        loadPage(1)
+    }, [])
+  
+    const loadPage = (pg) => {
+        setNowPage(pg)
+        apiGetMyEvent(pg)
+    }
 
-    const apiGetMyEvent = async () => {
+    const apiGetMyEvent = async (page) => {
         setLoading(true)
-        await apiRequest("users/events?limit=10&page=1", "get", false, {
+        await apiRequest(`users/events?limit=10&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
-                const { code, currentTime, message, data, totalPage } = result
+                const { code, currentTime, message, data, totalpage } = result
               switch (code) {
                 case '200':                       
+                !totalPg && setTotalPg(totalpage)
+                apiGetPdf(data)
                 setCurrTime(currentTime)
-                setTotalPg(totalPage)
                 setMyEvents(data);
                 break
                 case '400':                      
@@ -51,10 +60,32 @@ function Myevent() {
           })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
-        .finally(()=>setLoading(false))
+    }
+
+    const apiGetPdf = async (data) => {
+        let users = [];
+        let promises = [];
+        for (let i = 0; i < data.length; i++) {
+            promises.push(
+                await apiRequest(`/events/attendees/${data[i].eventID}`, "get", false, {
+                    'Authorization': `Bearer ${token}`,
+                }).then((res) => {
+                    users.push({data:res.data})
+                })
+            )
+        }
+        Promise.all(promises).then(() => {
+            setPdfFile(users)
+        }).catch((err) => {
+            const errorMsg = err.message
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
+        }).finally(()=>setLoading(false));
     }
 
     const apiDeleteMyEvent = (id) => {
@@ -79,8 +110,9 @@ function Myevent() {
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -107,58 +139,70 @@ function Myevent() {
                             <TiPlus />
                         </div>
                     </Link>
-                    <div className='min-h-[80vh] flex'>
-                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
-                        </div>
-                        <div className='p-6 basis-5/6'>
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
+                        <Sidebar active="my-event"/>
+                        <div className='basis-5/6'>
                             <p className='font-bold text-lg'>My Event</p>
                             <div className='flex flex-col gap-4 p-4'>
-                                {myEvents.map((event) => (
-                                    <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
-                                        <img src={event.image} alt="" className='w-48 cursor-pointer' id={`img-goto-detail-${event.eventID}`} />
-                                        <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventID}`} onClick={() => navigate(`event/detail/${event.eventID}`)}>
-                                            <p className='font-bold text-4xl flex justify-between items-center'>
-                                                {event.eventName}
-                                                {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
-                                            </p>
-                                            <p className='flex justify-between'>
-                                                <span>
-                                                    <span className='text-slate-400'>Hosted by:</span>{event.hostedBy}
-                                                </span>
-                                                <span className='flex flex-col gap-2'>
-                                                    <span className='rounded text-xs py-[0.1rem] text-center font-bold px-2 bg-red-600 text-white'>Status : {event.Status}</span>
-                                                </span>
-                                            </p>
-                                            <p className=' flex justify-between'>
-                                                {moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}
-                                                <span className='flex gap-2 items-center'>
-                                                    <TbTicket />
-                                                    <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
-                                                </span>
-                                            </p>
-                                            <p>
-                                                {event.address}
-                                            </p>
-                                            <p className='text-slate-400 mt-4'>
-                                                About this event
-                                            </p>
-                                            <p className=''>
-                                                {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
-                                            </p>
+                                <div className='flex justify-between'>
+                                    <p>Page : {nowPage} of { totalPg }</p>
+                                    <Pagination count={totalPg} page={nowPage} onChange={(e, pg) => loadPage(pg)} shape="rounded" />
+                                </div>
+                                {
+                                    myEvents.length < 1 ? (
+                                        <div className='p-20 text-slate-300 flex justify-center items-center text-4xl'>
+                                            No Result
                                         </div>
-                                        <div className='text-center px-14'>
-                                            <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={() => handleDelete(event.eventID)}>Delete</button>
+                                    ) : (
+                                    myEvents.map((event,idx) =>
+                                    (
+                                        <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
+                                            <img src={event.image} alt="" className='w-48'/>
+                                            <div className='pl-8 py-4 break-all flex-1'>
+                                                <p className='font-bold text-4xl flex justify-between items-center'>
+                                                    {event.eventName}
+                                                    {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
+                                                </p>
+                                                <p className='flex justify-between'>
+                                                    <span>
+                                                        <span className='text-slate-400'>Hosted by:</span>{event.hostedBy}
+                                                    </span>
+                                                    <span className='flex flex-col gap-2'>
+                                                        <span className='rounded text-xs py-[0.1rem] text-center font-bold px-2 bg-red-600 text-white'>Status : {event.status}</span>
+                                                    </span>
+                                                </p>
+                                                <div className=' flex justify-between'>
+                                                    <div className='flex flex-col text-xs'>
+                                                        <b>From</b>
+                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
+                                                        <b>To</b>     
+                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
+                                                    </div>
+                                                    <div className='mt-2 flex flex-col items-end'>
+                                                        <div className='flex items-center gap-2'>
+                                                            <TbTicket />
+                                                            <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+                                                        </div>
+                                                        <a href={pdfFile[idx].data} target='_blank' className='flex mt-4 items-center gap-2 text-red-600' rel="noreferrer"><BiDownload/> List Attendees.pdf </a>
+                                                    </div>
+                                                </div>
+                                                <p>
+                                                    {event.address}
+                                                </p>
+                                                <p className='text-slate-400 mt-4'>
+                                                    About this event
+                                                </p>
+                                                <p className=''>
+                                                    {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
+                                                </p>
+                                            </div>
+                                            <div className='text-center px-14'>
+                                                <button className='shadow-md rounded py-2 px-10 font-bold text-red-600' id={`del-event-${event.eventID}`} onClick={() => handleDelete(event.eventID)}>Delete</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className='flex justify-center'>
-                                <Pagination count={totalPg} onChange={(e, pg) => alert(pg)} shape="rounded" />
+                                        )
+                                    )
+                                )}
                             </div>
                         </div>
                     </div>

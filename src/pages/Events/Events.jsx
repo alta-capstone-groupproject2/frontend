@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @format */
 
 import { useEffect, useState } from 'react';
@@ -23,7 +24,6 @@ const Events = () => {
 		apiRequest('events?page=1&limit=30', 'get')
 			.then((res) => {
 				setEvent(res.data);
-				console.log(res.data);
 			})
 			.catch((err) => {
 				console.log(err);

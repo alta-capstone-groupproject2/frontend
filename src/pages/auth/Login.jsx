@@ -30,13 +30,15 @@ const Login = () => {
       apiRequest("login", "post", body)
           .then((res) => {
             const { code,message,data } = res;
-            const { token } = data;
+            const { token,role } = data;
               
             switch (code) {
                 case '200':
                   localStorage.setItem("token", token);
                   dispatch(reduxAction("IS_LOGGED_IN", true));
-                  Swal.fire(`Success`,message,'success').then(()=>navigate('/'));
+                  Swal.fire(`Success`, message, 'success').then(() =>
+                    role === 'admin' ? navigate('/list-submission-event') : navigate('/dashboard')
+                  );
                   break;
 
                 case '400':

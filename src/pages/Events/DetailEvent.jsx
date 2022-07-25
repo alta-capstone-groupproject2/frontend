@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 /** @format */
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { RiSendPlaneFill } from 'react-icons/ri';
@@ -16,7 +18,7 @@ const DetailEvent = () => {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [loading, setLoading] = useState(true);
-	const [position, setPosition] = useState([-7.96662, 112.632629]);
+	const [position] = useState([-7.96662, 112.632629]);
 	const [nameEvent, setNameEvent] = useState('');
 	const [detail, setDetail] = useState('');
 	const [cultureCity, setCultureCity] = useState('');
@@ -32,7 +34,6 @@ const DetailEvent = () => {
 	const [name, setName] = useState('');
 	const [city, setCity] = useState('');
 	const [avatar, setAvatar] = useState('');
-	// const [page, setPage] = useState(1);
 	const endEventDate = moment(endDate).format('YYYY-MM-DD');
 	const currentTimeNow = moment(currentTime).format('YYYY-MM-DD');
 	const isAfter = moment(currentTimeNow).isAfter(endEventDate);
@@ -56,8 +57,7 @@ const DetailEvent = () => {
 			})
 			.catch((err) => {
 				console.log(err);
-			})
-			.finally(() => setLoading(false));
+			});
 	};
 
 	const getComment = () => {
@@ -66,7 +66,6 @@ const DetailEvent = () => {
 			.then((res) => {
 				const { data } = res;
 				setComment(data);
-				console.log(data.length);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -76,8 +75,8 @@ const DetailEvent = () => {
 	const postComment = () => {
 		const { eventID } = params;
 		const data = {
-			comment: commentText,
 			eventID: +eventID,
+			comment: commentText,
 		};
 		if (commentText !== '') {
 			apiRequest('events/comments', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
@@ -119,8 +118,7 @@ const DetailEvent = () => {
 			text: 'Are you sure?!',
 			icon: 'info',
 			showCancelButton: true,
-			confirmButtonColor: '#4aff7e',
-			cancelButtonColor: '#ff4848',
+			cancelButtonColor: '#bb0300',
 			confirmButtonText: 'Yes, Join Event!',
 		}).then((result) => {
 			if (result.isConfirmed) {
@@ -253,17 +251,17 @@ const DetailEvent = () => {
 										<div className='space-y-4'>
 											<h1 className='text-xl font-bold'>Comment</h1>
 											<div className='space-y-2 py-2 h-52 overflow-y-auto'>
-												{comment.map((item) => {
-													return (
-														<div className='bg-slate-200 hover:bg-slate-300 p-4 space-y-4 rounded-md flex items-center space-x-4' key={item.commentID}>
-															<div className='flex items-center justify-center'>
-																<img id='user-comment-avatar' src={item.image} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
-															</div>
-															{comment.length < 1 ? (
-																<div className='flex justify-center items-center'>
-																	<h1 className='text-slate-300'>Tidak ada komentar yang tersedia</h1>
+												{comment.length < 1 ? (
+													<div className='flex justify-center items-center'>
+														<h1 className='text-slate-300'>Tidak ada komentar yang tersedia</h1>
+													</div>
+												) : (
+													comment.map((item) => {
+														return (
+															<div className='bg-slate-200 hover:bg-slate-300 p-4 space-y-4 rounded-md flex items-center space-x-4' key={item.commentID}>
+																<div className='flex items-center justify-center'>
+																	<img id='user-comment-avatar' src={item.image} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
 																</div>
-															) : (
 																<div>
 																	<p id='user-comment' className='font-bold text-xs sm:text-base'>
 																		{item.comment}
@@ -272,10 +270,10 @@ const DetailEvent = () => {
 																		{item.name}
 																	</p>
 																</div>
-															)}
-														</div>
-													);
-												})}
+															</div>
+														);
+													})
+												)}
 											</div>
 											{comment && comment.length <= 5 ? null : (
 												<div className='flex justify-center items-end pb-4'>

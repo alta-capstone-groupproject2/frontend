@@ -7,6 +7,65 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { reduxAction } from '../utils/redux/actions/action';
 import logoSrc from '../assets/images/logo.webp'
+import { BsFillCartPlusFill } from 'react-icons/bs'
+
+export const NavbarAdmin = () => { 
+	const navigate = useNavigate()
+	const dispatch = useDispatch()
+	const [anchorEl, setAnchorEl] = useState(null);
+	const open = Boolean(anchorEl);
+	const clickDropdown = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const closeDropdown = () => {
+		setAnchorEl(null);
+	};
+
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		dispatch(reduxAction("IS_LOGGED_IN", false));
+		localStorage.removeItem("role");
+		dispatch(reduxAction("ROLE", ''));
+		navigate("/login");
+	};
+	return (
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-50'>
+			<div className='text-red-700 flex items-end gap-4 text-lg sm:text-2xl font-bold sm:flex'>
+				<img src={logoSrc} alt="" className='h-10' /> admin
+			</div>
+			<div className='flex'>
+				<div className='flex space-x-8 items-center mr-10 text-sm'>
+					<div>
+							<Button
+								id="basic-button"
+								aria-controls={open ? 'basic-menu' : undefined}
+								aria-haspopup="true"
+								aria-expanded={open ? 'true' : undefined}
+								onClick={clickDropdown}
+							>
+								<CgProfile className='text-3xl text-red-600 cursor-pointer' />
+							</Button>
+							<Menu
+								id="basic-menu"
+								anchorEl={anchorEl}
+								open={open}
+								onClose={closeDropdown}
+								transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        						anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+							>
+								<MenuItem onClick={()=>handleLogout()}>
+									<div className='flex items-center'>
+										<BiLogOut className='mr-2' /> <span>Log out</span>
+									</div>
+								</MenuItem>
+							</Menu>
+						</div>
+				</div>
+			</div>
+		</nav>
+	)
+}
+
 
 const Navbar = () => {
 	const navigate = useNavigate()
@@ -30,13 +89,15 @@ const Navbar = () => {
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		dispatch(reduxAction("IS_LOGGED_IN", false));
+		localStorage.removeItem("role");
+		dispatch(reduxAction("ROLE", ''));
 		navigate("/login");
 	};
 	
 	return (
-		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md'>
+		<nav className='px-2 sm:px-12 py-5 flex items-center justify-between shadow-md z-20'>
 			<Link id='link-to-index' to='/'>
-				<div className='text-pink-700 text-lg sm:text-2xl font-bold sm:flex'>
+				<div className='text-red-600 text-lg sm:text-2xl font-bold sm:flex'>
 					<img src={logoSrc} alt="" className='h-10' />
 				</div>
 			</Link>
@@ -52,7 +113,10 @@ const Navbar = () => {
 				</div>
 				<div className='flex items-center space-x-4'>
 					{isLoggedIn ? (
-						<div>
+						<div className='flex items-center'>
+							<Link to="/cart" className='text-3xl text-red-600 mr-5'>
+								<BsFillCartPlusFill />
+							</Link>
 							<Button
 								id="basic-button"
 								aria-controls={open ? 'basic-menu' : undefined}
@@ -60,7 +124,7 @@ const Navbar = () => {
 								aria-expanded={open ? 'true' : undefined}
 								onClick={clickDropdown}
 							>
-								<CgProfile className='text-3xl text-red-600 cursor-pointer' />
+								<CgProfile className='text-3xl text-red-600' />
 							</Button>
 							<Menu
 								id="basic-menu"
@@ -71,7 +135,7 @@ const Navbar = () => {
         						anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 							>
 								<MenuItem onClick={closeDropdown}>
-									<div className='flex items-center'>
+									<div className='flex items-center' onClick={()=>navigate('/dashboard')}>
 										<CgProfile className='mr-2' /> <span>Profile</span>
 									</div>
 								</MenuItem>
@@ -83,7 +147,7 @@ const Navbar = () => {
 							</Menu>
 						</div>
 					) : (
-						<div className='flex text-pink-700 font-bold'>
+						<div className='flex text-red-600 font-bold'>
 							<Link id="l" to={'/login'}>
 								<div>Login</div>
 							</Link>

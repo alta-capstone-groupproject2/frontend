@@ -1,16 +1,14 @@
 import React,{useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Layout from '../components/Layout'
-import { MdSpaceDashboard,MdOutlineEventAvailable } from 'react-icons/md'
-import { TbTicket } from 'react-icons/tb'
 import CurrencyFormat from 'react-currency-format'
-import { IoStorefront } from 'react-icons/io5'
 import Map from '../components/Map'
 import Loading from '../components/Loading'
 import SearchControl from '../components/SearchMap'
 import { apiRequest } from '../utils/apiRequest'
 import Swal from 'sweetalert2'
+import Sidebar from '../components/Sidebar'
 
 function Applyevent() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -21,7 +19,8 @@ function Applyevent() {
     const [name,setName] = useState("")
     const [host,setHost] = useState("")
     const [phone,setPhone] = useState("")
-    const [date,setDate] = useState("")
+    const [startDate,setStartDate] = useState(new Date().toISOString().slice(0, -8))
+    const [endDate,setEndDate] = useState("")
     const [price,setPrice] = useState("")
     const [detail,setDetail] = useState("")
     const [city,setCity] = useState("")
@@ -40,7 +39,8 @@ function Applyevent() {
         formData.append("name",name)
         formData.append("hostedBy",host)
         formData.append("phone",`62${phone}`)
-        formData.append("date",date)
+        formData.append("startDate",startDate)
+        formData.append("endDate",endDate)
         formData.append("price",price)
         formData.append("details",detail)
         formData.append("city",city)
@@ -54,20 +54,20 @@ function Applyevent() {
             const { code,message } = res;
             
         switch (code) {
-            case '200':
+            case '201':
                 Swal.fire(`Success`, message, 'success')
-                .then(() => navigate('/myevent'));
+                .then(() => navigate('/my-event'));
                 break;
 
             case '400': Swal.fire(`Failed`,message,'error'); break;
-            
             default: Swal.fire(`Code ${code}`,message,'info'); break;
             }
         })
         .catch((err) => {
             const errorMsg = err.message
-            const { message } = err.response.data  
-            Swal.fire(errorMsg,message,'error'); 
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
         })
         .finally(()=>setLoading(false))
     }
@@ -81,7 +81,7 @@ function Applyevent() {
                 target.value=null
             } else { passed++ }
             if (!reqTypes.includes(file.type)) {
-                Swal.fire('Wrong input', message.Format , 'error')
+                Swal.fire('Wrong input', message.format , 'error')
                 target.value=null
             } else { passed++ }
             passed === 2 && callback(file)  
@@ -96,8 +96,8 @@ function Applyevent() {
               5050000,
               ["application/pdf"],
               {
-                  msgSize: 'file input must below 5.05 Mb',
-                  msgFormat: 'format file must pdf'
+                  size: 'file input must below 5.05 Mb',
+                  format: 'format file must pdf'
               },
               setDoc
           ),
@@ -106,15 +106,16 @@ function Applyevent() {
               1050000,
               ['image/jpg','image/jpeg','image/png'],
               {
-                  msgSize: 'file input must below 1.05 Mb',
-                  msgFormat: 'format file must jpg,jpeg,png'
+                  size: 'file input must below 1.05 Mb',
+                  format: 'format file must jpg,jpeg,png'
               },
               setPhoto
         ),
         'name': (target) => { setName(target.value); setIsNameError(false)},
         'host': (target) => { setHost(target.value);  setIsHostError(false)},
         'phone': (target) => { setPhone(target.value); setIsPhoneError(false)},
-        'date': (target)=>setDate(target.value),
+        'startDate': (target)=>setStartDate(target.value),
+        'endDate': (target)=>setEndDate(target.value),
         'price': (target)=>setPrice(target.value.split('.').join("")),
         'detail': (target)=>setDetail(target.value),
         'city': (target) => { setCity(target.value); setIsCityError(false)}
@@ -142,7 +143,8 @@ function Applyevent() {
             setIsHostError(true)
         }
         phone !== "" && phone.length >= 10 ? passed++ : setIsPhoneError(true)
-        date !== "" && passed++
+        startDate !== "" && passed++ 
+        endDate !== "" && passed++
         price !== "" && passed++
         detail !== "" && passed++
         if (city !== "" && regText.test(city)) {
@@ -153,8 +155,8 @@ function Applyevent() {
             setIsCityError(true)
         }
         position.join() !== ',' && passed++
-
-        passed === 10 ? apiPostEvent() : Swal.fire('Important', 'all field must be filled', 'error')
+        console.log('startDate',startDate,'endDate',endDate)
+        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled startDate: ${startDate} startEnd: ${endDate}`, 'error')
     }
 
     if (!isLoggedIn) {
@@ -165,15 +167,9 @@ function Applyevent() {
         } else {
             return (
                 <Layout>
-                    <div className='min-h-[80vh] flex'>
-                        <div className='basis-1/6 bg-slate-50 flex flex-col gap-6 p-6 text-sm'>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />Dashboard</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><TbTicket />Joined event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 border-l-4 border-red-600 font-black text-red-600'><MdOutlineEventAvailable />My Event</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><IoStorefront />Upgrade Account</Link>
-                            <Link to="" className='flex items-center gap-2 pl-3 hover:border-l-4 hover:border-red-600 hover:font-black hover:text-red-600'><MdSpaceDashboard />History Order</Link>
-                        </div>
-                        <div className="p-6 basis-5/6">
+                    <div className='w-full flex flex-col sm:flex-row mt-12 min-h-[80vh]'>
+                        <Sidebar active={"my-event"}/>
+                        <div className="basis-5/6">
                             <p className='font-bold text-lg'>Apply Event</p>
                             <div className="pr-20">
                                 <div className="flex flex-row my-2 items-center">
@@ -230,8 +226,10 @@ function Applyevent() {
                                     <label className="basis-1/6">
                                         Date
                                     </label>
-                                    <div className="basis-5/6">
-                                        <input id='input-date' type="datetime-local" value={date} onChange={(e) => handleChange(e, "date")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Date"></input>
+                                    <div className="basis-5/6 flex justify-between items-center gap-2 w-full">
+                                        <input id='input-start-date' type="datetime-local" value={startDate} min={new Date().toISOString().slice(0, -8)} onChange={(e) => handleChange(e, "startDate")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Start Date" /> 
+                                        <span>to</span>
+                                        <input id='input-end-date' type="datetime-local" value={endDate} min={startDate} onChange={(e) => handleChange(e, "endDate")} className="border-[0.1rem] rounded p-2 w-full" placeholder="Start Date" /> 
                                     </div>
                                 </div>
                                 <div className="flex flex-row my-2 items-center">
@@ -241,7 +239,7 @@ function Applyevent() {
                                     <div className="basis-5/6">
                                         <div className="border-[0.1rem] flex rounded w-full">
                                             <div className='bg-slate-200 p-2'>Rp.</div>
-                                            <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full" placeholder="Rp." />
+                                            <CurrencyFormat id='input-price' thousandSeparator="." decimalSeparator=',' value={price} onChange={(e) => handleChange(e, "price")} className="p-2 w-full"  />
                                         </div>
                                     </div>
                                 </div>

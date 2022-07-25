@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @format */
 
 import { useEffect, useState } from 'react';
@@ -44,9 +45,10 @@ const DetailCulture = () => {
 		};
 		apiRequest(`cultures/reports/${cultureID}`, 'post', body, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
+				const { message } = res;
 				Swal.fire({
 					title: 'Success',
-					text: 'Your report has been sent',
+					text: message,
 					icon: 'success',
 				});
 			})

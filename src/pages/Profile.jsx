@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @format */
 import { useEffect, useState } from 'react';
 import { FaEdit, FaStoreAlt } from 'react-icons/fa';
@@ -110,7 +111,7 @@ const Profile = () => {
 					<Sidebar active='dashboard' />
 					<div className='w-full flex flex-col p-8 space-y-16 lg:space-y-0'>
 						<div className='flex flex-wrap justify-between'>
-							<h1 className='font-bold text-2xl text-center sm:text-start pb-4'>Profile</h1>
+							<h1 className='font-bold text-2xl text-center sm:text-start pb-4'>Profile { role }</h1>
 							<div className='flex flex-col space-y-4'>
 								{role === 'user' ? (
 									<div>
