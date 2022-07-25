@@ -21,10 +21,9 @@ const Events = () => {
 	const eventCity = searchParams.get('city');
 
 	const getEvent = () => {
-		apiRequest('events?page=1&limit=12', 'get')
+		apiRequest('events?page=1&limit=30', 'get')
 			.then((res) => {
 				setEvent(res.data);
-				console.log(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -34,7 +33,7 @@ const Events = () => {
 
 	const handleSearch = () => {
 		if (name !== '' && city !== '') {
-			apiRequest(`events?page=1&limit=12&name=${name}&city=${city}`, 'get')
+			apiRequest(`events?page=1&limit=30&name=${name}&city=${city}`, 'get')
 				.then((res) => {
 					setEvent(res.data);
 				})
@@ -42,7 +41,7 @@ const Events = () => {
 					console.log(err);
 				});
 		} else if (name !== '') {
-			apiRequest(`events?page=1&limit=12&name=${name}`, 'get')
+			apiRequest(`events?page=1&limit=30&name=${name}`, 'get')
 				.then((res) => {
 					setEvent(res.data);
 				})
@@ -50,7 +49,7 @@ const Events = () => {
 					console.log(err);
 				});
 		} else if (city !== '') {
-			apiRequest(`events?page=1&limit=12&city=${city}`, 'get')
+			apiRequest(`events?page=1&limit=30&city=${city}`, 'get')
 				.then((res) => {
 					setEvent(res.data);
 				})
@@ -88,7 +87,7 @@ const Events = () => {
 
 	useEffect(() => {
 		if (eventName && eventCity) {
-			apiRequest(`cultures?page=1&limit=12&name=${eventName}&city=${eventCity}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${eventName}&city=${eventCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setEvent(data);
@@ -98,7 +97,7 @@ const Events = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (eventName) {
-			apiRequest(`cultures?page=1&limit=12&name=${eventName}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${eventName}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setEvent(data);
@@ -108,7 +107,7 @@ const Events = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (eventCity) {
-			apiRequest(`cultures?page=1&limit=12&city=${eventCity}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&city=${eventCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setEvent(data);

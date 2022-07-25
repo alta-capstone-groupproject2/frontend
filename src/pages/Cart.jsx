@@ -8,6 +8,7 @@ import { apiRequest } from '../utils/apiRequest'
 import { FaSearch, FaTrash } from 'react-icons/fa';
 import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
+
 import Layout from '../components/Layout';
 import Loading from '../components/Loading';
 import CurrencyFormat from 'react-currency-format'

@@ -52,7 +52,6 @@ const Dashboard = () => {
 		const body = new FormData();
 		for (const key in objSubmit) {
 			body.append(key, objSubmit[key]);
-			console.log(key,objSubmit[key])
 		}
 		apiRequest('users', 'put', body, {
 			'Content-Type': 'multipart/form-data',
