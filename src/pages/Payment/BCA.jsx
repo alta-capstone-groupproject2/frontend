@@ -8,7 +8,6 @@ import moment from 'moment';
 
 import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
-import Layout from '../../components/Layout';
 
 const BCA = () => {
 	const params = useParams();
