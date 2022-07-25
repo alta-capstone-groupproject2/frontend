@@ -153,7 +153,7 @@ const Page = [
                     <IoMdCheckmarkCircleOutline className='text-4xl font-bold text-green-600'/>
                 </div>
                 <div className="flex justify-center gap-2 items-center">
-                    <span className='text-2xl font-bold'> {paymentCode} </span> 
+                    <span className='text-2xl font-bold'> {paymentCode === '' ? 'BCA12M87BQA' : paymentCode} </span> 
                 </div>
                 <div className="flex justify-center">
                   <div className='p-1 rounded space-x-1 text-xs items-center bg-orange-100 text-orange-800'>
