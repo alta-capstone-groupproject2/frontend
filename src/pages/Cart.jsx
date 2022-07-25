@@ -39,6 +39,7 @@ function Cart() {
     const [phone, setPhone] = useState('')
     const [error, setError] = useState(true)
     const [loadApi, setLoadApi] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
     const [paymentCode,setPaymentCode] = useState('')
     
     const showStepper = () => setStepper(true)
@@ -66,12 +67,14 @@ function Cart() {
         .then((res) => {
             const { OrderID } = res
             setPaymentCode(OrderID)
+            setIsSuccess(true)
         })
         .catch((err) => {
             const errorMsg = err.message
             let msg
             if (err.response.data) msg = err.response.data.message 
             alert(`${errorMsg} : ${msg}`);
+            setIsSuccess(false)
             
         })
         .finally(() => setLoadApi(false));
@@ -270,6 +273,7 @@ function Cart() {
                                     searchMap={searchMap}
                                     inputAddress={inputAddress}
                                     paymentCode={paymentCode}
+                                    isSuccess={isSuccess}
                                 />
                             </div>
                         </Modal>

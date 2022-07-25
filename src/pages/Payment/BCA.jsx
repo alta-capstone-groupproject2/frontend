@@ -40,7 +40,7 @@ const BCA = () => {
 					</label>
 					<input type='text' id='input-bca-number' className='col-span-3 py-2 px-4 border focus:border-2 focus:border-sky-400' />
 				</div>
-				<button className='capitalize py-2 px-6 rounded-md text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700'>order</button>
+				<button className='capitalize py-2 px-6 rounded-md text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700' onClick={()=>handlePayment()}>order</button>
 			</div>
 		</div>
 	);

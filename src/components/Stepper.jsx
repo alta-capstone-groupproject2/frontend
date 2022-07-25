@@ -8,13 +8,14 @@ import CurrencyFormat from 'react-currency-format';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
+import { MdOutlineDangerous } from 'react-icons/md';
 import { CircularProgress } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 import moment from 'moment';
 
 const steps = ['Payment Details', 'Finish Payment'];
 
-export default function HorizontalLinearStepper( { paymentCode,searchMap,totalPrice,inputAddress,cart,apiPost,loadApi,handleSubmitPayment,handleChangePayment,bank,address,receiver,phone,error,setError,handleReset } ) {
+export default function HorizontalLinearStepper( { isSuccess,paymentCode,searchMap,totalPrice,inputAddress,cart,apiPost,loadApi,handleSubmitPayment,handleChangePayment,bank,address,receiver,phone,error,setError,handleReset } ) {
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
@@ -122,7 +123,26 @@ const Page = [
           <CircularProgress />
           Payment in progress ...
         </div>
-    ): (
+    ) : (
+        !isSuccess ? (  
+            <div>
+              <div className='flex flex-col gap-2 pt-0 text-sm'>
+                  <div className='font-bold text-lg my-2 flex items-center justify-between'>
+                      <div>
+                        Finish Payment
+                        <p className='font-thin'>Complete transaction</p>
+                      </div>
+                      <MdOutlineDangerous className='text-4xl font-bold text-red-600'/>
+                  </div>
+                  <div className="flex justify-center gap-2 items-center">
+                    <span className='text-4xl font-bold'> Transaction Payment Failed </span> 
+                </div>
+                  <div className="flex justify-center gap-2 items-center">
+                    <span className='text-2xl font-thin cursor-pointer' onClick={()=>apiPost()}> Try Again </span> 
+                </div>
+              </div>
+            </div>
+        ): (
         <div>
             <div className='flex flex-col gap-2 pt-0 text-sm'>
                 <div className='font-bold text-lg my-2 flex items-center justify-between'>
@@ -173,7 +193,8 @@ const Page = [
               Total :
               <CurrencyFormat className='font-bold' value={totalPrice} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} /> 
             </p>   
-        </div>   
+        </div > 
+        )  
     ) 
     )
   ]

@@ -21,7 +21,8 @@ function Myevent() {
     const navigate = useNavigate()
     const [loading,setLoading] = useState(true)
     const [currTime,setCurrTime] = useState('')
-    const [myEvents,setMyEvents] = useState('')
+    const [myEvents, setMyEvents] = useState('')
+    const [pdfFile, setPdfFile] = useState([])
 
     const [totalPg, setTotalPg] = useState(false)
     const [nowPage, setNowPage] = useState()
@@ -42,10 +43,10 @@ function Myevent() {
         })
             .then((result) => {
                 const { code, currentTime, message, data, totalpage } = result
-                console.log(data)
               switch (code) {
                 case '200':                       
                 !totalPg && setTotalPg(totalpage)
+                apiGetPdf(data)
                 setCurrTime(currentTime)
                 setMyEvents(data);
                 break
@@ -63,7 +64,28 @@ function Myevent() {
             if (err.response.data) msg = err.response.data.message 
             Swal.fire(errorMsg,msg,'error'); 
         })
-        .finally(()=>setLoading(false))
+    }
+
+    const apiGetPdf = async (data) => {
+        let users = [];
+        let promises = [];
+        for (let i = 0; i < data.length; i++) {
+            promises.push(
+                await apiRequest(`/events/attendees/${data[i].eventID}`, "get", false, {
+                    'Authorization': `Bearer ${token}`,
+                }).then((res) => {
+                    users.push({data:res.data})
+                })
+            )
+        }
+        Promise.all(promises).then(() => {
+            setPdfFile(users)
+        }).catch((err) => {
+            const errorMsg = err.message
+            let msg
+            if (err.response.data) msg = err.response.data.message 
+            Swal.fire(errorMsg,msg,'error'); 
+        }).finally(()=>setLoading(false));
     }
 
     const apiDeleteMyEvent = (id) => {
@@ -132,7 +154,8 @@ function Myevent() {
                                             No Result
                                         </div>
                                     ) : (
-                                    myEvents.map((event) => (
+                                    myEvents.map((event,idx) =>
+                                    (
                                         <div className='shadow rounded-lg overflow-hidden bg-white flex items-center' key={event.eventID}>
                                             <img src={event.image} alt="" className='w-48'/>
                                             <div className='pl-8 py-4 break-all flex-1'>
@@ -160,7 +183,7 @@ function Myevent() {
                                                             <TbTicket />
                                                             <CurrencyFormat className='font-bold' value={event.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                                         </div>
-                                                        <div className='flex mt-4 items-center gap-2 text-red-600'><BiDownload/> List Attendees.pdf </div>
+                                                        <a href={pdfFile[idx].data} target='_blank' className='flex mt-4 items-center gap-2 text-red-600' rel="noreferrer"><BiDownload/> List Attendees.pdf </a>
                                                     </div>
                                                 </div>
                                                 <p>
