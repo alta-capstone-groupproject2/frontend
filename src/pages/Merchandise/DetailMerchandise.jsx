@@ -71,7 +71,6 @@ const DetailMerchandise = () => {
 		})
 			.then((res) => {
 				const { code, message } = res;
-				alert(code)
 				if (code === '201') {
 					Swal.fire({
 						title: message,
