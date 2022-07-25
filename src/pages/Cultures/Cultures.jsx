@@ -20,7 +20,7 @@ const Cultures = () => {
 	const cultureCity = searchParams.get('city');
 
 	const getCultures = () => {
-		apiRequest('cultures?page=1&limit=12', 'get')
+		apiRequest('cultures?page=1&limit=30', 'get')
 			.then((res) => {
 				setCultures(res.data);
 			})
@@ -32,7 +32,7 @@ const Cultures = () => {
 
 	const handleSearch = () => {
 		if (name !== '' && city !== '') {
-			apiRequest(`cultures?page=1&limit=12&name=${name}&city=${city}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${name}&city=${city}`, 'get')
 				.then((res) => {
 					setCultures(res.data);
 				})
@@ -40,7 +40,7 @@ const Cultures = () => {
 					console.log(err);
 				});
 		} else if (name !== '') {
-			apiRequest(`cultures?page=1&limit=12&name=${name}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${name}`, 'get')
 				.then((res) => {
 					setCultures(res.data);
 				})
@@ -48,7 +48,7 @@ const Cultures = () => {
 					console.log(err);
 				});
 		} else if (city !== '') {
-			apiRequest(`cultures?page=1&limit=12&city=${city}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&city=${city}`, 'get')
 				.then((res) => {
 					setCultures(res.data);
 				})
@@ -86,7 +86,7 @@ const Cultures = () => {
 
 	useEffect(() => {
 		if (cultureName && cultureCity) {
-			apiRequest(`cultures?page=1&limit=12&name=${cultureName}&city=${cultureCity}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${cultureName}&city=${cultureCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setCultures(data);
@@ -96,7 +96,7 @@ const Cultures = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (cultureName) {
-			apiRequest(`cultures?page=1&limit=12&name=${cultureName}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&name=${cultureName}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setCultures(data);
@@ -106,7 +106,7 @@ const Cultures = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (cultureCity) {
-			apiRequest(`cultures?page=1&limit=12&city=${cultureCity}`, 'get')
+			apiRequest(`cultures?page=1&limit=30&city=${cultureCity}`, 'get')
 				.then((res) => {
 					const { data } = res;
 					setCultures(data);

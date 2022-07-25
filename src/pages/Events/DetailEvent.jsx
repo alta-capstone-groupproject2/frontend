@@ -1,15 +1,15 @@
 /** @format */
-import { useEffect, useState } from 'react';
-import { RiSendPlaneFill } from 'react-icons/ri';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { RiSendPlaneFill } from 'react-icons/ri';
+import { useEffect, useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import moment from 'moment';
 
-import Map from '../../components/Map';
 import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
-import Swal from 'sweetalert2';
-import { FaSearch } from 'react-icons/fa';
+import Map from '../../components/Map';
 
 const DetailEvent = () => {
 	const params = useParams();
@@ -26,20 +26,25 @@ const DetailEvent = () => {
 	const [endDate, setEndDate] = useState('');
 	const [comment, setComment] = useState([]);
 	const [commentText, setCommentText] = useState('');
+	const [nameUser, setNameUser] = useState('');
 	const [hostedby, setHostedBy] = useState('');
 	const [participant, setParticipant] = useState([]);
-	const [profile, setProfile] = useState({});
 	const [name, setName] = useState('');
 	const [city, setCity] = useState('');
+	const [avatar, setAvatar] = useState('');
+	// const [page, setPage] = useState(1);
+	const endEventDate = moment(endDate).format('YYYY-MM-DD');
+	const currentTimeNow = moment(currentTime).format('YYYY-MM-DD');
+	const isAfter = moment(currentTimeNow).isAfter(endEventDate);
 
 	const getDataEvent = () => {
 		const { eventID } = params;
 		apiRequest(`events/${eventID}`, 'get')
 			.then((res) => {
-				const { currentTime } = res;
+				const { currenttime } = res;
 				const { image, hostedBy, eventName, details, city, participant, startDate, endDate } = res.data;
 
-				setCurrentTime(currentTime);
+				setCurrentTime(currenttime);
 				setNameEvent(eventName);
 				setDetail(details);
 				setImage(image);
@@ -57,15 +62,15 @@ const DetailEvent = () => {
 
 	const getComment = () => {
 		const { eventID } = params;
-		apiRequest(`events/comments/${eventID}`, 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+		apiRequest(`events/comments/${eventID}?page=1`, 'get', false, { 'Content-Type': 'application/json' })
 			.then((res) => {
 				const { data } = res;
 				setComment(data);
+				console.log(data.length);
 			})
 			.catch((err) => {
 				console.log(err);
-			})
-			.finally(() => setLoading(false));
+			});
 	};
 
 	const postComment = () => {
@@ -74,19 +79,41 @@ const DetailEvent = () => {
 			comment: commentText,
 			eventID: +eventID,
 		};
-		apiRequest('events/comments', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+		if (commentText !== '') {
+			apiRequest('events/comments', 'post', data, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+				.then((res) => {
+					const { code } = res;
+					if (code === 200) {
+						getComment();
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else {
+			Swal.fire({
+				title: 'Error',
+				text: 'Please enter your comment',
+				icon: 'error',
+			});
+		}
+	};
+
+	const getProfile = () => {
+		apiRequest('users', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				const { code } = res;
-				if (code === 200) {
-					getComment();
-				}
+				const { image, name } = res.data;
+				setAvatar(image);
+				setNameUser(name);
 			})
 			.catch((err) => {
 				console.log(err);
-			});
+			})
+			.finally(() => setLoading(false));
 	};
 
 	const handleJoinEvent = () => {
+		const { eventID } = params;
 		Swal.fire({
 			title: 'Payment only accept bank BCA',
 			text: 'Are you sure?!',
@@ -97,7 +124,22 @@ const DetailEvent = () => {
 			confirmButtonText: 'Yes, Join Event!',
 		}).then((result) => {
 			if (result.isConfirmed) {
-				navigate('/payment/bca');
+				apiRequest('events/participations', 'post', { eventID: +eventID }, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+					.then((res) => {
+						const { code } = res;
+						if (code === 200) {
+							Swal.fire({
+								title: 'Success',
+								text: 'You have joined this event',
+								icon: 'success',
+								confirmButtonText: 'OK',
+							});
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+					})
+					.finally(() => navigate('/payment/bca/' + eventID));
 			}
 		});
 	};
@@ -147,6 +189,7 @@ const DetailEvent = () => {
 	useEffect(() => {
 		getDataEvent();
 		getComment();
+		getProfile();
 	}, []);
 
 	useEffect(() => {
@@ -216,22 +259,35 @@ const DetailEvent = () => {
 															<div className='flex items-center justify-center'>
 																<img id='user-comment-avatar' src={item.image} alt={item.name} width={'55px'} height={'55px'} className='rounded-full' />
 															</div>
-															<div>
-																<p id='user-comment' className='font-bold text-xs sm:text-base'>
-																	{item.comment}
-																</p>
-																<p id='user-comment-name' className='text-xs sm:text-base'>
-																	{item.name}
-																</p>
-															</div>
+															{comment.length < 1 ? (
+																<div className='flex justify-center items-center'>
+																	<h1 className='text-slate-300'>Tidak ada komentar yang tersedia</h1>
+																</div>
+															) : (
+																<div>
+																	<p id='user-comment' className='font-bold text-xs sm:text-base'>
+																		{item.comment}
+																	</p>
+																	<p id='user-comment-name' className='text-xs sm:text-base'>
+																		{item.name}
+																	</p>
+																</div>
+															)}
 														</div>
 													);
 												})}
 											</div>
+											{comment && comment.length <= 5 ? null : (
+												<div className='flex justify-center items-end pb-4'>
+													<button onClick={() => getComment()} className='bg-slate-200 text-red-600 py-2 px-5 rounded-sm hover:bg-slate-300 active:bg-slate-400'>
+														Load more
+													</button>
+												</div>
+											)}
 										</div>
 										<div className='flex justify-around'>
 											<div className='flex items-center mr-4'>
-												<img id='user-avatar' src={profile.url} alt={profile.name} width={'55px'} height={'55px'} className='rounded-full' />
+												<img id='user-avatar' src={avatar} alt={nameUser} width={'55px'} height={'55px'} className='rounded-full' />
 											</div>
 											<textarea name='comment' id='comment' placeholder='Write your comment' className='border border-slate-300 p-4 resize-none focus:outline-none w-full' onChange={(e) => setCommentText(e.target.value)} />
 											<div className='flex items-center'>
@@ -252,9 +308,16 @@ const DetailEvent = () => {
 									<h1 id='event-name' className='text-xl font-bold pr-4'>
 										{nameEvent}
 									</h1>
-									<p id='event-date'>
-										{moment(startDate, 'DD-MM-YYYY').format('dddd')}, {moment(startDate).format('DD MMMM YYYY')} ~ {moment(endDate, 'DD-MM-YYYY').format('dddd')}, {moment(endDate).format('DD MMMM YYYY')}
-									</p>
+									<div className='flex flex-col'>
+										<b>From</b>
+										<span id='start-date' className='ml-2'>
+											{moment(startDate, 'DD-MM-YYYY').format('dddd')}, {moment(startDate).format('DD MMMM YYYY')}
+										</span>
+										<b>To</b>
+										<span id='end-date' className='ml-2'>
+											{moment(endDate, 'DD-MM-YYYY').format('dddd')}, {moment(endDate).format('DD MMMM YYYY')}
+										</span>
+									</div>
 								</div>
 								<h1 id='event-hostedby'>
 									<span className='text-slate-400'>HostedBy : </span>
@@ -265,9 +328,9 @@ const DetailEvent = () => {
 								</h1>
 								<button
 									id='join-event'
-									// disabled={isAfter ? false : true}
+									disabled={isAfter}
 									onClick={() => handleJoinEvent()}
-									className={`bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-2 w-full rounded-md`}>
+									className={`bg-red-600 hover:bg-red-700 active:bg-red-800 text-white disabled:bg-slate-400 disabled:text-slate-200 disabled:cursor-not-allowed py-2 w-full rounded-md`}>
 									Join
 								</button>
 								<span className={`text-red-700 text-xs font-semibold`}>*Can't cancel joining event no refund</span>

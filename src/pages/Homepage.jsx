@@ -39,16 +39,6 @@ const Homepage = () => {
 			.finally(() => setLoading(false));
 	};
 
-	const searchCulture = () => {
-		apiRequest(`cultures?page=1&limit=4&name=${searchCultureName}`, 'get')
-			.then((res) => {
-				console.log(res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-
 	useEffect(() => {
 		getEvent();
 		getProduct();
@@ -85,7 +75,7 @@ const Homepage = () => {
 						</div>
 						<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
 							{product.map((item, index) => {
-								return <CardProduct key={index} name={item.productName} price={item.price} image={item.image} onClickProduct={() => navigate(`/product/${item.productID}`)} />;
+								return <CardProduct key={index} name={item.productName} price={item.price} image={item.image} onClickProduct={() => navigate(`/merchandise/${item.productID}`)} />;
 							})}
 						</div>
 					</div>
@@ -103,7 +93,7 @@ const Homepage = () => {
 								<label htmlFor='search-culture' className='bg-red-700 p-4 text-white flex items-center justify-center cursor-pointer'>
 									<FaSearch />
 								</label>
-								<input type='submit' value='submit' id='search-culture' onClick={() => searchCulture()} className='hidden' />
+								<input type='submit' value='submit' id='search-culture' onClick={() => navigate(`/cultures?name=${searchCultureName}`)} className='hidden' />
 							</div>
 						</div>
 					</div>

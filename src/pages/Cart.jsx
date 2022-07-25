@@ -1,13 +1,13 @@
 /** @format */
 
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { FaSearch, FaTrash } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { apiRequest } from '../utils/apiRequest';
+
 import Layout from '../components/Layout';
 import Loading from '../components/Loading';
-import { apiRequest } from '../utils/apiRequest';
 
 const Cart = () => {
 	const navigate = useNavigate();
@@ -21,15 +21,9 @@ const Cart = () => {
 	const [city, setCity] = useState('');
 
 	const getCart = () => {
-		axios({
-			method: 'get',
-			url: 'https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/carts',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
+		apiRequest('carts', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				const { data } = res.data;
+				const { data } = res;
 				setCart(data);
 				setLoading(false);
 			})
@@ -39,13 +33,7 @@ const Cart = () => {
 	};
 
 	const deleteCart = (cartID) => {
-		axios({
-			method: 'delete',
-			url: `https://virtserver.swaggerhub.com/Alfin7007/lamiApp/1.0/carts/${cartID}`,
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
+		apiRequest(`carts/${cartID}`, 'delete', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
 				const { code, message } = res.data;
 				if (code === 200) {

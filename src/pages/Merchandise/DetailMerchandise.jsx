@@ -56,24 +56,20 @@ const DetailMerchandise = () => {
 
 	const addToCart = () => {
 		const { productsID } = params;
-		apiRequest(`carts`, 'post', { productsID }, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+		apiRequest(`carts`, 'post', { productID: +productsID }, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 			.then((res) => {
-				const { code, message } = res.data;
-				if (code === 200) {
-					Swal.fire({
-						title: message,
-						text: 'To add qty, click on the cart icon again',
-						icon: 'info',
-						showCancelButton: true,
-						cancelButtonText: 'Close',
-						confirmButtonColor: '#d60400',
-						confirmButtonText: 'No, take me to the cart',
-					}).then((result) => {
-						if (result.isConfirmed) {
-							navigate('/cart');
-						}
-					});
-				}
+				const { message } = res.data;
+				Swal.fire({
+					title: message,
+					text: 'To add qty, click on the cart icon again',
+					icon: 'info',
+					confirmButtonColor: '#d60400',
+					confirmButtonText: 'No, take me to the cart',
+				}).then((result) => {
+					if (result.isConfirmed) {
+						navigate('/cart');
+					}
+				});
 			})
 			.catch((err) => {
 				console.log(err);
