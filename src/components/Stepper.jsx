@@ -124,7 +124,7 @@ const Page = [
           Payment in progress ...
         </div>
     ) : (
-        isSuccess ? (  
+        !isSuccess ? (  
             <div>
               <div className='flex flex-col gap-2 pt-0 text-sm'>
                   <div className='font-bold text-lg my-2 flex items-center justify-between'>
