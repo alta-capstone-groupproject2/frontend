@@ -75,15 +75,18 @@ function Cart() {
             if (err.response.data) msg = err.response.data.message 
             alert(`${errorMsg} : ${msg}`);
             setIsSuccess(false)
-            
         })
         .finally(() => setLoadApi(false));
     };
 
     const getCart = () => {
-		apiRequest('carts', 'get', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
-			.then((res) => {
-                const { data } = res.data;
+        setLoading(true)
+		apiRequest('carts','get',false,{
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
+		})
+            .then((res) => {
+                const { data } = res;
                 const cartIdList = getAllCartID(data)
                 const total = getTotalPrice(data)
                 setTotalPrice(total)
@@ -97,11 +100,14 @@ function Cart() {
             })
 	};
 
-	const deleteCart = (cartID) => {
-		apiRequest(`carts/${cartID}`, 'delete', false, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+    const deleteCart = (cartID) => {
+		apiRequest(`carts/${cartID}`,'delete',false,{
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
+		})
 			.then((res) => {
 				const { code, message } = res.data;
-				if (code === 200) {
+				if (code === '200') {
 					Swal.fire({
 						title: 'Success',
 						text: message,

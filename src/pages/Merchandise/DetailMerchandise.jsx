@@ -20,6 +20,7 @@ const DetailMerchandise = () => {
 	const [loading, setLoading] = useState(true);
 	const [storeName, setStoreName] = useState('');
 	const [merchandiseImage, setMerchandiseImage] = useState('');
+	const [merchandiseStock, setMerchandiseStock] = useState('');
 	const [merchandiseName, setMerchandiseName] = useState('');
 	const [merchandiseCity, setMerchandiseCity] = useState('');
 	const [merchandisePrice, setMerchandisePrice] = useState('');
@@ -31,8 +32,9 @@ const DetailMerchandise = () => {
 		const { productsID } = params;
 		apiRequest(`products/${productsID}`, 'get')
 			.then((res) => {
-				const { storeName, image, productName, city, price, details, meanRating } = res.data;
+				const { storeName, image, productName, city, price, details, meanRating, stock } = res.data;
 				setStoreName(storeName);
+				setMerchandiseStock(stock);
 				setMerchandiseImage(image);
 				setMerchandiseName(productName);
 				setMerchandiseCity(city);
@@ -57,25 +59,38 @@ const DetailMerchandise = () => {
 	};
 
 	const addToCart = () => {
+		setLoading(true)
+
 		const { productsID } = params;
-		apiRequest(`carts`, 'post', { productID: +productsID }, { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
+		const prod = parseInt(productsID)
+		const body = { 'productID': prod }
+		
+		apiRequest(`carts`, 'post',body, {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.getItem('token')}`
+		})
 			.then((res) => {
-				const { message } = res.data;
-				Swal.fire({
-					title: message,
-					text: 'To add qty, click on the cart icon again',
-					icon: 'info',
-					confirmButtonColor: '#d60400',
-					confirmButtonText: 'No, take me to the cart',
-				}).then((result) => {
-					if (result.isConfirmed) {
-						navigate('/cart');
-					}
-				});
+				const { code, message } = res;
+				alert(code)
+				if (code === '201') {
+					Swal.fire({
+						title: message,
+						text: 'To add qty, click on the cart icon again',
+						icon: 'info',
+						showCancelButton: true,
+						cancelButtonText: 'Close',
+						confirmButtonColor: '#d60400',
+						confirmButtonText: 'No, take me to the cart',
+					}).then((result) => {
+						if (result.isConfirmed) {
+							navigate('/cart');
+						}
+					});
+				}
 			})
 			.catch((err) => {
-				console.log(err);
-			});
+				alert(err);
+			}).finally(() => setLoading(false))
 	};
 
 	const handleChange = (e, type) => {
@@ -209,6 +224,7 @@ const DetailMerchandise = () => {
 						</div>
 						<div className='space-y-4 p-4 row-start-1 sm:row-start-auto'>
 							<img id='product-image' src={merchandiseImage} alt={merchandiseName} className='w-full h-52' />
+							<h1 id='product-name' className='flex justify-center'>Stock : {merchandiseStock}</h1>
 							<div className='flex justify-center items-center'>
 								<button id='add-to-cart' className='flex items-center space-x-2 py-2 px-5 rounded-md text-white bg-red-600 hover:bg-red-700 active:bg-red-800' onClick={() => addToCart()}>
 									<FaCartPlus />

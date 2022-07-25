@@ -16,7 +16,7 @@ import Sidebar from '../components/Sidebar';
 import { BsStar } from 'react-icons/bs'
 import { apiRequest } from '../utils/apiRequest';
 import Swal from 'sweetalert2';
-
+import CurrencyFormat from 'react-currency-format';
 
 export default function Historyorder() {
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -44,7 +44,7 @@ export default function Historyorder() {
               const { code, message, data } = result
               switch (code) {
                 case '200':                
-                    setHistorys(data);
+                    setHistorys(data)
                 break
                 case '400':                      
                     Swal.fire('Failed',message,'error'); 
@@ -63,15 +63,16 @@ export default function Historyorder() {
         .finally(()=>setLoading(false))
     }
 
-    const apiPostRating = () => {
+    const apiPostRating = (id) => {
         setLoading(true)
-      
         const body = {
             'review': review,
             'ratings': rating,
         }  
         
-        apiRequest(`register/${selectProduct}`, "post", body)
+        apiRequest(`products/ratings/${id}`, "post", body,{
+            'Authorization': `Bearer ${token}`,
+        })
         .then((res) => {
             const { code,message } = res;
             
@@ -98,7 +99,7 @@ export default function Historyorder() {
     }
     
     const showModal = (val) => {
-        setSelectProduct(val.productID)
+        setSelectProduct(val.id)
         setProduct(val)
         setModal(true);
     };
@@ -124,7 +125,7 @@ export default function Historyorder() {
     }
 
     const handleSubmit = () => {
-        if(rating !=='' && review !=='' && selectProduct !=='') apiPostRating()
+        if(rating !=='' && review !=='' && selectProduct !=='') apiPostRating(selectProduct)
     }
 
     if (!isLoggedIn) {
@@ -146,7 +147,7 @@ export default function Historyorder() {
                                     aria-labelledby="nested-list-subheader"
                                 >
                                     <ListItemButton>
-                                        <div className='w-full h-full flex p-2 font-bold'>
+                                        <div className='w-full h-full flex text-center p-2 font-bold'>
                                             <div className='basis-1/5'>Transaction Date</div>
                                             <div className='basis-1/5'>Receiver</div>
                                             <div className='basis-1/5'>Address</div>
@@ -159,11 +160,13 @@ export default function Historyorder() {
                                             historys.map((item, idx) => (
                                                 < div key={idx}>
                                                     <ListItemButton onClick={() => handleClick(idx)}>
-                                                        <div className='w-full h-full flex p-2'>
+                                                        <div className='w-full h-full text-center flex p-2'>
                                                             <div className='basis-1/5'>{item.date}</div>
                                                             <div className='basis-1/5'>{item.receiver}</div>
                                                             <div className='basis-1/5'>{item.address}</div>
-                                                            <div className='basis-1/5'>{item.price}</div>
+                                                            <div className='basis-1/5'>
+                                                                <CurrencyFormat value={item.totalprice} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp. '} />
+                                                            </div>
                                                             <div className='basis-1/5 flex justify-between'>{item.status}
                                                                 <span>{openData[idx] ? <ExpandLess /> : <ExpandMore />}</span>
                                                             </div>
