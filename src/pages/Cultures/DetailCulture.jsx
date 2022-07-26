@@ -26,8 +26,8 @@ const DetailCulture = () => {
 		const { cultureID } = params;
 		apiRequest(`cultures/${cultureID}`, 'get')
 			.then((res) => {
-				const { cultureName, city, image, details } = res.data;
-				setCultureName(cultureName);
+				const { name, city, image, details } = res.data;
+				setCultureName(name);
 				setCultureCity(city);
 				setImage(image);
 				setDescription(details);
