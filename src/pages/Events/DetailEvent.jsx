@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import CurrencyFormat from 'react-currency-format';
+import { TbTicket } from 'react-icons/tb';
 
 import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
@@ -34,6 +36,7 @@ const DetailEvent = () => {
 	const [name, setName] = useState('');
 	const [city, setCity] = useState('');
 	const [avatar, setAvatar] = useState('');
+	const [price, setPrice] = useState('');
 	const [page, setPage] = useState(1);
 	const endEventDate = moment(endDate).format('YYYY-MM-DD');
 	const currentTimeNow = moment(currentTime).format('YYYY-MM-DD');
@@ -44,8 +47,9 @@ const DetailEvent = () => {
 		apiRequest(`events/${eventID}`, 'get')
 			.then((res) => {
 				const { currenttime } = res;
-				const { image, hostedBy, eventName, details, city, participant, startDate, endDate } = res.data;
+				const { image, hostedBy, eventName, details, city, participant, startDate, endDate,price } = res.data;
 
+				setPrice(price)
 				setCurrentTime(currenttime);
 				setNameEvent(eventName);
 				setDetail(details);
@@ -343,6 +347,9 @@ const DetailEvent = () => {
 								<h1 id='event-location-city'>
 									<span className='text-slate-400'>City : </span> {cultureCity}
 								</h1>
+								<span className='font-bold text-2xl flex items-center gap-4 justify-end'>
+									<TbTicket /><CurrencyFormat className='font-bold' value={price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
+								</span>
 								<button
 									id='join-event'
 									disabled={isAfter}
