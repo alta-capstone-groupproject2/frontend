@@ -88,7 +88,7 @@ const DetailMerchandise = () => {
 				}
 			})
 			.catch((err) => {
-				alert(err);
+				console.log(err);
 			}).finally(() => setLoading(false))
 	};
 
