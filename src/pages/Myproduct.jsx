@@ -124,7 +124,7 @@ function Editproduct() {
                                                         <CurrencyFormat className='font-bold' value={product.price} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp.'} />
                                                         <span>| Stock : {product.stock}</span>
                                                     </p>
-                                                    <p className='break-all'>
+                                                    <p className='break-all truncate w-96'>
                                                         {product.details}
                                                     </p>
                                                 </div>
