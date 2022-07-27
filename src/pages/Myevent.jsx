@@ -38,7 +38,7 @@ function Myevent() {
 
     const apiGetMyEvent = async (page) => {
         setLoading(true)
-        await apiRequest(`users/events?limit=10&page=${page}`, "get", false, {
+        await apiRequest(`users/events?limit=5&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
