@@ -112,10 +112,7 @@ const Homepage = () => {
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl max-w-md text-red-700 font-bold'>Cari tahu lebih banyak mengenai budayamu disini</h1>
 							<div className='flex'>
 								<input type='text' id='search-culture-name' placeholder='Ngaben' onChange={(e) => setSearchParams({ name: e.target.value })} className='w-3/4 py-2 px-4 border focus:outline-none rounded-tl-md rounded-bl-md' />
-								<label htmlFor='search-culture' className='bg-red-700 p-4 text-white flex items-center justify-center cursor-pointer'>
-									<FaSearch />
-								</label>
-								<input type='submit' value='submit' id='search-culture' onClick={() => navigate(`/cultures?name=${searchCultureName}`)} className='hidden' />
+								<button className='bg-red-700 p-4 text-white flex items-center justify-center cursor-pointer rounded-r' id='search-culture' onClick={() => navigate(`/cultures?name=${searchCultureName}`)}><FaSearch /></button>
 							</div>
 						</div>
 					</div>

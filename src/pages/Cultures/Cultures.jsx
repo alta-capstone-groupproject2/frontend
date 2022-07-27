@@ -97,6 +97,7 @@ const Cultures = () => {
 				})
 				.finally(() => setLoading(false));
 		} else if (cultureName) {
+			alert(cultureName)
 			apiRequest(`cultures?page=1&limit=30&name=${cultureName}`, 'get')
 				.then((res) => {
 					const { data } = res;

@@ -147,7 +147,7 @@ const Page = [
             <div className='flex flex-col gap-2 pt-0 text-sm'>
                 <div className='font-bold text-lg my-2 flex items-center justify-between'>
                     <div>
-                      Finish Payment
+                      Finish Payment {isSuccess}
                       <p className='font-thin'>Complete transaction</p>
                     </div>
                     <IoMdCheckmarkCircleOutline className='text-4xl font-bold text-green-600'/>
