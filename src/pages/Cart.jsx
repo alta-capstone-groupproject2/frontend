@@ -73,6 +73,7 @@ function Cart() {
             const errorMsg = err.message
             let msg
             if (err.response.data) msg = err.response.data.message 
+	    console.log(errorMsg,msg)
             setIsSuccess(false)
         })
         .finally(() => {
