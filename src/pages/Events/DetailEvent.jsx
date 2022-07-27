@@ -48,7 +48,6 @@ const DetailEvent = () => {
 		apiRequest(`events/${eventID}`, 'get')
 			.then((res) => {
 				const { currenttime } = res;
-				console.log(res.data)
 				const { image, hostedBy, eventName, details, city, participant, startDate, endDate,price } = res.data;
 
 				setPrice(price)

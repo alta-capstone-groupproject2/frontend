@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
+import Navbar from '../../components/Header';
 
 const BCA = () => {
 	const params = useParams();
@@ -71,8 +72,8 @@ const BCA = () => {
 			icon: 'success',
 			title: 'copied',
 			showConfirmButton: false,
-			timer: 1500
-		  })
+			timer: 1500,
+		});
 	};
 
 	const getDetailPayment = () => {
@@ -84,19 +85,19 @@ const BCA = () => {
 			.catch((err) => {
 				console.log(err);
 			})
-			.finally(() => setLoading(false))
+			.finally(() => setLoading(false));
 	};
 
 	useEffect(() => {
 		getDetailPayment();
 	}, []);
 
-
 	if (loading) {
-		return <Loading />
+		return <Loading />;
 	} else {
 		return (
-				<div className='space-y-12'>
+			<div className='space-y-12'>
+				<Navbar />
 				<div className='w-full h-screen flex justify-center items-center'>
 					<div className='container p-8 space-y-8'>
 						<h1 className='font-bold uppercase text-2xl text-red-600'>bca virtual account</h1>
@@ -121,38 +122,40 @@ const BCA = () => {
 						</div>
 					</div>
 				</div>
-				<div className='w-full p-8 overflow-auto'>
-					<h1 className='font-bold text-2xl text-center my-4'>Status Payments</h1>
-					<div className='bg-slate-200 border'>
-						<div className='grid grid-cols-9 gap-x-8 space-x-5'>
-							<h1 className='text-center px-5 py-2 border'>Name Event</h1>
-							<h1 className='text-center px-5 py-2 border'>Date</h1>
-							<h1 className='text-center px-5 py-2 border'>City</h1>
-							<h1 className='text-center px-5 py-2 border'>Order ID</h1>
-							<h1 className='text-center px-5 py-2 border'>Gross Amount</h1>
-							<h1 className='text-center px-5 py-2 border'>Payment Method</h1>
-							<h1 className='text-center px-5 py-2 border'>Transaction ID</h1>
-							<h1 className='text-center px-5 py-2 border'>Status</h1>
-							<h1 className='text-center px-5 py-2 border'>Status Detail</h1>
-						</div>
-					</div>
-					<div className='w-full'>
-						{detailPayment.map((item, index) => {
-							return (
-								<div className='grid grid-cols-9 gap-x- space-x-5' key={index}>
-									<h1>{item.name}</h1>
-									<h1>{item.date}</h1>
-									<h1>{item.city}</h1>
-									<h1>{item.orderID}</h1>
-									<h1>{item.grossAmount}</h1>
-									<h1>{item.paymentMethod}</h1>
-									<h1>{item.transactionID}</h1>
-									<h1>{item.status}</h1>
-									<button onClick={() => getStatusPayment(item.orderID)}>Show</button>
-								</div>
-							);
-						})}
-					</div>
+				<div className='w-auto p-8 overflow-auto'>
+					<h1 className='font-bold text-2xl text-center my-4 w-full'>Status Payments</h1>
+					<table className='border-collapse'>
+						<tbody>
+							<tr className='bg-slate-200 border'>
+								<th className='px-12 text-center border'>Name Event</th>
+								<th className='px-12 text-center border'>Date</th>
+								<th className='px-12 text-center border'>City</th>
+								<th className='px-12 text-center border'>Order ID</th>
+								<th className='px-12 text-center border'>Gross Amount</th>
+								<th className='px-12 text-center border'>Payment Method</th>
+								<th className='px-12 text-center border'>Transaction ID</th>
+								<th className='px-12 text-center border'>Status</th>
+								<th className='px-12 text-center border'>Status Detail</th>
+							</tr>
+							{detailPayment.map((item, index) => {
+								return (
+									<tr key={index} className='hover:bg-slate-100'>
+										<td className='px-12 text-center capitalize border'>{item.name}</td>
+										<td className='px-12 text-center capitalize border'>{item.date}</td>
+										<td className='px-12 text-center capitalize border'>{item.city}</td>
+										<td className='px-12 text-center border'>{item.orderID}</td>
+										<td className='px-12 text-center capitalize border'>{item.grossAmount}</td>
+										<td className='px-12 text-center capitalize border'>{item.paymentMethod}</td>
+										<td className='px-12 text-center border'>{item.transactionID}</td>
+										<td className='px-12 text-center capitalize border'>{item.status}</td>
+										<td className='px-12 text-center capitalize border'>
+											<button onClick={() => getStatusPayment(item.orderID)}>Show</button>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		);

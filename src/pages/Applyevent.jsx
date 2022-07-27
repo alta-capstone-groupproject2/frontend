@@ -19,7 +19,7 @@ function Applyevent() {
     const [name,setName] = useState("")
     const [host,setHost] = useState("")
     const [phone,setPhone] = useState("")
-    const [startDate,setStartDate] = useState(new Date().toISOString().slice(0, -8))
+    const [startDate,setStartDate] = useState('')
     const [endDate,setEndDate] = useState("")
     const [price,setPrice] = useState("")
     const [detail,setDetail] = useState("")
@@ -155,8 +155,7 @@ function Applyevent() {
             setIsCityError(true)
         }
         position.join() !== ',' && passed++
-        console.log('startDate',startDate,'endDate',endDate)
-        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled startDate: ${startDate} startEnd: ${endDate}`, 'error')
+        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled`, 'error')
     }
 
     if (!isLoggedIn) {

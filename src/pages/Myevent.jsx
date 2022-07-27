@@ -38,7 +38,7 @@ function Myevent() {
 
     const apiGetMyEvent = async (page) => {
         setLoading(true)
-        await apiRequest(`users/events?limit=10&page=${page}`, "get", false, {
+        await apiRequest(`users/events?limit=5&page=${page}`, "get", false, {
             'Authorization': `Bearer ${token}`,
         })
             .then((result) => {
@@ -174,9 +174,9 @@ function Myevent() {
                                                 <div className=' flex justify-between'>
                                                     <div className='flex flex-col text-xs'>
                                                         <b>From</b>
-                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
+                                                        <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                         <b>To</b>     
-                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
+                                                        <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                     </div>
                                                     <div className='mt-2 flex flex-col items-end'>
                                                         <div className='flex items-center gap-2'>
@@ -192,8 +192,8 @@ function Myevent() {
                                                 <p className='text-slate-400 mt-4'>
                                                     About this event
                                                 </p>
-                                                <p className=''>
-                                                    {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
+                                                <p className='truncate w-96'>
+                                                    {event.details}
                                                 </p>
                                             </div>
                                             <div className='text-center px-14'>
