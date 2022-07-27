@@ -2,7 +2,7 @@
 
 const CardProduct = ({ name, price, image, onClickProduct }) => {
 	return (
-		<div id='card-product' className='bg-red-700 text-white flex flex-col rounded-md overflow-hidden hover:shadow-lg cursor-pointer' onClick={onClickEvent}>
+		<div id='card-product' className='bg-red-700 text-white flex flex-col rounded-md overflow-hidden hover:shadow-lg cursor-pointer' onClick={onClickProduct}>
 			<div className="h-40 flex items-center bg-white">
 				<img src={image} alt={name} className='h-full w-full object-contain' />
 			</div>
