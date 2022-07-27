@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "https://lamiapp.site/";
+axios.defaults.baseURL = "https://lamiapp.website/";
 
 export const apiRequest = async (url, method, body, header) => {
   var config = {
