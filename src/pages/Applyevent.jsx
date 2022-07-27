@@ -155,8 +155,7 @@ function Applyevent() {
             setIsCityError(true)
         }
         position.join() !== ',' && passed++
-        console.log('startDate',startDate,'endDate',endDate)
-        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled startDate: ${startDate} startEnd: ${endDate}`, 'error')
+        passed === 11 ? apiPostEvent() : Swal.fire('Important', `all field must be filled`, 'error')
     }
 
     if (!isLoggedIn) {
