@@ -73,12 +73,10 @@ function Cart() {
             const errorMsg = err.message
             let msg
             if (err.response.data) msg = err.response.data.message 
-            alert(`${errorMsg} : ${msg}`);
             setIsSuccess(false)
         })
         .finally(() => {
             setLoadApi(false)
-            alert(isSuccess)
         });
     };
 
