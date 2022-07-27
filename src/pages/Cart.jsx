@@ -76,7 +76,10 @@ function Cart() {
             alert(`${errorMsg} : ${msg}`);
             setIsSuccess(false)
         })
-        .finally(() => setLoadApi(false));
+        .finally(() => {
+            setLoadApi(false)
+            alert(isSuccess)
+        });
     };
 
     const getCart = () => {

@@ -14,6 +14,7 @@ import { apiRequest } from '../../utils/apiRequest';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
 import Map from '../../components/Map';
+import { resolveComponentProps } from '@mui/base';
 
 const DetailEvent = () => {
 	const params = useParams();

@@ -105,9 +105,9 @@ function Myevent() {
                       <div>
                         <div className='flex flex-col text-xs'>
                             <b>From</b>
-                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.startDate).format('DD MMMM YYYY, h:mm a')}</span>
+                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
                             <b>To</b>     
-                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment(event.endDate).format('DD MMMM YYYY, h:mm a')}</span>
+                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
                         </div>
                       </div>
                       <p>

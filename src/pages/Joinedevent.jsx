@@ -105,7 +105,7 @@ function Joinedevent() {
                                                 <div className='pl-8 py-4 break-all cursor-pointer flex-1' id={`div-goto-detail-${event.eventId}`} onClick={() => navigate(`/event/${event.eventId}`)}>
                                                     <p className='font-bold text-4xl flex justify-between items-center'>
                                                         {event.name}
-                                                        {event.date < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
+                                                        {event.endDate < currTime && <span className='bg-red-600 rounded-full px-2 py-[0.1rem] text-white text-sm'>Event End</span>}
                                                     </p>
                                                     <p className='flex justify-between'>
                                                         <span>
@@ -118,9 +118,9 @@ function Joinedevent() {
                                                     <div className=' flex justify-between'>
                                                         <div className='flex flex-col'>
                                                             <b>From</b>
-                                                            <span className='ml-2'>{moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}</span>
+                                                            <span className='ml-2'>{moment(event.startDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.startDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                             <b>To</b>
-                                                            <span className='ml-2'>{moment(event.date, 'DD-MM-YYYY').format('dddd')}, {moment(event.date).format('DD MMMM YYYY')}</span>
+                                                            <span className='ml-2'>{moment(event.endDate, 'DD-MM-YYYY').format('dddd')}, {moment.utc(event.endDate).format('DD MMMM YYYY, HH:mm')}</span>
                                                         </div>
                                                     </div>
                                                     <p>

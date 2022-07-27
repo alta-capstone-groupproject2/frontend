@@ -19,7 +19,7 @@ function Applyevent() {
     const [name,setName] = useState("")
     const [host,setHost] = useState("")
     const [phone,setPhone] = useState("")
-    const [startDate,setStartDate] = useState(new Date().toISOString().slice(0, -8))
+    const [startDate,setStartDate] = useState('')
     const [endDate,setEndDate] = useState("")
     const [price,setPrice] = useState("")
     const [detail,setDetail] = useState("")
