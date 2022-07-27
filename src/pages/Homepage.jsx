@@ -20,7 +20,7 @@ const Homepage = () => {
 	const searchCultureName = searchParams.get('name');
 
 	const getEvent = () => {
-		apiRequest('events?page=1&limit=12', 'get')
+		apiRequest('events?page=1&limit=4', 'get')
 			.then((res) => {
 				setEvent(res.data);
 			})
@@ -30,7 +30,7 @@ const Homepage = () => {
 	};
 
 	const getProduct = () => {
-		apiRequest('products?page=1&limit=12', 'get')
+		apiRequest('products?page=1&limit=4', 'get')
 			.then((res) => {
 				setProduct(res.data);
 			})
@@ -86,7 +86,7 @@ const Homepage = () => {
 								<p className='hover:text-red-700'>See All</p>
 							</Link>
 						</div>
-						<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
+						<div className='grid grid-cols-1 sm:grid-cols-4 gap-6'>
 							{product.map((item, index) => {
 								return <CardProduct key={index} name={item.productName} price={item.price} image={item.image} onClickProduct={() => navigate(`/merchandise/${item.productID}`)} />;
 							})}
