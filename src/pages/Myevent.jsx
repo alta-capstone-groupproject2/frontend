@@ -192,8 +192,8 @@ function Myevent() {
                                                 <p className='text-slate-400 mt-4'>
                                                     About this event
                                                 </p>
-                                                <p className=''>
-                                                    {event.details.split('\n').map((item, key) => { return <span key={key}>{item}<br /></span> })}
+                                                <p className='truncate w-96'>
+                                                    {event.details}
                                                 </p>
                                             </div>
                                             <div className='text-center px-14'>
