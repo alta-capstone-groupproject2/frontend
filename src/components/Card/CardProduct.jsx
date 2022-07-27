@@ -2,11 +2,13 @@
 
 const CardProduct = ({ name, price, image, onClickProduct }) => {
 	return (
-		<div id='card-product' className='bg-white text-red-700 rounded-md overflow-hidden hover:shadow-md cursor-pointer' onClick={onClickProduct}>
-			<img src={image} alt={name} className='w-full' />
-			<div className='font-bold px-8 py-3'>
-				<h1 id='product-name'>{name}</h1>
-				<p id='product-price'>Rp. {price}</p>
+		<div id='card-product' className='bg-red-700 text-white flex flex-col rounded-md overflow-hidden hover:shadow-lg cursor-pointer' onClick={onClickEvent}>
+			<div className="h-40 flex items-center bg-white">
+				<img src={image} alt={name} className='h-full w-full object-contain' />
+			</div>
+			<div className='px-8 py-3 font-bold'>
+				<h1 id='event-name'>{name}</h1>
+				<p id='event-city-location'>{city}</p>
 			</div>
 		</div>
 	);
