@@ -1,24 +1,62 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react";
 import { LayoutAdmin } from "../../../components/Layout";
 import { SidebarAdmin } from "../../../components/Sidebar";
 import Loading from "../../../components/Loading";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { apiRequest } from "../../../utils/apiRequest";
 
-function AddCultures() {
+function EditCultures() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const navigate = useNavigate();
+  const params = useParams();
   const [title, setTitle] = useState("");
   const [photo, setPhoto] = useState("");
+  const [reports, setReports] = useState([]);
+  const [srcPhoto, setSrcPhoto] = useState("");
   const [city, setCity] = useState("");
   const [detail, setDetail] = useState("");
   const [isTitleError, setIsTitleError] = useState(false);
   const [isCityError, setIsCityError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const apiPostCulture = () => {
+  useEffect(() => {
+    apiGetReport();
+  }, []);
+
+  const apiGetReport = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+    await apiRequest(`cultures/reports/${params.id}`, "get", false, {
+      Authorization: `Bearer ${token}`,
+    })
+      .then((result) => {
+        const { code, message, data } = result;
+        switch (code) {
+          case "200":
+            setReports(data);
+            break;
+          case "400":
+            Swal.fire("Failed", message, "error");
+            break;
+          default:
+            Swal.fire("Something Wrong", message, "info");
+            break;
+        }
+      })
+      .catch((err) => {
+        const errorMsg = err.message;
+        let msg;
+        if (err.response.data) msg = err.response.data.message;
+        Swal.fire(errorMsg, msg, "error");
+      })
+      .finally(() => apiGetCulture());
+  };
+
+  const apiPutCulture = () => {
     setLoading(true);
     const formData = new FormData();
     const token = localStorage.getItem("token");
@@ -27,7 +65,7 @@ function AddCultures() {
     formData.append("details", detail);
     formData.append("city", city);
 
-    apiRequest("cultures", "post", formData, {
+    apiRequest(`cultures/${params.id}`, "put", formData, {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     })
@@ -46,6 +84,39 @@ function AddCultures() {
             break;
           default:
             Swal.fire(`Code ${code}`, message, "info");
+            break;
+        }
+      })
+      .catch((err) => {
+        const errorMsg = err.message;
+        let msg;
+        if (err.response.data) msg = err.response.data.message;
+        Swal.fire(errorMsg, msg, "error");
+      })
+      .finally(() => apiGetCulture());
+  };
+
+  const apiGetCulture = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+    await apiRequest(`cultures/${params.id}`, "get", false, {
+      Authorization: `Bearer ${token}`,
+    })
+      .then((result) => {
+        const { code, message, data } = result;
+        switch (code) {
+          case "200":
+            setSrcPhoto(data.image);
+            setPhoto(data.image);
+            setTitle(data.name);
+            setCity(data.city);
+            setDetail(data.details);
+            break;
+          case "400":
+            Swal.fire("Failed", message, "error");
+            break;
+          default:
+            Swal.fire("Something Wrong", message, "info");
             break;
         }
       })
@@ -126,7 +197,7 @@ function AddCultures() {
     detail !== "" && passed++;
 
     passed === 4
-      ? apiPostCulture()
+      ? apiPutCulture()
       : Swal.fire("Important", "all field must be filled", "error");
   };
 
@@ -140,8 +211,8 @@ function AddCultures() {
         <LayoutAdmin>
           <div className="min-h-[80vh] flex">
             <SidebarAdmin active={"culture"} />
-            <div className="p-6 basis-5/6">
-              <p className="font-bold text-lg">Add Culture</p>
+            <div className="p-6 basis-4/6">
+              <p className="font-bold text-lg">Edit Culture</p>
               <div className="flex flex-row my-2 items-center">
                 <label className="basis-1/6">Title</label>
                 <div className="basis-5/6">
@@ -164,6 +235,11 @@ function AddCultures() {
                 <label className="basis-1/6">Picture</label>
                 <div className="basis-5/6 ">
                   <div className="flex items-end border-[0.1rem] rounded p-2 w-full gap-2">
+                    {srcPhoto !== "" && (
+                      <a href={srcPhoto} target="_blank" rel="noreferrer">
+                        <img src={srcPhoto} alt="pict" className="w-48" />
+                      </a>
+                    )}
                     <input
                       id="input-photo"
                       type={"file"}
@@ -210,8 +286,16 @@ function AddCultures() {
                   className="font-bold py-2 px-20 bg-red-600 hover:bg-red-700 text-white rounded"
                   onClick={() => handleSubmit()}
                 >
-                  Add
+                  Save
                 </button>
+              </div>
+            </div>
+            <div className="p-6 basis-2/6">
+              <p className="font-bold">Reports</p>
+              <div className="p-2 space-y-2 ">
+                {reports.map((report, idx) => (
+                  <p key={idx}>{`- ${report.message}`}</p>
+                ))}
               </div>
             </div>
           </div>
@@ -221,4 +305,4 @@ function AddCultures() {
   }
 }
 
-export default AddCultures;
+export default EditCultures;

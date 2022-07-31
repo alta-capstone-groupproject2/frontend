@@ -10,28 +10,29 @@ import Custom404 from "../pages/404";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import Dashboard from "../pages/Dashboard";
-import Events from "../pages/Events/Events";
-import DetailEvent from "../pages/Events/DetailEvent";
-import Cultures from "../pages/Cultures/Cultures";
-import ListSubUmkm from "../pages/ListSubUmkm";
-import DetailCulture from "../pages/Cultures/DetailCulture";
+import ListSubmissionUmkm from "../pages/Merchandise/admin/ListSubmissionUmkm";
 
 import { TokenContext } from "../utils/Context";
+import Cultures from "../pages/Cultures/Cultures";
+import DetailCulture from "../pages/Cultures/DetailCulture";
 import AddCultures from "../pages/Cultures/admin/AddCultures";
+import EditCultures from "../pages/Cultures/admin/EditCultures";
+import ListCulture from "../pages/Cultures/admin/ListCulture";
 
-import Myevent from "../pages/Myevent";
-import Applyevent from "../pages/Applyevent";
-import Listsubmissionev from "../pages/Listsubmissionev";
-import Detailsubmissionevent from "../pages/Detailsubmissionevent";
-import UpgradeAccount from "../pages/UpgradeAccount";
-import Listcultureadmin from "../pages/Listcultureadmin";
-import Editcultures from "../pages/Editcultures";
-import Myproduct from "../pages/Myproduct";
-import Addproduct from "../pages/Addproduct";
-import Editproduct from "../pages/Editproduct";
-import Joinedevent from "../pages/Joinedevent";
-import Historyorder from "../pages/Historyorder";
-import Cart from "../pages/Cart";
+import Events from "../pages/Events/Events";
+import MyEvent from "../pages/Events/MyEvent";
+import DetailEvent from "../pages/Events/DetailEvent";
+import ApplyEvent from "../pages/Events/admin/ApplyEvent";
+import ListSubmissionEvent from "../pages/Events/admin/ListSubmissionEvent";
+import DetailSubmissionEvent from "../pages/Events/admin/DetailSubmissionEvent";
+import JoinedEvent from "../pages/Events/JoinedEvent";
+
+import MyProduct from "../pages/Merchandise/MyProduct";
+import AddProduct from "../pages/Merchandise/AddProduct";
+import UpgradeAccount from "../pages/Merchandise/UpgradeAccount";
+import EditProduct from "../pages/Merchandise/EditProduct";
+import HistoryOrder from "../pages/Merchandise/HistoryOrder";
+import Cart from "../pages/Merchandise/Cart";
 import Verification from "../pages/Verification";
 import Merchandise from "../pages/Merchandise/Merchandise";
 import DetailMerchandise from "../pages/Merchandise/DetailMerchandise";
@@ -65,22 +66,28 @@ const RoutesApp = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/upgrade-account" element={<UpgradeAccount />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/my-event" element={<Myevent />} />
-          <Route path="/apply-event" element={<Applyevent />} />
-          <Route path="/list-submission-umkm" element={<ListSubUmkm />} />
-          <Route path="/list-culture-admin" element={<Listcultureadmin />} />
+          <Route path="/my-event" element={<MyEvent />} />
+          <Route path="/apply-event" element={<ApplyEvent />} />
+          <Route
+            path="/list-submission-umkm"
+            element={<ListSubmissionUmkm />}
+          />
+          <Route path="/list-culture-admin" element={<ListCulture />} />
           <Route path="/add-culture" element={<AddCultures />} />
-          <Route path="/edit-culture/:id" element={<Editcultures />} />
-          <Route path="/list-submission-event" element={<Listsubmissionev />} />
+          <Route path="/edit-culture/:id" element={<EditCultures />} />
+          <Route
+            path="/list-submission-event"
+            element={<ListSubmissionEvent />}
+          />
           <Route
             path="/submission-event/:id"
-            element={<Detailsubmissionevent />}
+            element={<DetailSubmissionEvent />}
           />
-          <Route path="/my-product" element={<Myproduct />} />
-          <Route path="/add-product" element={<Addproduct />} />
-          <Route path="/edit-product/:id" element={<Editproduct />} />
-          <Route path="/joined-event" element={<Joinedevent />} />
-          <Route path="/history-order" element={<Historyorder />} />
+          <Route path="/my-product" element={<MyProduct />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/edit-product/:id" element={<EditProduct />} />
+          <Route path="/joined-event" element={<JoinedEvent />} />
+          <Route path="/history-order" element={<HistoryOrder />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/verification/:id" element={<Verification />} />
           <Route path="/merchandise" element={<Merchandise />} />
